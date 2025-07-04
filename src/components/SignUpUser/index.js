@@ -22,6 +22,11 @@ const SignUpUser = () => {
   });
   const methods = useForm();
 
+  const firstName = methods.watch('first_name');
+  const lastName = methods.watch('last_name');
+  const email = methods.watch('email');
+  const password = methods.watch('password');
+
   const { mutate, isPending, isSuccess, isError, error } = useMutation({
     mutationFn: signUp,
     onSuccess: (data) => {
@@ -116,6 +121,7 @@ const SignUpUser = () => {
                   type="button"
                   btnclass="w-full h-14"
                   onClick={() => handleSignUpSTeps('next')}
+                  disabled={!firstName || !lastName || !email || !password}
                 />
                 <AuthFooter handleLogIn={handleLogIn} />
               </form>
