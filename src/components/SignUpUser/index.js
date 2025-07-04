@@ -25,7 +25,7 @@ const SignUpUser = () => {
   const { mutate, isPending, isSuccess, isError, error } = useMutation({
     mutationFn: signUp,
     onSuccess: (data) => {
-      console.log('Signup successful:', data);
+      router.push('/login');
     },
     onError: (err) => {
       console.error('Signup failed:', err.message);
@@ -39,7 +39,7 @@ const SignUpUser = () => {
       password: data.password,
       username: `${data.first_name} ${data.last_name}`,
       country_id: 1,
-      profile_image: data.identityMedia,
+      profile_image: data.identityMedia ? data.identityMedia : '',
     };
     mutate(payload);
   };

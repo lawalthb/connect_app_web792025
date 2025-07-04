@@ -4,14 +4,18 @@ import AuthWrapper from './AuthWrapper';
 import Button from '../Button';
 import TwoFactorCountdownTimer from '../TwoFactorCountdownTimer';
 
-const TwoFactorAuth = ({ heading, subHeading, email }) => {
+const TwoFactorAuth = ({ heading, subHeading, email, resetPassword }) => {
   const methods = useForm();
 
   const pinCode = methods.watch('pinCode');
 
   const onSubmit = (data) => {
     console.log(data);
-    window.location.href = '/connecting';
+    if (resetPassword) {
+      window.location.href = '/login';
+    } else {
+      window.location.href = '/connecting';
+    }
   };
 
   const handlePinChange = (value) => {

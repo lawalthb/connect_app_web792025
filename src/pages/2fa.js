@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 const TwoFactorAuthorization = () => {
   const router = useRouter();
-  const { email, heading, subHeading } = router.query;
+  const { email, heading, subHeading, resetPassword } = router.query;
 
   useEffect(() => {
     if (!email) {
@@ -14,7 +14,12 @@ const TwoFactorAuthorization = () => {
 
   return (
     <div className="mx-auto min-w-[570px] mt-40">
-      <TwoFactorAuth heading={heading} subHeading={subHeading} email={email} />
+      <TwoFactorAuth
+        heading={heading}
+        subHeading={subHeading}
+        email={email}
+        resetPassword={resetPassword}
+      />
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { useCallback, useState } from 'react';
 import ConnectAppIcon from '@/Images/Icons/ConnectAppIcon.svg';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
-import { signIn } from '../Utils/api';
+import { forgotPassword, signIn } from '../Utils/api';
 import ErrorMsg from '../ErrorMsg';
 
 const LoginUser = () => {
@@ -16,41 +16,89 @@ const LoginUser = () => {
     password: false,
     reset: false,
   });
-  const [loginData, setLoginData] = useState({});
+  const [userData, setUserData] = useState({});
   const methods = useForm();
+
+  const handleBackToLogin = () => {
+    setIsAuthType({
+      login: true,
+      password: false,
+      reset: false,
+    });
+  };
 
   const { mutate, isPending, isSuccess, isError, error } = useMutation({
     mutationFn: signIn,
     onSuccess: () => {
-      handleSuccessfulLogin();
+      handleOtpRoute();
+    },
+    onError: (err) => {
+      console.error('Sign In failed:', err.message);
+    },
+  });
+  const {
+    mutate: forgotPasswordMutation,
+    isPending: isLoadingPassword,
+    error: passwordError,
+  } = useMutation({
+    mutationFn: forgotPassword,
+    onSuccess: () => {
+      handleBackToLogin();
     },
     onError: (err) => {
       console.error('Sign In failed:', err.message);
     },
   });
 
-  const handleSuccessfulLogin = () => {
-    const heading = loginData.confirm_password
+  const handleOtpRoute = (data) => {
+    const heading = data?.confirmPassword
       ? 'Reset Password'
       : 'Confirm your Email';
-    const subHeading = loginData.confirm_password
+    const subHeading = data?.confirmPassword
       ? 'Input the code to reset your password'
       : 'Input the code to complete the verification process';
     router.push({
       pathname: '/2fa',
-      query: { email: loginData.email, heading, subHeading },
+      query: {
+        email: userData.email ?? data.email,
+        heading,
+        subHeading,
+        resetPassword: data?.confirmPassword,
+      },
     });
   };
 
   const onSubmit = (data) => {
-    setLoginData(data);
+    setUserData(data);
     const payload = {
       email: data.email,
       password: data.password,
       remember_me: true,
       device_token: 'sample-device-token-for-push-notifications',
     };
-    mutate(payload);
+    if (isAuthType.login) {
+      mutate(payload);
+    }
+    if (isAuthType.password) {
+      const forgetPasswordPayload = {
+        email: data.email,
+      };
+      forgotPasswordMutation(forgetPasswordPayload);
+    }
+    if (isAuthType.reset) {
+      const otpData = {
+        email: data.email,
+        confirmPassword: true,
+      };
+      // const resetPayload = {
+      //   email: data.email,
+      //   otp: '2513',
+      //   password: '123456789',
+      //   password_confirmation: confirm_password,
+      // };
+      // forgotPasswordMutation(resetPayload);
+      handleOtpRoute(otpData);
+    }
   };
 
   const handlePassword = useCallback((identifier) => {
@@ -70,11 +118,7 @@ const LoginUser = () => {
         });
         break;
       case 'back':
-        setIsAuthType({
-          login: true,
-          password: false,
-          reset: false,
-        });
+        handleBackToLogin();
         break;
       default:
         console.warn('Unknown identifier:', identifier);
@@ -170,7 +214,12 @@ const LoginUser = () => {
                     name={'email'}
                   />
                 </div>
-                <Button label="Proceed" type="submit" btnclass="w-full h-14" />
+                <Button
+                  label="Proceed"
+                  type="submit"
+                  btnclass="w-full h-14"
+                  isLoading={isLoadingPassword}
+                />
                 <div className="flex items-center justify-center gap-2 mt-5">
                   <p
                     onClick={() => handlePassword('back')}
@@ -218,7 +267,7 @@ const LoginUser = () => {
             </>
           )}
         </FormProvider>
-        <ErrorMsg errorMessage={error?.message} />
+        <ErrorMsg errorMessage={error?.message || passwordError?.message} />
       </div>
     </>
   );

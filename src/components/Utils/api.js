@@ -39,3 +39,20 @@ export const signIn = async (data) => {
 
   return response.json();
 };
+
+export const forgotPassword = async (data) => {
+  const response = await fetch(`${API_URL}/forgot-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Sign In failed');
+  }
+
+  return response.json();
+};
