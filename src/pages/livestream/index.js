@@ -1,5 +1,6 @@
 import AuthenticatedNavBar from '@/components/Layout/AuthenticatedNavBar';
 import Stream from '@/components/Streams';
+import { parse } from 'cookie';
 
 const Livestream = () => {
   return (
@@ -13,3 +14,17 @@ const Livestream = () => {
 };
 
 export default Livestream;
+
+export async function getServerSideProps({ req }) {
+  const { token } = parse(req.headers.cookie || '');
+
+  if (!token) {
+    return {
+      redirect: { destination: '/login', permanent: false },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

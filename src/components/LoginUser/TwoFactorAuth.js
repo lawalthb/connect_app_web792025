@@ -3,16 +3,38 @@ import PinField from 'react-pin-field';
 import AuthWrapper from './AuthWrapper';
 import Button from '../Button';
 import TwoFactorCountdownTimer from '../TwoFactorCountdownTimer';
+import { useMutation } from '@tanstack/react-query';
+import { resetUserPassword } from '../Utils/api';
+import ErrorMsg from '../ErrorMsg';
 
-const TwoFactorAuth = ({ heading, subHeading, email, resetPassword }) => {
+const TwoFactorAuth = ({ heading, subHeading, email, formData }) => {
   const methods = useForm();
 
   const pinCode = methods.watch('pinCode');
 
-  const onSubmit = (data) => {
-    console.log(data);
-    if (resetPassword) {
+  const {
+    mutate: resetPasswordMutation,
+    isPending: isLoadingPassword,
+    error: resetPasswordError,
+  } = useMutation({
+    mutationFn: resetUserPassword,
+    onSuccess: () => {
       window.location.href = '/login';
+    },
+    onError: (err) => {
+      console.error('Password reset failed:', err.message);
+    },
+  });
+
+  const onSubmit = (data) => {
+    if (formData.confirm_password) {
+      const resetPayload = {
+        email: formData.email,
+        otp: data.pinCode,
+        password: formData.password,
+        password_confirmation: formData.confirm_password,
+      };
+      resetPasswordMutation(resetPayload);
     } else {
       window.location.href = '/connecting';
     }
@@ -31,7 +53,7 @@ const TwoFactorAuth = ({ heading, subHeading, email, resetPassword }) => {
         >
           <div className="flex mb-5">
             <PinField
-              length={6}
+              length={4}
               validate={/^[a-zA-Z0-9]$/}
               onComplete={(value) => methods.setValue('pinCode', value)}
               style={{
@@ -56,12 +78,13 @@ const TwoFactorAuth = ({ heading, subHeading, email, resetPassword }) => {
             label="Proceed"
             type="submit"
             btnclass="w-full my-1"
-            disabled={!pinCode || pinCode?.length !== 6}
-            // isLoading={isLoading}
+            disabled={!pinCode || pinCode?.length !== 4}
+            isLoading={isLoadingPassword}
           />
-          <TwoFactorCountdownTimer />
+          <TwoFactorCountdownTimer email={formData.email} />
         </form>
       </FormProvider>
+      <ErrorMsg errorMessage={resetPasswordError?.message} />
     </AuthWrapper>
   );
 };

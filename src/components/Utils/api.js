@@ -24,7 +24,7 @@ export const signUp = async (data) => {
 };
 
 export const signIn = async (data) => {
-  const response = await fetch(`${API_URL}/login`, {
+  const response = await fetch('/api/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -40,6 +40,13 @@ export const signIn = async (data) => {
   return response.json();
 };
 
+export const handleLogout = async () => {
+  await fetch('/api/auth/logout', {
+    method: 'POST',
+  });
+  router.push('/login');
+};
+
 export const forgotPassword = async (data) => {
   const response = await fetch(`${API_URL}/forgot-password`, {
     method: 'POST',
@@ -51,7 +58,41 @@ export const forgotPassword = async (data) => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || 'Sign In failed');
+    throw new Error(errorData.message || 'Action failed');
+  }
+
+  return response.json();
+};
+
+export const resetUserPassword = async (data) => {
+  const response = await fetch(`${API_URL}/reset-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Reset password failed');
+  }
+
+  return response.json();
+};
+
+export const resendVerificationOtp = async (data) => {
+  const response = await fetch(`${API_URL}/resend-verification-otp`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Resend OTP Verification failed');
   }
 
   return response.json();

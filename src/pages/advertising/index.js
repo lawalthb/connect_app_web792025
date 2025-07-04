@@ -1,5 +1,6 @@
 import Advert from '@/components/Advert';
 import AuthenticatedNavBar from '@/components/Layout/AuthenticatedNavBar';
+import { parse } from 'cookie';
 
 const Advertising = () => {
   return (
@@ -13,3 +14,17 @@ const Advertising = () => {
 };
 
 export default Advertising;
+
+export async function getServerSideProps({ req }) {
+  const { token } = parse(req.headers.cookie || '');
+
+  if (!token) {
+    return {
+      redirect: { destination: '/login', permanent: false },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

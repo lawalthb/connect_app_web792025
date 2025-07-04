@@ -3,6 +3,7 @@ import ConnectionFeed from '@/components/Connecting/ConnectionFeed';
 import ConnectWithOthers from '@/components/Connecting/ConnectWithOthers';
 import TabSelector from '@/components/Layout/TabSelector';
 import { useState } from 'react';
+import { parse } from 'cookie';
 
 const Connecting = () => {
   const [activeTab, setActiveTab] = useState('Connecting Feed');
@@ -31,3 +32,17 @@ const Connecting = () => {
 };
 
 export default Connecting;
+
+export async function getServerSideProps({ req }) {
+  const { token } = parse(req.headers.cookie || '');
+
+  if (!token) {
+    return {
+      redirect: { destination: '/login', permanent: false },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

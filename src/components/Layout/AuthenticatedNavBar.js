@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { IoMdNotificationsOutline } from 'react-icons/io';
 import { RxAvatar, RxHamburgerMenu } from 'react-icons/rx';
 import { IoClose } from 'react-icons/io5';
+import Logout from '../Logout';
 
 const AuthenticatedNavBar = () => {
   const pathname = usePathname();
@@ -66,6 +67,7 @@ const AuthenticatedNavBar = () => {
             );
           })}
           <div className="hidden lg:flex items-center gap-4 mr-3 ml-32">
+            <Logout />
             <IoMdNotificationsOutline className="text-[#444750] size-6 cursor-pointer" />
             <RxAvatar className="text-[#444750] size-6 cursor-pointer" />
           </div>

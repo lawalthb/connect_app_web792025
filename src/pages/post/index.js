@@ -1,5 +1,6 @@
 import AuthenticatedNavBar from '@/components/Layout/AuthenticatedNavBar';
 import PostFeed from '@/components/PostFeed';
+import { parse } from 'cookie';
 
 const Post = () => {
   return (
@@ -13,3 +14,17 @@ const Post = () => {
 };
 
 export default Post;
+
+export async function getServerSideProps({ req }) {
+  const { token } = parse(req.headers.cookie || '');
+
+  if (!token) {
+    return {
+      redirect: { destination: '/login', permanent: false },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

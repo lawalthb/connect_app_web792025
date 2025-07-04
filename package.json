@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.81.5",
+    "cookie": "^1.0.2",
     "country-telephone-data": "^0.6.3",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.12.1",
@@ -27,7 +28,8 @@
     "react-select": "^5.10.1",
     "recharts": "^2.15.3",
     "swiper": "^11.2.8",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { forgotPassword, signIn } from '../Utils/api';
 import ErrorMsg from '../ErrorMsg';
+import useFormStore from '@/zustandStore/useFormStore';
 
 const LoginUser = () => {
   const router = useRouter();
@@ -16,8 +17,8 @@ const LoginUser = () => {
     password: false,
     reset: false,
   });
-  const [userData, setUserData] = useState({});
   const methods = useForm();
+  const setFormData = useFormStore((state) => state.setFormData);
 
   const handleBackToLogin = () => {
     setIsAuthType({
@@ -30,7 +31,7 @@ const LoginUser = () => {
   const { mutate, isPending, isSuccess, isError, error } = useMutation({
     mutationFn: signIn,
     onSuccess: () => {
-      handleOtpRoute();
+      handleOtpRoute({ confirmPassword: false });
     },
     onError: (err) => {
       console.error('Sign In failed:', err.message);
@@ -43,7 +44,11 @@ const LoginUser = () => {
   } = useMutation({
     mutationFn: forgotPassword,
     onSuccess: () => {
-      handleBackToLogin();
+      setIsAuthType({
+        login: false,
+        password: false,
+        reset: true,
+      });
     },
     onError: (err) => {
       console.error('Sign In failed:', err.message);
@@ -60,16 +65,14 @@ const LoginUser = () => {
     router.push({
       pathname: '/2fa',
       query: {
-        email: userData.email ?? data.email,
         heading,
         subHeading,
-        resetPassword: data?.confirmPassword,
       },
     });
   };
 
   const onSubmit = (data) => {
-    setUserData(data);
+    setFormData(data);
     const payload = {
       email: data.email,
       password: data.password,
@@ -86,18 +89,9 @@ const LoginUser = () => {
       forgotPasswordMutation(forgetPasswordPayload);
     }
     if (isAuthType.reset) {
-      const otpData = {
-        email: data.email,
+      handleOtpRoute({
         confirmPassword: true,
-      };
-      // const resetPayload = {
-      //   email: data.email,
-      //   otp: '2513',
-      //   password: '123456789',
-      //   password_confirmation: confirm_password,
-      // };
-      // forgotPasswordMutation(resetPayload);
-      handleOtpRoute(otpData);
+      });
     }
   };
 
@@ -175,12 +169,12 @@ const LoginUser = () => {
                 >
                   Forgot Password?
                 </p>
-                <p
+                {/* <p
                   onClick={() => handlePassword('resetPassword')}
                   className="text-base font-semibold leading-6 text-[#A20030] cursor-pointer w-max"
                 >
                   Reset Password
-                </p>
+                </p> */}
                 <Button
                   label="Login"
                   type="submit"

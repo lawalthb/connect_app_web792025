@@ -1,8 +1,18 @@
+import { useMutation } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
+import { resendVerificationOtp } from './Utils/api';
+import ErrorMsg from './ErrorMsg';
 
-const TwoFactorCountdownTimer = () => {
+const TwoFactorCountdownTimer = ({ email }) => {
   const [timeLeft, setTimeLeft] = useState(120);
   const [canResend, setCanResend] = useState(false);
+
+  const { mutate, error } = useMutation({
+    mutationFn: resendVerificationOtp,
+    onError: (err) => {
+      console.error('Resend failed:', err.message);
+    },
+  });
 
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -18,6 +28,7 @@ const TwoFactorCountdownTimer = () => {
   }, [timeLeft]);
 
   const handleResendCode = () => {
+    mutate({ email });
     setTimeLeft(120);
     setCanResend(false);
   };
@@ -41,6 +52,7 @@ const TwoFactorCountdownTimer = () => {
       ) : (
         <p className="text-gray-500">Resend in {formatTime(timeLeft)}</p>
       )}
+      <ErrorMsg errorMessage={error?.message} />
     </div>
   );
 };
