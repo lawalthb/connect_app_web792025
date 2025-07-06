@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import AddImageIcon from '@/Images/Icons/AddImageIcon.svg';
 
-const ImageUpload = ({ handlePreview }) => {
+const ImageUpload = ({ handlePreview, name = 'identityMedia' }) => {
   const { control } = useFormContext();
   const [preview, setPreview] = useState(null);
   const [mediaType, setMediaType] = useState(null);
@@ -52,7 +52,7 @@ const ImageUpload = ({ handlePreview }) => {
   return (
     <div className="w-full space-y-4">
       <Controller
-        name="identityMedia"
+        name={name}
         control={control}
         render={({ field: { onChange } }) => (
           <div className="w-full flex justify-between items-center p-5 rounded-[10px] border border-[#D0D5DD]">

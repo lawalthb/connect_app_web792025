@@ -70,7 +70,7 @@ const SignUpUser = () => {
       <div className="flex justify-center">
         <ConnectAppIcon aria-label="Connect App Logo" />
       </div>
-      <div className="flex flex-col mx-auto w-[420px] my-20">
+      <div className="flex flex-col mx-auto w-full lg:w-[420px] my-20">
         <AuthHeader
           label={'Create Account'}
           description={'Enter your details to create your CONNECT APP account'}

@@ -5,14 +5,27 @@ import InputField from './Input/InputField';
 import Checkbox from './Checkbox';
 import Button from './Button';
 import { useRouter } from 'next/router';
+import { posts } from './Utils/api';
+import { useMutation } from '@tanstack/react-query';
+import ErrorMsg from './ErrorMsg';
 
-const PostFeed = () => {
+const PostFeed = ({ socialCircles }) => {
   const methods = useForm();
   const router = useRouter();
 
+  const { mutate, isPending, isSuccess, isError, error } = useMutation({
+    mutationFn: posts,
+    onSuccess: () => {
+      router.push('/connecting');
+    },
+    onError: (err) => {
+      console.error('Posting failed:', err.message);
+    },
+  });
+
   const onSubmit = (data) => {
-    console.log(data);
-    router.push('/connecting');
+    const { terms_condition, ...payload } = data;
+    mutate(payload);
   };
 
   return (
@@ -25,24 +38,24 @@ const PostFeed = () => {
           <form onSubmit={methods.handleSubmit(onSubmit)} className="mt-10">
             <SelectField
               label="Social Circle"
-              name="social_circle"
+              name="social_circle_id"
               required={false}
             >
-              {['Travel', 'Music', 'Gaming', 'Movies/TV', 'Party', 'Sport'].map(
-                (option, index) => (
-                  <option key={index} value={option}>
-                    {option}
-                  </option>
-                ),
-              )}
+              {' '}
+              <option value="">Select social circle</option>
+              {socialCircles?.map((socialCircle, index) => (
+                <option key={socialCircle.id} value={socialCircle.id}>
+                  {socialCircle.name}
+                </option>
+              ))}
             </SelectField>
             <div className="my-10">
-              <ImageUpload />
+              <ImageUpload name="media" />
             </div>
             <InputField
               label={'Message'}
               type="text"
-              name={'message'}
+              name={'content'}
               required={false}
               placeHolder="Enter your message"
             />
@@ -59,9 +72,11 @@ const PostFeed = () => {
               label="Post"
               type="submit"
               btnclass="w-[252px] mt-10 h-14"
+              isLoading={isPending}
             />
           </form>
         </FormProvider>
+        <ErrorMsg errorMessage={error?.message} />
       </>
     </div>
   );

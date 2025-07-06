@@ -4,7 +4,7 @@ import AppStoreBadge from '@/Images/AppStoreBadge.png';
 
 const DownloadSocialApps = () => {
   return (
-    <div className="flex gap-7">
+    <div className="flex gap-2 lg:gap-7">
       <Image
         src={AppStoreBadge}
         alt="App Store badge"

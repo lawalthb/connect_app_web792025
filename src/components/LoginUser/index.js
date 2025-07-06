@@ -9,6 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import { forgotPassword, signIn } from '../Utils/api';
 import ErrorMsg from '../ErrorMsg';
 import useFormStore from '@/zustandStore/useFormStore';
+import useUserStore from '@/zustandStore/useUserStore';
 
 const LoginUser = () => {
   const router = useRouter();
@@ -19,6 +20,7 @@ const LoginUser = () => {
   });
   const methods = useForm();
   const setFormData = useFormStore((state) => state.setFormData);
+  const { setUser } = useUserStore();
 
   const handleBackToLogin = () => {
     setIsAuthType({
@@ -30,7 +32,8 @@ const LoginUser = () => {
 
   const { mutate, isPending, isSuccess, isError, error } = useMutation({
     mutationFn: signIn,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setUser(data.user);
       handleOtpRoute({ confirmPassword: false });
     },
     onError: (err) => {
@@ -169,12 +172,12 @@ const LoginUser = () => {
                 >
                   Forgot Password?
                 </p>
-                {/* <p
+                <p
                   onClick={() => handlePassword('resetPassword')}
                   className="text-base font-semibold leading-6 text-[#A20030] cursor-pointer w-max"
                 >
                   Reset Password
-                </p> */}
+                </p>
                 <Button
                   label="Login"
                   type="submit"

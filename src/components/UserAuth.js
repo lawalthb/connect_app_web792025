@@ -15,14 +15,14 @@ const UserAuth = ({
     setActiveTab(newValue);
   };
   return (
-    <div className="px-32">
+    <div className="px-5 lg:px-32">
       <TabSelector
         firstTabName={firstTabName}
         secondTabName={secondTabName}
         onTabChange={onTabChange}
         activeTab={activeTab}
       />
-      <div className="mx-auto w-[420px]">
+      <div className="mx-auto w-full lg:w-[420px]">
         {activeTab === 'Login with your email' && <LoginUser />}
         {activeTab === 'Sign Up with your email' && <SignUpUser />}
         {(activeTab === 'Login with your social account' ||

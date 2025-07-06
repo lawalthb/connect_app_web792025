@@ -2,11 +2,27 @@ import AuthenticatedNavBar from '@/components/Layout/AuthenticatedNavBar';
 import ConnectionFeed from '@/components/Connecting/ConnectionFeed';
 import ConnectWithOthers from '@/components/Connecting/ConnectWithOthers';
 import TabSelector from '@/components/Layout/TabSelector';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { parse } from 'cookie';
+import useUserStore from '@/zustandStore/useUserStore';
+import { useQuery } from '@tanstack/react-query';
+import { getPost } from '@/components/Utils/api';
+import Loader from '@/components/Loader/Loader';
 
 const Connecting = () => {
   const [activeTab, setActiveTab] = useState('Connecting Feed');
+  // const { user, loading, refreshUser } = useUserStore();
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['post'],
+    queryFn: getPost,
+  });
+
+  console.log(data, 'data');
+  // console.log(loading, 'loading');
+  // useEffect(() => {
+  //   refreshUser();
+  // }, []);
 
   const onTabChange = (newValue) => {
     setActiveTab(newValue);
@@ -23,6 +39,7 @@ const Connecting = () => {
           activeTab={activeTab}
         />
       </div>
+      {isLoading && <Loader />}
       <div className="px-1 md:px-20">
         {activeTab === 'Connect with others' && <ConnectWithOthers />}
         {activeTab === 'Connecting Feed' && <ConnectionFeed />}

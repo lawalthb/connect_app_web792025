@@ -30,49 +30,29 @@ const Footer = () => {
     { link: '#', text: 'Help center' },
     { link: '#', text: 'Support desk' },
   ];
+
   return (
-    <div className="w-full flex flex-col gap-40 pt-16 pb-8 px-28 text-[#E2E4E9] size-4">
-      <div className="w-full flex gap-20">
-        <div className="w-[25%]">
-          <h3 className="font-black leading-[150%] mb-10">ConnectApp</h3>
-          <p className="w-[323px] font-normal leading-6 tracking-[-0.02em] mt-5">
+    <div className="w-full flex flex-col gap-20 pt-16 pb-8 px-4 sm:px-8 lg:px-28 text-[#E2E4E9] bg-[#0B0D0E]">
+      <div className="flex flex-col lg:flex-row gap-16 lg:gap-20">
+        <div className="w-full lg:w-1/3">
+          <h3 className="font-black text-xl sm:text-2xl mb-6">ConnectApp</h3>
+          <p className="text-sm sm:text-base max-w-md leading-6 text-[#E2E4E9]/90">
             Connect App is a social media app that allows users to connect and
             chat with people around the world daily; based on social preferences
             and at a social distance.
           </p>
         </div>
-        <div className="grid grid-cols-3 w-[75%]">
-          <div className="flex flex-col gap-5 w-1/2">
-            <h3 className="font-normal leading-[150%] mb-5">Products</h3>
-            {productsData.map((data, idx) => (
-              <div key={idx}>
-                <FooterLinks data={data} />
-              </div>
-            ))}
-          </div>
-          <div className="flex flex-col gap-5 w-1/2">
-            <h3 className="font-normal leading-[150%] mb-5">Resource</h3>
-            {resourceData.map((data, idx) => (
-              <div key={idx}>
-                <FooterLinks data={data} />
-              </div>
-            ))}
-          </div>
-          <div className="flex flex-col gap-5 w-1/2">
-            <h3 className="font-normal leading-[150%] mb-5">Community</h3>
-            {communityData.map((data, idx) => (
-              <div key={idx}>
-                <FooterLinks data={data} />
-              </div>
-            ))}
-          </div>
+        <div className="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          <FooterColumn title="Products" data={productsData} />
+          <FooterColumn title="Resource" data={resourceData} />
+          <FooterColumn title="Community" data={communityData} />
         </div>
       </div>
-      <div className="flex justify-between items-center pb-10 w-full">
-        <p className="font-normal size-[14px] leading-[150%] w-full">
+      <div className="flex flex-col sm:flex-row justify-between items-center border-t border-white/10 pt-8">
+        <p className="text-sm text-center sm:text-left">
           © 2025 ConnectApp. Powered by ConnectApp
         </p>
-        <div className="flex gap-4 mt-4">
+        <div className="flex gap-4 mt-4 sm:mt-0">
           <FaFacebookF className="cursor-pointer hover:text-[#A20030]" />
           <FaTwitter className="cursor-pointer hover:text-[#A20030]" />
           <FaYoutube className="cursor-pointer hover:text-[#A20030]" />
@@ -84,14 +64,20 @@ const Footer = () => {
 };
 
 export default Footer;
+const FooterColumn = ({ title, data }) => (
+  <div className="flex flex-col gap-3">
+    <h3 className="font-semibold mb-2 text-base">{title}</h3>
+    {data.map((item, idx) => (
+      <FooterLink key={idx} data={item} />
+    ))}
+  </div>
+);
 
-const FooterLinks = ({ data }) => {
-  return (
-    <a
-      href={data.link}
-      className="text-[#E2E4E9] hover:text-[#A20030] w-max whitespace-nowrap break-keep"
-    >
-      {data.text}
-    </a>
-  );
-};
+const FooterLink = ({ data }) => (
+  <a
+    href={data.link}
+    className="text-sm text-[#E2E4E9] hover:text-[#A20030] w-max whitespace-nowrap"
+  >
+    {data.text}
+  </a>
+);

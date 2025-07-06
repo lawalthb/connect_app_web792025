@@ -15,7 +15,7 @@ const TwoFactorAuthorization = () => {
   }, [formData.email, router]);
 
   return (
-    <div className="mx-auto min-w-[570px] mt-40">
+    <div className="mx-auto w-full lg:min-w-[570px] mt-40">
       <TwoFactorAuth
         heading={heading}
         subHeading={subHeading}

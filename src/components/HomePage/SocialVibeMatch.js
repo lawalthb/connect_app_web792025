@@ -6,37 +6,43 @@ import DownloadSocialApps from '../DownloadSocialApps';
 
 const SocialVibeMatch = () => {
   return (
-    <div className="flex flex-col lg:flex-row bg-[#A20030] min-h-[calc(100vh-64px)] relative overflow-hidden">
-      <div className="flex flex-col gap-10 h-full py-32 pl-32 z-30">
-        <h1 className="text-white text-[64px] font-bold w-[580px] leading-[64px] tracking-[-0.05em]">
+    <div className="flex flex-col lg:flex-row w-full bg-[#A20030] min-h-[calc(100vh-64px)] relative overflow-hidden">
+      {/* Text + CTA */}
+      <div className="flex w-full flex-col gap-6 md:gap-10 h-full py-16 md:py-24 px-5 sm:px-10 lg:px-32 z-30">
+        <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[64px] font-bold max-w-full lg:max-w-[580px] leading-tight lg:leading-[64px] tracking-tight">
           Find People Who Match Your Social Vibe
         </h1>
-        <p className="w-[380px] font-normal leading-8 tracking-[-0.02em] text-[18px] text-white">
+        <p className="text-white text-base sm:text-lg lg:text-[18px] max-w-full lg:max-w-[380px] leading-relaxed tracking-tight">
           Connect App is a social media app that allows users to connect and
           chat with people around the world daily; based on social preferences
           and at a social distance.
         </p>
         <DownloadSocialApps />
       </div>
-      <div className="relative w-full z-10">
-        <div className="absolute top-5 right-[160px] z-30 animate-down">
+      <div className="relative w-full min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] z-10">
+        <div className="absolute top-5 right-[5%] sm:right-[15%] md:right-[20%] lg:right-[160px] z-30 animate-down">
           <Image
             src={VibeMatchPhone01}
-            alt="Phone"
-            className="h-[646.94px] min-w-[321px]"
+            alt="Phone 01"
+            className="w-[150px] sm:w-[200px] md:w-[250px] lg:w-[321px] h-auto"
+            priority
           />
         </div>
-        <div className="absolute top-[90px] right-[350px] z-20 animate-up">
+
+        <div className="absolute top-[90px] right-[35%] sm:right-[45%] md:right-[50%] lg:right-[350px] z-20 animate-up">
           <Image
             src={VibeMatchPhone02}
-            alt="Phone"
-            className="h-[581px] min-w-[254px]"
+            alt="Phone 02"
+            className="w-[120px] sm:w-[160px] md:w-[200px] lg:w-[254px] h-auto"
+            priority
           />
         </div>
+
         <Image
           src={VibeMatchPhoneBg}
-          alt="Social Vibe Match"
-          className="absolute right-0 top-10 min-w-[836px] h-[660px] object-cover z-0"
+          alt="Social Vibe Match Background"
+          className="absolute right-0 top-10 w-[400px] sm:w-[500px] md:w-[600px] lg:w-[836px] h-auto object-contain z-0"
+          priority
         />
       </div>
 

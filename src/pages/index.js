@@ -27,7 +27,7 @@ export default function Home() {
       </header>
       <main>
         <SocialVibeMatch />
-        <section className="h-full py-32 px-24">
+        <section className="h-full py-16 md:py-32 px-5 md:px-24">
           <ConnectingPeople />
           <GetConnected />
           <HowConnectAppWorks />

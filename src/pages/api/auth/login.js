@@ -19,17 +19,33 @@ export default async function handler(req, res) {
       .json({ message: data.message || 'Authentication failed' });
   }
 
+  if (!data.data.token) {
+    return res.status(500).json({ message: 'Token not provided in response' });
+  }
+
   // ✅ Set HTTP-only cookie
+  //Localhost
   res.setHeader(
     'Set-Cookie',
-    serialize('token', data.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
+    serialize('token', data.data.token, {
       path: '/',
+      httpOnly: true, // optional: true if you don’t need JS access
+      sameSite: 'lax', // important for localhost
+      secure: false, // ✅ must be false on localhost
+      maxAge: 60 * 60 * 24 * 7, // 1 week
     }),
   );
 
-  res.status(200).json({ user: data.user }); // no token in body
+  // res.setHeader(
+  //   'Set-Cookie',
+  //   serialize('token', data.token, {
+  //     httpOnly: true,
+  //     secure: process.env.NODE_ENV === 'production',
+  //     sameSite: 'strict',
+  //     maxAge: 60 * 60 * 24 * 7, // 1 week
+  //     path: '/',
+  //   }),
+  // );
+
+  res.status(200).json({ user: data.data.user });
 }

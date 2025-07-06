@@ -4,7 +4,7 @@ import AuthWrapper from './AuthWrapper';
 import Button from '../Button';
 import TwoFactorCountdownTimer from '../TwoFactorCountdownTimer';
 import { useMutation } from '@tanstack/react-query';
-import { resetUserPassword } from '../Utils/api';
+import { resetUserPassword, verifyEmail } from '../Utils/api';
 import ErrorMsg from '../ErrorMsg';
 
 const TwoFactorAuth = ({ heading, subHeading, email, formData }) => {
@@ -14,12 +14,26 @@ const TwoFactorAuth = ({ heading, subHeading, email, formData }) => {
 
   const {
     mutate: resetPasswordMutation,
-    isPending: isLoadingPassword,
+    isPending,
     error: resetPasswordError,
   } = useMutation({
     mutationFn: resetUserPassword,
     onSuccess: () => {
       window.location.href = '/login';
+    },
+    onError: (err) => {
+      console.error('Password reset failed:', err.message);
+    },
+  });
+
+  const {
+    mutate,
+    isPending: isLoading,
+    error,
+  } = useMutation({
+    mutationFn: verifyEmail,
+    onSuccess: () => {
+      window.location.href = '/connecting';
     },
     onError: (err) => {
       console.error('Password reset failed:', err.message);
@@ -36,7 +50,11 @@ const TwoFactorAuth = ({ heading, subHeading, email, formData }) => {
       };
       resetPasswordMutation(resetPayload);
     } else {
-      window.location.href = '/connecting';
+      const verifyEmailPayload = {
+        email: formData.email,
+        otp: data.pinCode,
+      };
+      mutate(verifyEmailPayload);
     }
   };
 
@@ -79,12 +97,12 @@ const TwoFactorAuth = ({ heading, subHeading, email, formData }) => {
             type="submit"
             btnclass="w-full my-1"
             disabled={!pinCode || pinCode?.length !== 4}
-            isLoading={isLoadingPassword}
+            isLoading={isPending || isLoading}
           />
           <TwoFactorCountdownTimer email={formData.email} />
         </form>
       </FormProvider>
-      <ErrorMsg errorMessage={resetPasswordError?.message} />
+      <ErrorMsg errorMessage={resetPasswordError?.message || error?.message} />
     </AuthWrapper>
   );
 };
