@@ -13,6 +13,9 @@ import { useMutation } from '@tanstack/react-query';
 import ErrorMsg from '../ErrorMsg';
 import { dataURLtoFile } from '../Utils/methods';
 import CountrySelect from '../Input/CountrySelect';
+import { useHandleOtpRoute } from '../Hooks/customHooks';
+import useUserStore from '@/zustandStore/useUserStore';
+import useFormStore from '@/zustandStore/useFormStore';
 
 const SignUpUser = () => {
   const router = useRouter();
@@ -21,6 +24,9 @@ const SignUpUser = () => {
     secondStep: false,
   });
   const methods = useForm();
+  const setFormData = useFormStore((state) => state.setFormData);
+  const { setUser } = useUserStore();
+  const handleOtpRoute = useHandleOtpRoute();
 
   const firstName = methods.watch('first_name');
   const lastName = methods.watch('last_name');
@@ -30,7 +36,8 @@ const SignUpUser = () => {
   const { mutate, isPending, isSuccess, isError, error } = useMutation({
     mutationFn: signUp,
     onSuccess: (data) => {
-      router.push('/login');
+      setUser(data.user);
+      handleOtpRoute({ confirmPassword: false });
     },
     onError: (err) => {
       console.error('Signup failed:', err.message);
@@ -46,6 +53,7 @@ const SignUpUser = () => {
       country_id: 1,
       profile_image: data.identityMedia ? data.identityMedia : '',
     };
+    setFormData(payload);
     mutate(payload);
   };
 

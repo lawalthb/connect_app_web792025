@@ -12,7 +12,7 @@ export const signUp = async (data) => {
   formData.append('country_id', data.country_id);
   formData.append('profile_image', data.profile_image);
 
-  const response = await fetch(`${API_URL}/register`, {
+  const response = await fetch('/api/auth/register', {
     method: 'POST',
     body: formData,
   });

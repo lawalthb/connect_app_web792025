@@ -10,6 +10,7 @@ import { forgotPassword, signIn } from '../Utils/api';
 import ErrorMsg from '../ErrorMsg';
 import useFormStore from '@/zustandStore/useFormStore';
 import useUserStore from '@/zustandStore/useUserStore';
+import { useHandleOtpRoute } from '../Hooks/customHooks';
 
 const LoginUser = () => {
   const router = useRouter();
@@ -21,6 +22,8 @@ const LoginUser = () => {
   const methods = useForm();
   const setFormData = useFormStore((state) => state.setFormData);
   const { setUser } = useUserStore();
+
+  const handleOtpRoute = useHandleOtpRoute();
 
   const handleBackToLogin = () => {
     setIsAuthType({
@@ -57,22 +60,6 @@ const LoginUser = () => {
       console.error('Sign In failed:', err.message);
     },
   });
-
-  const handleOtpRoute = (data) => {
-    const heading = data?.confirmPassword
-      ? 'Reset Password'
-      : 'Confirm your Email';
-    const subHeading = data?.confirmPassword
-      ? 'Input the code to reset your password'
-      : 'Input the code to complete the verification process';
-    router.push({
-      pathname: '/2fa',
-      query: {
-        heading,
-        subHeading,
-      },
-    });
-  };
 
   const onSubmit = (data) => {
     setFormData(data);

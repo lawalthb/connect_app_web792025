@@ -11,7 +11,7 @@ import Loader from '@/components/Loader/Loader';
 
 const Connecting = () => {
   const [activeTab, setActiveTab] = useState('Connecting Feed');
-  // const { user, loading, refreshUser } = useUserStore();
+  const { user, loading, refreshUser } = useUserStore();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['post'],
@@ -19,6 +19,7 @@ const Connecting = () => {
   });
 
   console.log(data, 'data');
+  console.log(user, 'user');
   // console.log(loading, 'loading');
   // useEffect(() => {
   //   refreshUser();

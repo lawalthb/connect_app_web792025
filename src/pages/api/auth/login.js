@@ -29,10 +29,10 @@ export default async function handler(req, res) {
     'Set-Cookie',
     serialize('token', data.data.token, {
       path: '/',
-      httpOnly: true, // optional: true if you don’t need JS access
-      sameSite: 'lax', // important for localhost
-      secure: false, // ✅ must be false on localhost
-      maxAge: 60 * 60 * 24 * 7, // 1 week
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+      maxAge: 60 * 60 * 24 * 7,
     }),
   );
 

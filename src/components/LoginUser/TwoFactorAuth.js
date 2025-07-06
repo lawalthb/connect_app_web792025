@@ -33,7 +33,9 @@ const TwoFactorAuth = ({ heading, subHeading, email, formData }) => {
   } = useMutation({
     mutationFn: verifyEmail,
     onSuccess: () => {
-      window.location.href = '/connecting';
+      formData.profile_image
+        ? (window.location.href = '/settings')
+        : (window.location.href = '/connecting');
     },
     onError: (err) => {
       console.error('Password reset failed:', err.message);
