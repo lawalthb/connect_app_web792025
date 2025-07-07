@@ -30,7 +30,7 @@ const SubscriptionCard = ({
             <p
               className={`font-semibold text-[36px] leading-6 ${isPremium ? 'text-white' : 'text-[#A20030]'}`}
             >
-              {price}
+              ${price}
             </p>
           </div>
           <p className="text-[#5C5C5C] font-semibold text-[18px] leading-6">

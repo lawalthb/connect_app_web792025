@@ -1,10 +1,7 @@
-import { useRouter } from 'next/router';
 import { FiLogOut } from 'react-icons/fi'; // Logout icon from react-icons
 import { useLogout } from './Utils/api';
 
 const Logout = () => {
-  const router = useRouter();
-
   const logout = useLogout();
 
   return (

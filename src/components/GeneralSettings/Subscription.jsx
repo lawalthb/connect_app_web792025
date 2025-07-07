@@ -5,7 +5,7 @@ import UnlimitedIcon from '@/Images/Icons/UnlimitedIcon.svg';
 import BoostIcon from '@/Images/Icons/BoostIcon.svg';
 import { useEffect } from 'react';
 
-const Subscription = () => {
+const Subscription = ({ data }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -45,9 +45,18 @@ const Subscription = () => {
   };
   return (
     <div className="w-[90%] lg:w-[60%] py-20 px-10 rounded-lg mx-auto">
-      {subscriptionData.map((data, index) => {
-        const IconComponent = data.icon;
-        const isPremium = index === 0;
+      {data.map((data, index) => {
+        const IconComponent =
+          data.name === 'Connect Travel'
+            ? TravelIcon
+            : data.name === 'Connect Unlimited'
+              ? UnlimitedIcon
+              : data.name === 'Connect Premium'
+                ? PremiumIcon
+                : data.name === 'Connect Boost'
+                  ? BoostIcon
+                  : null;
+        const isPremium = data.name === 'Connect Premium';
         return (
           <div key={index} className="mb-20">
             <SubscriptionCard

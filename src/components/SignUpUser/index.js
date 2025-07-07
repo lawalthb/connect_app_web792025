@@ -16,6 +16,7 @@ import CountrySelect from '../Input/CountrySelect';
 import { useHandleOtpRoute } from '../Hooks/customHooks';
 import useUserStore from '@/zustandStore/useUserStore';
 import useFormStore from '@/zustandStore/useFormStore';
+import SuccessMsg from '../SuccessMsg';
 
 const SignUpUser = () => {
   const router = useRouter();
@@ -33,11 +34,14 @@ const SignUpUser = () => {
   const email = methods.watch('email');
   const password = methods.watch('password');
 
-  const { mutate, isPending, isSuccess, isError, error } = useMutation({
+  const { mutate, isPending, isSuccess, isError, error, reset } = useMutation({
     mutationFn: signUp,
     onSuccess: (data) => {
       setUser(data.user);
-      handleOtpRoute({ confirmPassword: false });
+      setTimeout(() => {
+        reset();
+        handleOtpRoute({ confirmPassword: false });
+      }, 2000);
     },
     onError: (err) => {
       console.error('Signup failed:', err.message);
@@ -171,6 +175,7 @@ const SignUpUser = () => {
           )}
         </FormProvider>
         <ErrorMsg errorMessage={error?.message} />
+        {isSuccess && <SuccessMsg successMessage="Signed up successfully" />}
       </div>
     </>
   );

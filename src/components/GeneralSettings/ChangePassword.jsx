@@ -2,13 +2,28 @@ import { FormProvider, useForm } from 'react-hook-form';
 import Modal from '../Modal';
 import InputField from '../Input/InputField';
 import Button from '../Button';
+import ErrorMsg from '../ErrorMsg';
+import SuccessMsg from '../SuccessMsg';
+import { useEffect } from 'react';
 
 const ChangePassword = ({
   activeSettings,
   handleBackToHomePage,
   onSubmitNewPassword,
+  isLoading,
+  error,
+  isSuccess,
 }) => {
   const methods = useForm();
+
+  const { reset } = methods;
+
+  useEffect(() => {
+    if (isSuccess) {
+      reset();
+    }
+  }, [isSuccess, reset]);
+
   return (
     <Modal
       isOpen={activeSettings.changepassword}
@@ -26,26 +41,31 @@ const ChangePassword = ({
           <InputField
             label={'Old Password'}
             type="password"
-            name={'old_password'}
+            name={'current_password'}
           />
           <InputField
             label={'New Password'}
             type="password"
-            name={'new_password'}
+            name={'password'}
           />
           <InputField
             label={'Confirm Password'}
             type="password"
-            name={'confirm_password'}
+            name={'password_confirmation'}
           />
 
           <Button
             label="Change Password"
             type="submit"
             btnclass="w-full h-14"
+            isLoading={isLoading}
           />
         </form>
       </FormProvider>
+      <ErrorMsg errorMessage={error?.message} />
+      {isSuccess && (
+        <SuccessMsg successMessage="Password changed successfully" />
+      )}
     </Modal>
   );
 };

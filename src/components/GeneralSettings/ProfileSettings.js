@@ -7,6 +7,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import SelectField from '../Input/SelectField';
 import Button from '../Button';
 import { useState } from 'react';
+import CountrySelect from '../Input/CountrySelect';
 
 const ProfileSettings = () => {
   const [successfullySaved, setSuccessfullySaved] = useState(false);
@@ -53,15 +54,15 @@ const ProfileSettings = () => {
                 <InputField
                   label={'Full Name'}
                   type="text"
-                  name={'full_name'}
+                  name={'name'}
                   required={false}
                 />
-                <InputField
+                {/* <InputField
                   label={'Email Address'}
                   type="email"
                   name={'email'}
                   required={false}
-                />
+                /> */}
               </div>
               <div className="flex gap-10 w-full">
                 <div className="w-1/2">
@@ -88,28 +89,29 @@ const ProfileSettings = () => {
                   <InputField
                     label={'Date of Birth'}
                     type="date"
-                    name={'date'}
+                    name={'birth_date'}
                     required={false}
                   />
                 </div>
               </div>
-              <div className="flex gap-10">
-                <SelectField
-                  label="Country"
-                  name="country"
-                  defaultValue=""
-                  type="country"
-                  required={false}
-                />
-
-                <SelectField
-                  label="State"
-                  name="state"
-                  defaultValue=""
-                  type="region"
-                  country={countrySelected}
-                  required={false}
-                />
+              <div className="flex w-full gap-10">
+                <div className="w-1/2">
+                  <CountrySelect
+                    name="country_id"
+                    label="Country"
+                    required={false}
+                  />
+                </div>
+                <div className="w-1/2">
+                  <SelectField
+                    label="State"
+                    name="state"
+                    defaultValue=""
+                    type="region"
+                    country={countrySelected}
+                    required={false}
+                  />
+                </div>
               </div>
               <InputField
                 label={'Street Address'}

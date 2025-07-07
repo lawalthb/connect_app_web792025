@@ -2,7 +2,7 @@ import Logout from './Logout';
 import SettingsCard from './SettingsCard';
 import SettingsHeader from './SettingsHeader';
 
-const MainSettings = ({ handleSettingsClick }) => {
+const MainSettings = ({ handleSettingsClick, userData }) => {
   const settingsData = [
     {
       name: 'Account Setting',
@@ -40,7 +40,7 @@ const MainSettings = ({ handleSettingsClick }) => {
 
   return (
     <>
-      <SettingsHeader />
+      <SettingsHeader userData={userData} />
       <div className="border border-[#A20030] w-[90%] lg:w-[60%] py-20 px-10 rounded-lg mx-auto mt-20">
         <div className="text-[#5C5C5C]">
           <h3 className="font-semibold text-[18px] leading-6">

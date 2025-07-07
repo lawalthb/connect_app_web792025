@@ -151,6 +151,19 @@ export const getPost = async () => {
   return response.json();
 };
 
+export const getSubscription = async () => {
+  const response = await fetch('/api/getSubscription', {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch Feeds');
+  }
+
+  return response.json();
+};
+
 export const posts = async (data) => {
   const formData = new FormData();
   formData.append('content', data.content);
@@ -170,4 +183,40 @@ export const posts = async (data) => {
   }
 
   return result;
+};
+
+export const changePassword = async (data) => {
+  const response = await fetch('/api/changePassword', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Change password failed');
+  }
+
+  return response.json();
+};
+
+export const deleteAccount = async (data) => {
+  const response = await fetch('/api/deleteAccount', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Delete account failed');
+  }
+
+  return response.json();
 };
