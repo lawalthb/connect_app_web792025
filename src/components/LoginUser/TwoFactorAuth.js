@@ -33,7 +33,7 @@ const TwoFactorAuth = ({ heading, subHeading, email, formData }) => {
   } = useMutation({
     mutationFn: verifyEmail,
     onSuccess: () => {
-      formData.profile_image
+      formData.username
         ? (window.location.href = '/settings')
         : (window.location.href = '/connecting');
     },
