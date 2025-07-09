@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { parse } from 'cookie';
 import useUserStore from '@/zustandStore/useUserStore';
 import { useQuery } from '@tanstack/react-query';
-import { getPost } from '@/components/Utils/api';
+import { getPost, getSocialCircles } from '@/components/Utils/api';
 import Loader from '@/components/Loader/Loader';
 
 const Connecting = () => {
@@ -18,8 +18,16 @@ const Connecting = () => {
     queryFn: getPost,
   });
 
-  console.log(data, 'data');
-  console.log(user, 'user');
+  const {
+    data: socialCircles,
+    isLoading: isLoadingSocialCircles,
+    isError: isSocialCirclesError,
+    error: socialCirclesError,
+  } = useQuery({
+    queryKey: ['socialCircle'],
+    queryFn: getSocialCircles,
+  });
+
   // console.log(loading, 'loading');
   // useEffect(() => {
   //   refreshUser();
@@ -40,11 +48,17 @@ const Connecting = () => {
           activeTab={activeTab}
         />
       </div>
-      {isLoading && <Loader />}
-      <div className="px-1 md:px-20">
-        {activeTab === 'Connect with others' && <ConnectWithOthers />}
-        {activeTab === 'Connecting Feed' && <ConnectionFeed />}
-      </div>
+      {isLoading && isLoadingSocialCircles && <Loader />}
+      {!isLoading && !isLoadingSocialCircles && (
+        <div className="px-1 md:px-20">
+          {activeTab === 'Connect with others' && (
+            <ConnectWithOthers
+              socialCircles={socialCircles?.data?.social_circles}
+            />
+          )}
+          {activeTab === 'Connecting Feed' && <ConnectionFeed />}
+        </div>
+      )}
     </div>
   );
 };

@@ -8,7 +8,7 @@ import { useState } from 'react';
 import ConnectWithOthersDetail from './ConnectWithOthersDetail';
 import ConnectCategiries from './ConnectCategories';
 
-const ConnectWithOthers = () => {
+const ConnectWithOthers = ({ socialCircles }) => {
   const [optionDetail, setOptionDetail] = useState(false);
   const [optionDetailData, setOptionDetailData] = useState(false);
   const connectOptions = [
@@ -38,7 +38,7 @@ const ConnectWithOthers = () => {
         <>
           <h3 className="font-bold text-[40px] text-[#A20030]">Category</h3>
           <ConnectCategiries
-            connectOptions={connectOptions}
+            socialCircles={socialCircles}
             handleButtonClick={handleButtonClick}
           />
         </>

@@ -1,5 +1,6 @@
 import useUserStore from '@/zustandStore/useUserStore';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -46,18 +47,22 @@ export const signIn = async (data) => {
 export const useLogout = () => {
   const { clearUser } = useUserStore();
   const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogout = async () => {
+  const logout = async () => {
+    setIsLoggingOut(true);
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       clearUser();
       router.push('/login');
     } catch (error) {
       console.error('Logout failed:', error);
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
-  return handleLogout;
+  return { logout, isLoggingOut };
 };
 
 export const forgotPassword = async (data) => {

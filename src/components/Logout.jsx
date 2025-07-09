@@ -2,7 +2,7 @@ import { FiLogOut } from 'react-icons/fi'; // Logout icon from react-icons
 import { useLogout } from './Utils/api';
 
 const Logout = () => {
-  const logout = useLogout();
+  const { logout } = useLogout();
 
   return (
     <p

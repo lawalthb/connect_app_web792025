@@ -7,7 +7,7 @@ import { parse } from 'cookie';
 
 const Post = () => {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['users'],
+    queryKey: ['socialCircle'],
     queryFn: getSocialCircles,
   });
 

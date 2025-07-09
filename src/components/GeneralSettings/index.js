@@ -27,9 +27,7 @@ const GeneralSettings = () => {
 
   const { user, loading, refreshUser } = useUserStore();
 
-  console.log(user, 'user');
-
-  const logout = useLogout();
+  const { logout, isLoggingOut } = useLogout();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['subscription'],
@@ -177,6 +175,7 @@ const GeneralSettings = () => {
         handleConfirm={handleLogout}
         confrimLabel={'Logout'}
         icon={() => <LogoutIcon />}
+        isLoading={isLoggingOut}
       />
       <ConfirmationModal
         activeSettings={activeSettings.deleteaccount}

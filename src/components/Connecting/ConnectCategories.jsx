@@ -1,7 +1,8 @@
+import Image from 'next/image';
 import Button from '../Button';
 
 const ConnectCategiries = ({
-  connectOptions,
+  socialCircles,
   handleButtonClick = () => {},
   isProfile = false,
 }) => {
@@ -13,12 +14,12 @@ const ConnectCategiries = ({
         </h3>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
-        {connectOptions.map((options, index) => (
+        {socialCircles?.map((options, index) => (
           <div
-            key={index}
+            key={options.id}
             className="bg-white w-full max-w-[380px] h-[312px] rounded-xl shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1 flex flex-col gap-6 justify-center items-center p-6"
           >
-            {options.icon}
+            <Image width={30} height={50} src={options.icon} />
             <h3 className="text-[#A20030] font-semibold text-lg text-center">
               {options.name}
             </h3>

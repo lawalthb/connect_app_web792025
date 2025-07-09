@@ -69,6 +69,7 @@ const ConfirmationModal = ({
             label={confrimLabel}
             btnclass="w-full h-14"
             onClick={handleConfirm}
+            isLoading={isLoading}
           />
         </div>
       )}
