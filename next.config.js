@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['connect.ogitechconsults.ng'],
+    domains: ['connectapp.myschoolep.com', 'connectapp.ogitechconsults.ng'],
   },
   webpack(config) {
     config.module.rules.push({

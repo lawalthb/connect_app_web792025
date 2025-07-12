@@ -7,7 +7,7 @@ const SettingsHeader = ({ userData }) => {
       <UserAvatar />
       <div className="flex gap-5">
         <h3 className="text-[#5C5C5C] font-semibold text-[18px] leading-6">
-          {userData.name}
+          {userData?.name}
         </h3>
         <MedalIcon />
       </div>

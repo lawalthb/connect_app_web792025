@@ -14,6 +14,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   changePassword,
   deleteAccount,
+  getCountry,
   getSubscription,
   useLogout,
 } from '../Utils/api';
@@ -29,9 +30,14 @@ const GeneralSettings = () => {
 
   const { logout, isLoggingOut } = useLogout();
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['subscription'],
     queryFn: getSubscription,
+  });
+
+  const { data: countryList, isLoading: isLoadingCountry } = useQuery({
+    queryKey: ['country'],
+    queryFn: getCountry,
   });
 
   const {
@@ -117,12 +123,7 @@ const GeneralSettings = () => {
   const onSubmitNewPassword = (data) => {
     changePasswordMutation(data);
   };
-  const onSubmitNewCountry = (data) => {
-    console.log(data);
-  };
-  const onSubmitExternalLinks = (data) => {
-    console.log(data);
-  };
+
   const handleLogout = () => {
     logout();
   };
@@ -130,7 +131,7 @@ const GeneralSettings = () => {
     deleteAccountMutation(data);
   };
 
-  if (isLoading) return <Loader />;
+  if (isLoading && isLoadingCountry) return <Loader />;
 
   return (
     <div className="mt-16 pb-60">
@@ -147,7 +148,7 @@ const GeneralSettings = () => {
       )}
       {activeSettings.notification && <Notifications />}
       {activeSettings.accountsetting && <ProfileSettings />}
-      {activeSettings.subscription && <Subscription data={data.data} />}
+      {activeSettings.subscription && <Subscription data={data?.data} />}
 
       <ChangePassword
         activeSettings={activeSettings}
@@ -160,12 +161,11 @@ const GeneralSettings = () => {
       <ChangeCountry
         activeSettings={activeSettings}
         handleBackToHomePage={handleBackToHomePage}
-        onSubmitNewCountry={onSubmitNewCountry}
+        countryList={countryList?.data?.countries}
       />
       <AddExternalLinks
         activeSettings={activeSettings}
         handleBackToHomePage={handleBackToHomePage}
-        onSubmitNewCountry={onSubmitExternalLinks}
       />
       <ConfirmationModal
         activeSettings={activeSettings.logout}

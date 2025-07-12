@@ -10,6 +10,8 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^3.7.0",
+    "@stripe/stripe-js": "^7.4.0",
     "@tanstack/react-query": "^5.81.5",
     "cookie": "^1.0.2",
     "country-telephone-data": "^0.6.3",

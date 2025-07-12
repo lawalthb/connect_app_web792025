@@ -180,7 +180,6 @@ const InputField = ({
               name={name}
               {...otherProps}
             />
-            {/* Icon component passed as prop */}
             {rightIconComponent &&
               React.cloneElement(rightIconComponent, {
                 className: `absolute right-3 top-[33%] cursor-pointer`,

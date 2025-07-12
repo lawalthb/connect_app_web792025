@@ -27,7 +27,10 @@ const ChangePassword = ({
   return (
     <Modal
       isOpen={activeSettings.changepassword}
-      onClose={handleBackToHomePage}
+      onClose={() => {
+        handleBackToHomePage();
+        reset();
+      }}
       title="Change Password"
       size="max-w-xl"
       showFilterIcon={true}

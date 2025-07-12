@@ -169,6 +169,19 @@ export const getSubscription = async () => {
   return response.json();
 };
 
+export const getCountry = async () => {
+  const response = await fetch('/api/getCountry', {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch Feeds');
+  }
+
+  return response.json();
+};
+
 export const posts = async (data) => {
   const formData = new FormData();
   formData.append('content', data.content);
@@ -221,6 +234,78 @@ export const deleteAccount = async (data) => {
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Delete account failed');
+  }
+
+  return response.json();
+};
+
+export const stripePay = async (data) => {
+  const response = await fetch('/api/stripePayment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Payment failed');
+  }
+
+  return response.json();
+};
+
+export const nombaPay = async (data) => {
+  const response = await fetch('/api/nombaPayment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Payment failed');
+  }
+
+  return response.json();
+};
+
+export const updateProfile = async (data) => {
+  const response = await fetch('/api/updateProfile', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Profile update failed');
+  }
+
+  return response.json();
+};
+
+export const updateSocialCircles = async (data) => {
+  const response = await fetch('/api/updateSocialCircles', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Social Link update failed');
   }
 
   return response.json();

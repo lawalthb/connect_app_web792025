@@ -1,11 +1,14 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import Modal from '../Modal';
-import SelectField from '../Input/SelectField';
 import Button from '../Button';
 import InputField from '../Input/InputField';
 import { socialMediaLogos } from '../Utils/methods';
 import { useState } from 'react';
-import Select from 'react-select';
+import { useMutation } from '@tanstack/react-query';
+import { updateProfile, updateSocialCircles } from '../Utils/api';
+import ErrorMsg from '../ErrorMsg';
+import SuccessMsg from '../SuccessMsg';
+import CustomSelect from '../Input/CustomSelect';
 
 const options = socialMediaLogos.map((item) => ({
   value: item.type,
@@ -13,72 +16,50 @@ const options = socialMediaLogos.map((item) => ({
   logo: item.logo,
 }));
 
-const customStyles = {
-  control: (provided, state) => ({
-    ...provided,
-    width: '100%',
-    minHeight: '56px',
-    borderRadius: '8px',
-    border: '1px solid #ccc',
-    backgroundColor: 'rgba(162,0,48,0.29)',
-    boxShadow: state.isFocused ? '0 0 0 2px rgba(162, 0, 48, 0.3)' : 'none',
-    transition: 'border 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-    '&:hover': {
-      borderColor: '#A20030',
-    },
-  }),
-  option: (provided, state) => ({
-    ...provided,
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    backgroundColor: state.isSelected
-      ? 'rgba(162,0,48,0.2)'
-      : state.isFocused
-        ? 'rgba(162,0,48,0.29)'
-        : 'rgba(162,0,48,0.1)',
-    color: '#0B0D0E',
-    padding: '10px 15px',
-    cursor: 'pointer',
-  }),
-  singleValue: (provided) => ({
-    ...provided,
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-  }),
-  container: (provided) => ({
-    ...provided,
-    width: '100%',
-  }),
-};
-
-const formatOptionLabel = ({ label, logo }) => (
-  <div className="flex items-center gap-2 ">
-    <img src={logo} alt={label} className="w-5 h-5" />
-    <span>{label}</span>
-  </div>
-);
-
-const AddExternalLinks = ({
-  activeSettings,
-  handleBackToHomePage,
-  onSubmitExternalLinks,
-}) => {
+const AddExternalLinks = ({ activeSettings, handleBackToHomePage }) => {
   const methods = useForm();
-  const [selectedPlatform, setSelectedPlatform] = useState('');
+  const { reset } = methods;
+  const [selectedPlatform, setSelectedPlatform] = useState(null);
+
+  const {
+    mutate,
+    isPending,
+    isSuccess,
+    error,
+    reset: restLink,
+  } = useMutation({
+    mutationFn: updateSocialCircles,
+    onSuccess: () => {
+      setTimeout(() => {
+        restLink();
+        reset();
+        setSelectedPlatform(null);
+        handleBackToHomePage();
+      }, 2000);
+    },
+    onError: (err) => {
+      console.error('Social Link update failed:', err.message);
+    },
+  });
 
   const handleChange = (selectedOption) => {
     setSelectedPlatform(selectedOption);
   };
 
-  const selectedLogo = socialMediaLogos.find(
-    (item) => item.type === selectedPlatform,
-  );
+  const onSubmitExternalLinks = (data) => {
+    const payload = {
+      social_links: [{ platform: selectedPlatform.value, url: data.url }],
+    };
+    mutate(payload);
+  };
+
   return (
     <Modal
       isOpen={activeSettings.addexternallinks}
-      onClose={handleBackToHomePage}
+      onClose={() => {
+        handleBackToHomePage();
+        reset();
+      }}
       title="Add External Links"
       size="max-w-xl"
       showFilterIcon={true}
@@ -90,26 +71,43 @@ const AddExternalLinks = ({
           className="space-y-4 mt-10"
         >
           <div className="w-full">
-            <label className="block text-sm font-medium text-gray-600 mb-1">
-              Select Platform
-            </label>
-            <Select
-              options={options}
-              styles={customStyles}
-              formatOptionLabel={formatOptionLabel}
+            <CustomSelect
+              value={selectedPlatform}
               onChange={handleChange}
-              placeholder="Choose platform..."
-              isSearchable
+              options={options}
             />
           </div>
           <InputField
-            label={'Link URL'}
-            type="text"
-            name={'url'}
-            required={false}
+            label="Link URL"
+            type="url"
+            name="url"
+            required
+            extraValidation={{
+              matchesPlatform: (value) => {
+                if (!selectedPlatform) return 'Please select a platform first';
+
+                const platform = selectedPlatform.value
+                  .toLowerCase()
+                  .split(' ')[0];
+                if (!value.toLowerCase().includes(platform)) {
+                  return `The URL must be a valid ${selectedPlatform.value} link`;
+                }
+
+                return true;
+              },
+            }}
           />
-          <Button label="Save" type="submit" btnclass="w-full h-14" />
+          <Button
+            label="Save"
+            type="submit"
+            btnclass="w-full h-14"
+            isLoading={isPending}
+          />
         </form>
+        <ErrorMsg errorMessage={error?.message} />
+        {isSuccess && (
+          <SuccessMsg successMessage="Social link updated successfully" />
+        )}
       </FormProvider>
     </Modal>
   );
