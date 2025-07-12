@@ -88,7 +88,7 @@ const SubscriptionModal = ({ show, onClose, data }) => {
     } else {
       nombaPaymentMutation({
         subscription_id: data.id,
-        amount_ngn: '50',
+        amount_ngn: '100',
       });
     }
   };
