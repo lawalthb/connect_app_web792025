@@ -11,20 +11,6 @@ import ConnectCategiries from './ConnectCategories';
 const ConnectWithOthers = ({ socialCircles }) => {
   const [optionDetail, setOptionDetail] = useState(false);
   const [optionDetailData, setOptionDetailData] = useState(false);
-  const connectOptions = [
-    {
-      name: 'Just Connect!',
-      icon: <JustConnectIcon aria-label="Just Connect Icon" />,
-    },
-    { name: 'Sport', icon: <SportIcon aria-label="Sport Icon" /> },
-    {
-      name: 'Health & Fitness',
-      icon: <HealthAndFitness aria-label="Health & Fitness Icon" />,
-    },
-    { name: 'Business', icon: <BusinessIcon aria-label="Business Icon" /> },
-    { name: 'Fashion', icon: <FashionIcon aria-label="Fashion Icon" /> },
-    { name: 'Gaming', icon: <GamingIcon aria-label="Gaming Icon" /> },
-  ];
 
   const handleButtonClick = (type) => {
     console.log(`Explore clicked for: ${type}`);

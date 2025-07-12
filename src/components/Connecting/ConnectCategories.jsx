@@ -19,7 +19,7 @@ const ConnectCategiries = ({
             key={options.id}
             className="bg-white w-full max-w-[380px] h-[312px] rounded-xl shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1 flex flex-col gap-6 justify-center items-center p-6"
           >
-            <Image width={30} height={50} src={options.icon} />
+            <Image width={80} height={80} src={options.icon} />
             <h3 className="text-[#A20030] font-semibold text-lg text-center">
               {options.name}
             </h3>
