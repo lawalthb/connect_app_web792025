@@ -150,33 +150,38 @@ const SubscriptionModal = ({ show, onClose, data }) => {
         })}
       </div>
       {selectedPaymentOption === 'Stripe' && (
-        <CardElement
-          options={{
-            hidePostalCode: true,
-            style: {
-              base: {
-                fontSize: '16px',
-                color: '#1a1a1a',
-                fontFamily:
-                  'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
-                fontSmoothing: 'antialiased',
-                backgroundColor: '#ffffff',
-                '::placeholder': {
-                  color: '#cbd5e1',
+        <div className="flex flex-col gap-y-1.5 w-full">
+          <label className="text-sm font-medium text-gray-700">
+            Card Details
+          </label>
+          <CardElement
+            options={{
+              hidePostalCode: true,
+              style: {
+                base: {
+                  fontSize: '16px',
+                  color: '#1a1a1a',
+                  fontFamily:
+                    'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
+                  fontSmoothing: 'antialiased',
+                  backgroundColor: '#ffffff',
+                  '::placeholder': {
+                    color: '#cbd5e1',
+                  },
+                  padding: '12px',
                 },
-                padding: '12px',
+                invalid: {
+                  color: '#e53e3e',
+                  iconColor: '#e53e3e',
+                },
+                complete: {
+                  color: '#4B5563',
+                },
               },
-              invalid: {
-                color: '#e53e3e',
-                iconColor: '#e53e3e',
-              },
-              complete: {
-                color: '#4B5563',
-              },
-            },
-          }}
-          className="border border-gray-300 rounded-lg p-3 shadow-sm w-full transition duration-200 focus-within:ring-2 focus-within:ring-[#A20030]"
-        />
+            }}
+            className="border border-blue-500 rounded-lg p-3 shadow-sm w-full transition duration-200 focus-within:ring-2 focus-within:ring-[#A20030]"
+          />
+        </div>
       )}
       <Button
         label={'Proceed'}

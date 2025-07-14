@@ -9,6 +9,10 @@ const MainSettings = ({ handleSettingsClick, userData }) => {
       description: 'Access your account settings',
     },
     {
+      name: 'Profile Image',
+      description: 'Access your profile image',
+    },
+    {
       name: 'Change Password',
       description: 'Access your password settings',
     },

@@ -20,6 +20,7 @@ import {
 } from '../Utils/api';
 import Loader from '../Loader/Loader';
 import useUserStore from '@/zustandStore/useUserStore';
+import ProfileImage from './ProfileImage';
 
 const GeneralSettings = () => {
   const [activeSettings, setActiveSettings] = useState({});
@@ -107,11 +108,6 @@ const GeneralSettings = () => {
       ...newSettings,
       [normalizedKey]: true,
     });
-
-    console.log('Active:', {
-      ...newSettings,
-      [normalizedKey]: true,
-    });
   };
 
   const allInactive = Object.values(activeSettings).every((value) => !value);
@@ -147,8 +143,15 @@ const GeneralSettings = () => {
         />
       )}
       {activeSettings.notification && <Notifications />}
-      {activeSettings.accountsetting && <ProfileSettings />}
+      {activeSettings.accountsetting && (
+        <ProfileSettings countryList={countryList?.data?.countries} />
+      )}
       {activeSettings.subscription && <Subscription data={data?.data} />}
+      <ProfileImage
+        show={activeSettings.profileimage}
+        onClose={handleBackToHomePage}
+        data={data?.data}
+      />
 
       <ChangePassword
         activeSettings={activeSettings}

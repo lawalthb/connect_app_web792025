@@ -310,3 +310,21 @@ export const updateSocialCircles = async (data) => {
 
   return response.json();
 };
+
+export const explore = async (data) => {
+  const response = await fetch('/api/explore', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Explore users failed');
+  }
+
+  return response.json();
+};

@@ -1,21 +1,29 @@
-import JustConnectIcon from '@/Images/Icons/JustConnectIcon.svg';
-import SportIcon from '@/Images/Icons/SportIcon.svg';
-import HealthAndFitness from '@/Images/Icons/HealthAndFitness.svg';
-import BusinessIcon from '@/Images/Icons/BusinessIcon.svg';
-import FashionIcon from '@/Images/Icons/FashionIcon.svg';
-import GamingIcon from '@/Images/Icons/GamingIcon.svg';
 import { useState } from 'react';
 import ConnectWithOthersDetail from './ConnectWithOthersDetail';
 import ConnectCategiries from './ConnectCategories';
+import { useMutation } from '@tanstack/react-query';
+import { explore } from '../Utils/api';
 
 const ConnectWithOthers = ({ socialCircles }) => {
   const [optionDetail, setOptionDetail] = useState(false);
   const [optionDetailData, setOptionDetailData] = useState(false);
+  const [loadingId, setLoadingId] = useState(null);
 
-  const handleButtonClick = (type) => {
-    console.log(`Explore clicked for: ${type}`);
-    setOptionDetail(true);
-    setOptionDetailData(type);
+  const { mutate, isPending, error, reset } = useMutation({
+    mutationFn: explore,
+    onSuccess: (data) => {
+      reset();
+      setOptionDetailData(data);
+      setOptionDetail(true);
+    },
+    onError: (err) => {
+      console.error('Explore users failed:', err.message);
+    },
+  });
+
+  const handleButtonClick = (id) => {
+    setLoadingId(id);
+    mutate({ social_id: [id] });
   };
 
   return (
@@ -26,10 +34,13 @@ const ConnectWithOthers = ({ socialCircles }) => {
           <ConnectCategiries
             socialCircles={socialCircles}
             handleButtonClick={handleButtonClick}
+            isLoading={isPending}
+            loadingId={loadingId}
+            error={error}
           />
         </>
       )}
-      {optionDetail && <ConnectWithOthersDetail />}
+      {optionDetail && <ConnectWithOthersDetail data={optionDetailData} />}
     </div>
   );
 };

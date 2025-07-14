@@ -10,9 +10,11 @@ import BackToPreviousScreen from '../BackToPreviousScreen';
 import { FormProvider, useForm } from 'react-hook-form';
 import InputField from '../Input/InputField';
 
-const ConnectWithOthersDetail = () => {
+const ConnectWithOthersDetail = ({ data }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [profile, setProfile] = useState(false);
+
+  console.log(data, 'data');
 
   const methods = useForm();
   const onSubmit = (data) => {
