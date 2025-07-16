@@ -13,12 +13,12 @@ const ConnectCategiries = ({
   return (
     <div className="my-20">
       {isProfile && (
-        <h3 className="text-black font-medium text-[24px] leading-6">
+        <h3 className="text-black font-medium text-[24px] leading-6 mb-5">
           Social Circles
         </h3>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
-        {socialCircles?.map((options, index) => (
+        {socialCircles?.map((options) => (
           <div
             key={options.id}
             className="bg-white w-full max-w-[380px] h-[312px] rounded-xl shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1 flex flex-col gap-6 justify-center items-center p-6"
@@ -26,7 +26,7 @@ const ConnectCategiries = ({
             <Image
               width={70}
               height={70}
-              src={options.icon}
+              src={options?.icon || options?.logo_url}
               alt="Social circle"
             />
             <h3 className="text-[#A20030] font-semibold text-lg text-center">

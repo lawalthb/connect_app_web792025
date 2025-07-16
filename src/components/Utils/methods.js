@@ -1,6 +1,17 @@
 import { exportToCsv } from './exportToCsv';
 import { exportToExcel } from './exportToExcel';
 import { exportToPdf } from './exportToPdf';
+import { formatDistanceToNow, isFuture, format } from 'date-fns';
+
+export const formatRelativeTime = (dateString = '') => {
+  const date = new Date(dateString);
+
+  if (isFuture(date)) {
+    return `on ${format(date, 'MMMM d, yyyy')}`;
+  }
+
+  return `${formatDistanceToNow(date, { addSuffix: true })}`;
+};
 
 export const handleExport = (format, adsData, columns) => {
   if (format === 'pdf') {

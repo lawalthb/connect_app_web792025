@@ -1,29 +1,29 @@
 import { TbWorldSearch } from 'react-icons/tb';
 import { LiaUserEditSolid } from 'react-icons/lia';
 
-const ProfileDetail = () => {
+const ProfileDetail = ({ userData }) => {
   const data = [
     {
       name: 'Post',
-      input: 52,
+      input: userData?.total_posts,
     },
     {
       name: 'Total Likes',
-      input: 48,
+      input: userData?.total_likes,
     },
     {
       name: 'Connected',
-      input: 29,
+      input: userData?.total_connections,
     },
   ];
 
   return (
     <div className="border border-[#A20030] p-4 rounded-lg bg-white shadow-md my-10">
       <h3 className="text-[#2B2F38] font-semibold text-[36px] leading-8 text-center">
-        Precious Sovan
+        {userData?.name}
       </h3>
       <p className="text-[#667085] text-base font-normal leading-[22px] text-center">
-        @precious
+        {`@${userData?.username}`}
       </p>
       <div className="flex justify-center gap-10 items-center mt-3">
         {data.map((item, index) => (
@@ -46,13 +46,13 @@ const ProfileDetail = () => {
         </h3>
         <div className="flex gap-2 items-center text-[#667085] my-2">
           <TbWorldSearch className="size-5 " />
-          <p className="font-normal text-sm leading-[22px]">Nigeria</p>
+          <p className="font-normal text-sm leading-[22px] capitalize">
+            {userData?.country?.name}
+          </p>
         </div>
         <div className="flex gap-2 items-center text-[#667085]">
           <LiaUserEditSolid className="size-5" />
-          <p className="font-normal text-sm leading-[22px]">
-            I Am cool and calm, I love to connect with people and share ideas.
-          </p>
+          <p className="font-normal text-sm leading-[22px]">{userData?.bio}</p>
         </div>
       </div>
     </div>

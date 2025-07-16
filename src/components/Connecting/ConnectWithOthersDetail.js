@@ -1,6 +1,6 @@
 import Daniella from '@/Images/Daniella.png';
 import FilterModal from '../Modal/FilterModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FilterButton from '../FilterButton';
 import ProfileCourasel from '../ProfileCourasel';
 import Button from '../Button';
@@ -10,15 +10,23 @@ import BackToPreviousScreen from '../BackToPreviousScreen';
 import { FormProvider, useForm } from 'react-hook-form';
 import InputField from '../Input/InputField';
 
-const ConnectWithOthersDetail = ({ data }) => {
+const ConnectWithOthersDetail = ({ profiles, socialId }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [profile, setProfile] = useState(false);
+  const [userData, setUserData] = useState(null);
 
-  console.log(data, 'data');
+  useEffect(() => {
+    const data = profiles[0];
+    handleUserData(data);
+  }, []);
 
   const methods = useForm();
   const onSubmit = (data) => {
     console.log(data);
+  };
+
+  const handleUserData = (data) => {
+    setUserData(data);
   };
 
   const router = useRouter();
@@ -28,11 +36,6 @@ const ConnectWithOthersDetail = ({ data }) => {
     { id: 3, image: Daniella },
     { id: 4, image: Daniella },
     { id: 5, image: Daniella },
-  ];
-  const userCircles = [
-    { id: 1, circle: 'Music' },
-    { id: 2, circle: 'Sport' },
-    { id: 3, circle: 'Business' },
   ];
 
   const handleOptionClick = (identifier) => {
@@ -68,10 +71,11 @@ const ConnectWithOthersDetail = ({ data }) => {
           </div>
 
           <ProfileCourasel
+            profiles={profiles}
             userConnections={userConnections}
-            userCircles={userCircles}
             handleOptionClick={handleOptionClick}
             handleViewProfile={handleViewProfile}
+            socialId={socialId}
           />
 
           {showFilter && (
@@ -115,7 +119,7 @@ const ConnectWithOthersDetail = ({ data }) => {
           <BackToPreviousScreen onBackClick={handleViewProfile} />
         </div>
       )}
-      {profile && <UserProfile />}
+      {profile && <UserProfile userData={userData} />}
     </div>
   );
 };

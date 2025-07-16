@@ -25,7 +25,6 @@ const ConnectWithOthers = ({ socialCircles }) => {
     setLoadingId(id);
     mutate({ social_id: [id] });
   };
-
   return (
     <div className="px-4">
       {!optionDetail && (
@@ -40,7 +39,12 @@ const ConnectWithOthers = ({ socialCircles }) => {
           />
         </>
       )}
-      {optionDetail && <ConnectWithOthersDetail data={optionDetailData} />}
+      {optionDetail && (
+        <ConnectWithOthersDetail
+          profiles={optionDetailData.data}
+          socialId={loadingId}
+        />
+      )}
     </div>
   );
 };

@@ -56,7 +56,9 @@ const Connecting = () => {
               socialCircles={socialCircles?.data?.social_circles}
             />
           )}
-          {activeTab === 'Connecting Feed' && <ConnectionFeed />}
+          {activeTab === 'Connecting Feed' && (
+            <ConnectionFeed data={data?.data} />
+          )}
         </div>
       )}
     </div>

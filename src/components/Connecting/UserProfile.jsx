@@ -16,23 +16,19 @@ import 'swiper/css';
 import 'swiper/css/effect-flip';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { getUser } from '../Utils/api';
+import Loader from '../Loader/Loader';
 
-const UserProfile = () => {
+const UserProfile = ({ userData }) => {
   const [expandImage, setExpandImage] = useState(false);
   const [showMore, setShowMore] = useState(false);
 
-  const connectOptions = [
-    {
-      name: 'Just Connect!',
-      icon: <JustConnectIcon aria-label="Just Connect Icon" />,
-    },
-    { name: 'Sport', icon: <SportIcon aria-label="Sport Icon" /> },
-    {
-      name: 'Health & Fitness',
-      icon: <HealthAndFitness aria-label="Health & Fitness Icon" />,
-    },
-    { name: 'Business', icon: <BusinessIcon aria-label="Business Icon" /> },
-  ];
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['getUser', userData.id],
+    queryFn: () => getUser(userData.id),
+    enabled: !!userData.id,
+  });
 
   const handleExpandImage = () => {
     setExpandImage((prev) => !prev);
@@ -46,6 +42,10 @@ const UserProfile = () => {
     }
     setShowMore((prev) => !prev);
   };
+
+  if (isLoading) return <Loader />;
+
+  const user_data = data?.data[0];
 
   return (
     <div>
@@ -62,10 +62,10 @@ const UserProfile = () => {
           }}
           className="rounded-[30px]"
         >
-          {[Daniella, Daniella, Daniella].map((img, index) => (
+          {user_data.profile_images.map((img, index) => (
             <SwiperSlide key={index}>
               <Image
-                src={img}
+                src={img.file_url}
                 alt={`Profile Image ${index + 1}`}
                 width={805}
                 height={783}
@@ -86,10 +86,14 @@ const UserProfile = () => {
           }
         `}</style> */}
       </div>
-      <ProfileDetail />
-      <ConnectCategiries connectOptions={connectOptions} isProfile={true} />
+      <ProfileDetail userData={user_data} />
+      <ConnectCategiries
+        socialCircles={user_data?.social_circles}
+        isProfile={true}
+      />
       <ConnectStory extraStyle="text-[24px]" />
       <Feeds
+        feed={user_data}
         handleExpandImage={handleExpandImage}
         handleShowMore={handleShowMore}
         showMore={showMore}

@@ -1,20 +1,23 @@
 import Image from 'next/image';
 import NigerieFlag from '@/Images/NigerieFlag.png';
 import Button from '../Button';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const ProfileCard = ({
   profile,
   userConnections,
   handleOptionClick,
-  userCircles,
   handleViewProfile,
 }) => {
   const [isImageClicked, setIsImageClicked] = useState(false);
+  const [showCircles, setShowCircles] = useState(false);
 
   const handleImageClick = () => {
-    console.log('Image clicked');
     setIsImageClicked((prev) => !prev);
+  };
+  const handleShowCircles = (e) => {
+    e.stopPropagation();
+    setShowCircles((prev) => !prev);
   };
   return (
     <div
@@ -23,7 +26,7 @@ const ProfileCard = ({
     >
       <div className="relative w-full rounded-[30px] overflow-hidden">
         <Image
-          src={profile.image}
+          src={profile.avatar}
           alt={profile.name}
           width={805}
           height={783}
@@ -35,7 +38,7 @@ const ProfileCard = ({
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" />
 
             <div className="absolute inset-0 z-20 flex flex-col justify-end px-4 sm:px-10 pb-10 text-white">
-              <div className="max-w-[387px]">
+              <div className="max-w-[387px] lg:max-w-full">
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-[24px] md:text-[30px]">
                     {profile.name}
@@ -48,10 +51,10 @@ const ProfileCard = ({
                   />
                 </div>
                 <p className="font-normal text-[20px] md:text-[24px] mt-1">
-                  {profile.profession}
+                  {profile.occupation}
                 </p>
                 <p className="font-bold text-[16px] md:text-[20px] mt-1">
-                  {`Connected: ${profile.connections}`}
+                  {`Connected: ${profile.total_connections}`}
                 </p>
 
                 <div className="flex gap-2 sm:gap-4 mb-8 lg:mb-4 mt-4 items-center justify-start flex-wrap">
@@ -72,16 +75,18 @@ const ProfileCard = ({
                   ))}
                 </div>
 
-                <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 items-center justify-start">
-                  {userCircles.map((option, index) => (
-                    <div
-                      key={index}
-                      className="bg-[#A20030] text-white rounded-[50px] px-4 sm:px-5 py-1.5 sm:py-2 shadow-md text-sm sm:text-base leading-6 font-medium whitespace-nowrap"
-                    >
-                      {`#${option.circle}`}
-                    </div>
-                  ))}
-                </div>
+                {showCircles && (
+                  <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 items-center justify-start">
+                    {profile.social_circles.map((option, index) => (
+                      <div
+                        key={option.id}
+                        className="bg-[#A20030] text-white rounded-[50px] px-4 sm:px-5 py-1.5 sm:py-2 shadow-md text-sm sm:text-base leading-6 font-medium whitespace-nowrap"
+                      >
+                        {`#${option.name}`}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="mt-4 flex gap-x-4 max-w-[650px]">
@@ -90,6 +95,7 @@ const ProfileCard = ({
                   variant="outlined"
                   btnclass="w-full h-10 bg-white whitespace-nowrap sm:px-16"
                   btnstyle="rounded"
+                  onClick={handleShowCircles}
                 />
                 <Button
                   label="View Profile"

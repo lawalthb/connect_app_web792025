@@ -7,34 +7,61 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 import ProfileCard from './Connecting/ProfileCard';
-import Daniella from '@/Images/Daniella.png';
+import { useRef, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { swipeCount } from './Utils/api';
+import { useRouter } from 'next/router';
 
 const ProfileCourasel = ({
   userConnections,
   handleOptionClick,
-  userCircles,
   handleViewProfile,
+  profiles,
+  socialId,
 }) => {
-  const profiles = [
-    {
-      name: 'Daniella Rosell',
-      profession: 'Model',
-      connections: 5,
-      image: Daniella.src,
+  const router = useRouter();
+  const [previousIndex, setPreviousIndex] = useState(0);
+  const swiperRef = useRef(null);
+
+  const { mutate } = useMutation({
+    mutationFn: swipeCount,
+    onSuccess: (data) => {
+      handleSwipeCount(data.data.swipe_stats);
     },
-    {
-      name: 'Chioma Okeke',
-      profession: 'Singer',
-      connections: 7,
-      image: Daniella.src,
+    onError: (err) => {
+      console.error('Swipe failed:', err.message);
     },
-    {
-      name: 'Emmanuel Johnson',
-      profession: 'Photographer',
-      connections: 90,
-      image: Daniella.src,
-    },
-  ];
+  });
+
+  const handleSwipeCount = (swipeStats) => {
+    // if (13 === swipeStats.total_swipes) {
+    //   router.push('/settings?active=subscription');
+    // }
+    if (swipeStats.daily_limit === swipeStats.total_swipes) {
+      router.push('/settings?active=subscription');
+    }
+  };
+
+  const handleSlideChange = (swiper) => {
+    const currentIndex = swiper.realIndex;
+    let request_type;
+    if (currentIndex > previousIndex) {
+      request_type = 'right_swipe';
+    } else if (currentIndex < previousIndex) {
+      request_type = 'left_swipe';
+    }
+    if (request_type && profiles[currentIndex]) {
+      const selectedProfile = profiles[currentIndex];
+      const payload = {
+        user_id: selectedProfile.id,
+        social_id: socialId,
+        request_type,
+        message: "Hi! I'd love to connect with you.",
+      };
+      mutate(payload);
+    }
+    setPreviousIndex(currentIndex);
+  };
 
   return (
     <div className="w-full max-w-[805px] mx-auto">
@@ -51,6 +78,11 @@ const ProfileCourasel = ({
         navigation
         pagination={{ clickable: true }}
         className="rounded-[30px]"
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper;
+          setPreviousIndex(swiper.realIndex);
+        }}
+        onSlideChange={handleSlideChange}
       >
         {profiles.map((profile, index) => (
           <SwiperSlide
@@ -61,7 +93,6 @@ const ProfileCourasel = ({
               profile={profile}
               userConnections={userConnections}
               handleOptionClick={handleOptionClick}
-              userCircles={userCircles}
               handleViewProfile={handleViewProfile}
             />
           </SwiperSlide>
