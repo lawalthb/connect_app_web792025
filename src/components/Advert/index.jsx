@@ -5,6 +5,9 @@ import CreateAdvert from './CreateAdvert';
 import Preview from './Preveiw';
 import ConfirmAd from './ConfirmAd';
 import AdvertListings from './AdvertListings';
+import { getCountry, getSocialCircles } from '../Utils/api';
+import Loader from '../Loader/Loader';
+import { useQuery } from '@tanstack/react-query';
 
 const Advert = () => {
   const [createAd, setCreateAd] = useState(false);
@@ -13,11 +16,25 @@ const Advert = () => {
   const [previewData, setPreviewData] = useState(null);
   const [confirmAd, setConfirmAd] = useState(null);
 
+  const { data: countryList, isLoading: isLoadingCountry } = useQuery({
+    queryKey: ['country'],
+    queryFn: getCountry,
+  });
+
+  const {
+    data: socialCircles,
+    isLoading: isLoadingSocialCircles,
+    isError: isSocialCirclesError,
+    error: socialCirclesError,
+  } = useQuery({
+    queryKey: ['socialCircle'],
+    queryFn: getSocialCircles,
+  });
+
   const handleCreateAd = () => {
     setCreateAd((prev) => !prev);
   };
   const handleConfirmAd = () => {
-    console.log('Confirm Ad');
     setConfirmAd((prev) => !prev);
   };
   const handleBackToPerformance = () => {
@@ -29,20 +46,20 @@ const Advert = () => {
       setPerformanceTable(false);
     }
   };
-  const onSubmit = (data) => {
-    console.log(data);
-    handleConfirmAd();
-  };
+
   const handlePreviewAd = (data) => {
+    console.log('Preview Ad:', data);
     setPreviewData(data);
     setCreateAd(false);
     setPreviewAd(true);
   };
 
-  const handlePerformanceData = (id) => {
-    console.log('Performance data clicked:', id);
+  const handlePerformanceData = () => {
     setPerformanceTable((prev) => !prev);
+    setCreateAd(false);
   };
+
+  if (isLoadingCountry && isLoadingSocialCircles) return <Loader />;
 
   return (
     <div className="mx-7 lg:mx-28 my-16">
@@ -64,17 +81,28 @@ const Advert = () => {
         />
       )}
       {createAd && (
-        <CreateAdvert onSubmit={onSubmit} handlePreviewAd={handlePreviewAd} />
+        <CreateAdvert
+          handleConfirmAd={handleConfirmAd}
+          handlePreviewAd={handlePreviewAd}
+          countryList={countryList?.data?.countries}
+          socialCircles={socialCircles?.data?.social_circles}
+        />
       )}
       {confirmAd && (
         <ConfirmAd
           isOpen={confirmAd}
-          onClose={handleConfirmAd}
+          onClose={() => {
+            handleConfirmAd();
+            handlePerformanceData();
+          }}
           title={'Advert Under Review'}
           description={
             'Your ad will be reviewed by our admin for successful posting'
           }
-          handleConfirm={handleConfirmAd}
+          handleConfirm={() => {
+            handleConfirmAd();
+            handlePerformanceData();
+          }}
         />
       )}
       <div className="-mx-10">{performanceTable && <AdvertListings />}</div>

@@ -12,6 +12,18 @@ const Preview = ({ data, handleBackToPerformance, handleConfirmAd }) => {
       input: data.target_audience,
     },
     {
+      name: 'Description',
+      input: data.description,
+    },
+    {
+      name: 'Budget',
+      input: data.budget,
+    },
+    {
+      name: 'Daily Budget',
+      input: data.daily_budget,
+    },
+    {
       name: 'Start Date',
       input: data.start_date,
     },

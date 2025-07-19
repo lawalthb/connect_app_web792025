@@ -203,6 +203,47 @@ export const posts = async (data) => {
   return result;
 };
 
+export const postAdvert = async (data) => {
+  const formData = new FormData();
+
+  formData.append('ad_name', data.ad_name ?? '');
+  formData.append('type', data.type ?? '');
+  formData.append('description', data.description ?? '');
+  formData.append('budget', data.budget ?? '');
+  formData.append('daily_budget', data.daily_budget ?? '');
+  formData.append('start_date', data.start_date ?? '');
+  formData.append('end_date', data.end_date ?? '');
+  formData.append('media_files[]', data['media_files[]'] ?? '');
+  formData.append('target_countries[0]', data['target_countries[0]'] ?? '');
+
+  formData.append(
+    'target_social_circles[0]',
+    data['target_social_circles[0]'] ?? '',
+  );
+  formData.append(
+    'target_social_circles[1]',
+    data['target_social_circles[1]'] ?? '',
+  );
+  formData.append(
+    'target_social_circles[2]',
+    data['target_social_circles[2]'] ?? '',
+  );
+
+  const response = await fetch('/api/postAdvert', {
+    method: 'POST',
+    body: formData,
+    credentials: 'include',
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw result;
+  }
+
+  return result;
+};
+
 export const changePassword = async (data) => {
   const response = await fetch('/api/changePassword', {
     method: 'POST',
@@ -359,6 +400,26 @@ export const getUser = async (id) => {
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Fetch user failed');
+  }
+
+  return response.json();
+};
+
+export const getUgetAdvertsListingsser = async (perPage, page) => {
+  const response = await fetch(
+    `/api/getAdvertsListings?per_page=${perPage}&page=${page}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    },
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Fetch advert listings failed');
   }
 
   return response.json();

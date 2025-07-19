@@ -7,6 +7,7 @@ const nextConfig = {
       'connectapp.ogitechconsults.ng',
       'avatar.iran.liara.run',
       'connect.udemics.com',
+      'flagcdn.com',
     ],
   },
   webpack(config) {

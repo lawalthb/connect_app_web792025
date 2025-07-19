@@ -120,7 +120,7 @@ const Table = ({
                           )}
                         </div>
                       ) : (
-                        ad[col.key]
+                        <span className="capitalize">{ad[col.key]}</span>
                       )}
                     </td>
                   ))}

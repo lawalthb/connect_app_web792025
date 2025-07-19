@@ -12,7 +12,7 @@ const StatusBadge = ({ status }) => {
 
   return (
     <span
-      className={`px-3 py-1 text-sm rounded-full font-medium whitespace-nowrap ${badgeStyle}`}
+      className={`px-3 py-1 text-sm rounded-full font-medium whitespace-nowrap capitalize ${badgeStyle}`}
     >
       {status}
     </span>

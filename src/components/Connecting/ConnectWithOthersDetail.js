@@ -30,17 +30,7 @@ const ConnectWithOthersDetail = ({ profiles, socialId }) => {
   };
 
   const router = useRouter();
-  const userConnections = [
-    { id: 1, image: Daniella },
-    { id: 2, image: Daniella },
-    { id: 3, image: Daniella },
-    { id: 4, image: Daniella },
-    { id: 5, image: Daniella },
-  ];
 
-  const handleOptionClick = (identifier) => {
-    console.log(identifier);
-  };
   const handleFilter = () => {
     setShowFilter((prev) => !prev);
   };
@@ -72,8 +62,6 @@ const ConnectWithOthersDetail = ({ profiles, socialId }) => {
 
           <ProfileCourasel
             profiles={profiles}
-            userConnections={userConnections}
-            handleOptionClick={handleOptionClick}
             handleViewProfile={handleViewProfile}
             socialId={socialId}
           />

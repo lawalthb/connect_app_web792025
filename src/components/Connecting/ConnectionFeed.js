@@ -12,8 +12,6 @@ const ConnectionFeed = ({ data }) => {
   const [expandImage, setExpandImage] = useState(false);
   const [url, setUrl] = useState('');
 
-  console.log(data, 'data');
-
   const handleShowMore = (identifier) => {
     if (identifier === 'post') {
       console.log(identifier);
@@ -44,7 +42,7 @@ const ConnectionFeed = ({ data }) => {
         <div className="w-full lg:w-[562px] mx-auto my-20">
           <ConnectStory />
           <div>
-            {data.data.map((feed) => {
+            {data?.data.map((feed) => {
               return (
                 <div key={feed.id}>
                   <Feeds

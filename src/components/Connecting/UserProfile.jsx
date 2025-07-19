@@ -87,10 +87,12 @@ const UserProfile = ({ userData }) => {
         `}</style> */}
       </div>
       <ProfileDetail userData={user_data} />
-      <ConnectCategiries
-        socialCircles={user_data?.social_circles}
-        isProfile={true}
-      />
+      <div className="max-h-400px overflow-y-scroll scrollbar-hide">
+        <ConnectCategiries
+          socialCircles={user_data?.social_circles}
+          isProfile={true}
+        />
+      </div>
       <ConnectStory extraStyle="text-[24px]" />
       <Feeds
         feed={user_data}

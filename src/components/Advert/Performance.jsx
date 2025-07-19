@@ -54,19 +54,26 @@ const Performance = ({ handleCreateAd, handlePerformanceData }) => {
 
   return (
     <>
-      <Button
-        label="Create Ad"
-        btnclass="w-full h-14 max-w-[204px] ml-auto"
-        onClick={handleCreateAd}
-      />
+      <div className="flex gap-x-4">
+        <Button
+          label="Create Ad"
+          btnclass="w-full h-14 max-w-[204px] ml-auto"
+          onClick={handleCreateAd}
+        />
+        <Button
+          label="Listings"
+          variant="outlined"
+          btnclass="w-full h-14 max-w-[204px]"
+          onClick={handlePerformanceData}
+        />
+      </div>
 
       <div className="overflow-x-auto mt-6">
         <div className="flex gap-4 min-w-max grid-cols-5">
           {performanceData.map((data, index) => (
             <div
-              onClick={() => handlePerformanceData(data.name)}
               key={index}
-              className="flex justify-between cursor-pointer bg-[#A200301C] rounded-[16px] w-[227px] text-[#2E2E2E] p-6 shrink-0"
+              className="flex justify-between bg-[#A200301C] rounded-[16px] w-[227px] text-[#2E2E2E] p-6 shrink-0"
             >
               <div>
                 <p className="font-normal text-[12px] leading-6 w-max">

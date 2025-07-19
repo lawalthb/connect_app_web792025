@@ -8,14 +8,17 @@ import InputField from '../Input/InputField';
 import Button from '../Button';
 import RadioGroup from '../Input/RadioGroup';
 import ConfirmAd from './ConfirmAd';
+import { useQuery } from '@tanstack/react-query';
+import { getUgetAdvertsListingsser } from '../Utils/api';
+import Loader from '../Loader/Loader';
 
 const columns = [
-  { key: 'name', label: 'Ad Name' },
+  { key: 'ad_name', label: 'Ad Name' },
   { key: 'type', label: 'Type' },
-  { key: 'startDate', label: 'Start Date' },
-  { key: 'endDate', label: 'End Date' },
-  { key: 'target', label: 'Target' },
-  { key: 'progress', label: 'Progress' },
+  { key: 'start_date', label: 'Start Date' },
+  { key: 'end_date', label: 'End Date' },
+  { key: 'target_impressions', label: 'Target' },
+  { key: 'progress_percentage', label: 'Progress' },
   { key: 'clicks', label: 'Clicks' },
   { key: 'status', label: 'Status' },
   { key: 'action', label: 'Action' },
@@ -139,6 +142,14 @@ const AdvertListings = () => {
 
   const [confirmAd, setConfirmAd] = useState(null);
   const [confirmData, setConfirmData] = useState('');
+  const [perPage, setPerPage] = useState(10);
+  const [page, setPage] = useState(1);
+
+  const { data = [], isLoading } = useQuery({
+    queryKey: ['AdvertListings'],
+    queryFn: () => getUgetAdvertsListingsser(perPage, page),
+    enabled: !!perPage || !!page,
+  });
 
   const methods = useForm({
     defaultValues: {
@@ -161,10 +172,12 @@ const AdvertListings = () => {
     setConfirmAd((prev) => !prev);
   };
 
+  if (isLoading) return <Loader />;
+
   return (
     <>
       <Table
-        adsData={adsData}
+        adsData={data?.data?.ads}
         columns={columns}
         handleClick={handleClick}
         actionOptions={[

@@ -3,12 +3,7 @@ import NigerieFlag from '@/Images/NigerieFlag.png';
 import Button from '../Button';
 import React, { useState } from 'react';
 
-const ProfileCard = ({
-  profile,
-  userConnections,
-  handleOptionClick,
-  handleViewProfile,
-}) => {
+const ProfileCard = ({ profile, handleViewProfile }) => {
   const [isImageClicked, setIsImageClicked] = useState(false);
   const [showCircles, setShowCircles] = useState(false);
 
@@ -44,7 +39,7 @@ const ProfileCard = ({
                     {profile.name}
                   </h3>
                   <Image
-                    src={NigerieFlag}
+                    src={profile?.country_details?.flag}
                     alt="Country"
                     width={20}
                     height={10}
@@ -58,25 +53,26 @@ const ProfileCard = ({
                 </p>
 
                 <div className="flex gap-2 sm:gap-4 mb-8 lg:mb-4 mt-4 items-center justify-start flex-wrap">
-                  {userConnections.map((option, index) => (
-                    <div
-                      key={index}
-                      onClick={() => handleOptionClick(option.id)}
-                      className="max-h-[40px] lg:max-h-[60px]"
-                    >
-                      <Image
-                        src={option.image}
-                        alt="User"
-                        width={60}
-                        height={60}
-                        className="cursor-pointer rounded-full object-cover aspect-square"
-                      />
-                    </div>
-                  ))}
+                  {profile?.profile_images?.map((option) => {
+                    return (
+                      <div
+                        key={option?.id}
+                        className="max-h-[40px] lg:max-h-[60px]"
+                      >
+                        <Image
+                          src={option?.file_url + option?.file_name}
+                          alt={option?.alt_text || 'User'}
+                          width={60}
+                          height={60}
+                          className="cursor-pointer rounded-full object-cover aspect-square"
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {showCircles && (
-                  <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 items-center justify-start">
+                  <div className="flex overflow-x-scroll scrollbar-hidden gap-2 sm:gap-4 mt-2 items-center justify-start">
                     {profile.social_circles.map((option, index) => (
                       <div
                         key={option.id}

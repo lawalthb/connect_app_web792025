@@ -12,13 +12,7 @@ import { useMutation } from '@tanstack/react-query';
 import { swipeCount } from './Utils/api';
 import { useRouter } from 'next/router';
 
-const ProfileCourasel = ({
-  userConnections,
-  handleOptionClick,
-  handleViewProfile,
-  profiles,
-  socialId,
-}) => {
+const ProfileCourasel = ({ handleViewProfile, profiles, socialId }) => {
   const router = useRouter();
   const [previousIndex, setPreviousIndex] = useState(0);
   const swiperRef = useRef(null);
@@ -34,9 +28,6 @@ const ProfileCourasel = ({
   });
 
   const handleSwipeCount = (swipeStats) => {
-    // if (13 === swipeStats.total_swipes) {
-    //   router.push('/settings?active=subscription');
-    // }
     if (swipeStats.daily_limit === swipeStats.total_swipes) {
       router.push('/settings?active=subscription');
     }
@@ -91,8 +82,6 @@ const ProfileCourasel = ({
           >
             <ProfileCard
               profile={profile}
-              userConnections={userConnections}
-              handleOptionClick={handleOptionClick}
               handleViewProfile={handleViewProfile}
             />
           </SwiperSlide>
