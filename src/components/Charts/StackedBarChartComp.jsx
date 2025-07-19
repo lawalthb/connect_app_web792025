@@ -22,7 +22,7 @@ const StackedBarChartComp = ({
         <h2 className="text-sm leading-6 font-semibold text-[#101928] mb-4">
           {title}
         </h2>
-        <div className="w-[125px]">
+        {/* <div className="w-[125px]">
           <SelectField
             name="platform"
             defaultValue=""
@@ -44,7 +44,7 @@ const StackedBarChartComp = ({
               </option>
             ))}
           </SelectField>
-        </div>
+        </div> */}
       </div>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart

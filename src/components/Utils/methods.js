@@ -136,3 +136,5 @@ export const socialMediaLogos = [
     logo: 'https://img.icons8.com/external-tal-revivo-bold-tal-revivo/50/external-signal-the-most-scalable-encryption-tool-layout-logo-bold-tal-revivo.png',
   },
 ];
+
+export const getCurrentYear = () => new Date().getFullYear();

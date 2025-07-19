@@ -71,7 +71,7 @@ const Table = ({
           <table className="min-w-full text-sm text-left">
             <thead className="bg-gray-100 text-gray-600 sticky top-0 z-10">
               <tr>
-                {columns.map((col) => (
+                {columns?.map((col) => (
                   <th
                     key={col.key}
                     className="px-6 py-3 font-medium whitespace-nowrap"
@@ -82,7 +82,7 @@ const Table = ({
               </tr>
             </thead>
             <tbody className="text-gray-700">
-              {adsData.map((ad) => (
+              {adsData?.map((ad) => (
                 <tr key={ad.id} className="border-t hover:bg-gray-50">
                   {columns.map((col) => (
                     <td

@@ -15,7 +15,8 @@ import SelectField from '../Input/SelectField';
 const LineChartComp = ({
   data,
   title = 'Performance Overview',
-  chartLabel = 'value',
+  chartLabel = 'impressions',
+  analyticsAvailableYear,
 }) => {
   return (
     <div className="w-full bg-white rounded-2xl shadow-lg p-6">
@@ -27,17 +28,19 @@ const LineChartComp = ({
         </div>
         <div className="w-[125px]">
           <SelectField
-            name="platform"
+            name="year"
             defaultValue=""
             required={false}
             bgStyle={false}
           >
-            <option value="">Yearly</option>
-            {['2024', '2025'].map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
+            {analyticsAvailableYear?.map((year) => {
+              year;
+              return (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              );
+            })}
           </SelectField>
         </div>
       </div>
@@ -47,7 +50,7 @@ const LineChartComp = ({
           margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
         >
           <CartesianGrid stroke="#f1f5f9" />
-          <XAxis dataKey="date" tick={{ fontSize: 12 }} stroke="#00000099" />
+          <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="#00000099" />
           <YAxis
             tickFormatter={formatYAxis}
             tick={{ fontSize: 12 }}
@@ -60,7 +63,7 @@ const LineChartComp = ({
           />
           <Line
             type="monotone"
-            dataKey="value"
+            dataKey="impressions"
             stroke="#A20030"
             strokeWidth={3}
             dot={{ r: 4 }}

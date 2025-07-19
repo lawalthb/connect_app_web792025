@@ -1,9 +1,8 @@
 import Image from 'next/image';
-import NigerieFlag from '@/Images/NigerieFlag.png';
 import Button from '../Button';
 import React, { useState } from 'react';
 
-const ProfileCard = ({ profile, handleViewProfile }) => {
+const ProfileCard = ({ profile, handleViewProfile, swipeDirection }) => {
   const [isImageClicked, setIsImageClicked] = useState(false);
   const [showCircles, setShowCircles] = useState(false);
 
@@ -20,6 +19,18 @@ const ProfileCard = ({ profile, handleViewProfile }) => {
       className="rounded-[30px] mt-10 w-full mx-auto px-2 sm:px-4 shadow-md transition-shadow duration-300 hover:shadow-lg"
     >
       <div className="relative w-full rounded-[30px] overflow-hidden">
+        {swipeDirection === 'right' && (
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-green-600 text-white px-4 py-2 rounded-xl text-lg font-semibold shadow-lg transition duration-300 ease-out opacity-100 scale-100">
+            Accepted
+          </div>
+        )}
+
+        {swipeDirection === 'left' && (
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-red-600 text-white px-4 py-2 rounded-xl text-lg font-semibold shadow-lg transition duration-300 ease-out opacity-100 scale-100">
+            Rejected
+          </div>
+        )}
+
         <Image
           src={profile.avatar}
           alt={profile.name}

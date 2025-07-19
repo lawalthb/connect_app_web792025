@@ -1,9 +1,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectFlip, Autoplay, Navigation } from 'swiper/modules';
+import { Navigation, A11y } from 'swiper/modules';
 
 import 'swiper/css';
-import 'swiper/css/effect-flip';
-import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 import ProfileCard from './Connecting/ProfileCard';
@@ -15,6 +13,8 @@ import { useRouter } from 'next/router';
 const ProfileCourasel = ({ handleViewProfile, profiles, socialId }) => {
   const router = useRouter();
   const [previousIndex, setPreviousIndex] = useState(0);
+  const [swipeDirection, setSwipeDirection] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef(null);
 
   const { mutate } = useMutation({
@@ -35,39 +35,44 @@ const ProfileCourasel = ({ handleViewProfile, profiles, socialId }) => {
 
   const handleSlideChange = (swiper) => {
     const currentIndex = swiper.realIndex;
-    let request_type;
+    let direction = null;
+
     if (currentIndex > previousIndex) {
-      request_type = 'right_swipe';
+      direction = 'right';
     } else if (currentIndex < previousIndex) {
-      request_type = 'left_swipe';
+      direction = 'left';
     }
-    if (request_type && profiles[currentIndex]) {
+
+    if (direction) {
+      setSwipeDirection(direction);
+      setTimeout(() => setSwipeDirection(null), 1500);
+    }
+
+    setPreviousIndex(currentIndex);
+    setActiveIndex(currentIndex);
+
+    if (direction && profiles[currentIndex]) {
       const selectedProfile = profiles[currentIndex];
       const payload = {
         user_id: selectedProfile.id,
         social_id: socialId,
-        request_type,
+        request_type: direction === 'right' ? 'right_swipe' : 'left_swipe',
         message: "Hi! I'd love to connect with you.",
       };
       mutate(payload);
     }
-    setPreviousIndex(currentIndex);
   };
 
   return (
     <div className="w-full max-w-[805px] mx-auto">
       <Swiper
         style={{ '--swiper-navigation-color': '#A20030' }}
-        modules={[EffectFlip, Autoplay, Navigation]}
-        effect="flip"
-        grabCursor={true}
-        loop={true}
-        // autoplay={{
-        //   delay: 3000,
-        //   disableOnInteraction: false,
-        // }}
+        modules={[Navigation, A11y]}
+        spaceBetween={30}
+        slidesPerView={1}
         navigation
-        pagination={{ clickable: true }}
+        loop={true}
+        grabCursor={true}
         className="rounded-[30px]"
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
@@ -83,6 +88,7 @@ const ProfileCourasel = ({ handleViewProfile, profiles, socialId }) => {
             <ProfileCard
               profile={profile}
               handleViewProfile={handleViewProfile}
+              swipeDirection={activeIndex === index ? swipeDirection : null}
             />
           </SwiperSlide>
         ))}

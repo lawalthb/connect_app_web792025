@@ -182,6 +182,19 @@ export const getCountry = async () => {
   return response.json();
 };
 
+export const getAdvertDashboardData = async () => {
+  const response = await fetch('/api/getAdvertDashboardData', {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch Feeds');
+  }
+
+  return response.json();
+};
+
 export const posts = async (data) => {
   const formData = new FormData();
   formData.append('content', data.content);
@@ -405,7 +418,7 @@ export const getUser = async (id) => {
   return response.json();
 };
 
-export const getUgetAdvertsListingsser = async (perPage, page) => {
+export const getUgetAdvertsListings = async (perPage, page) => {
   const response = await fetch(
     `/api/getAdvertsListings?per_page=${perPage}&page=${page}`,
     {
@@ -420,6 +433,40 @@ export const getUgetAdvertsListingsser = async (perPage, page) => {
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Fetch advert listings failed');
+  }
+
+  return response.json();
+};
+
+export const getImpressions = async (year) => {
+  const response = await fetch(`/api/getImpressions?year=${year}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Fetch impressions failed');
+  }
+
+  return response.json();
+};
+
+export const getAnalyticsAvailableYear = async (year) => {
+  const response = await fetch(`/api/getAnalyticsAvailableYear`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Fetch analytics failed');
   }
 
   return response.json();
