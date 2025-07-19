@@ -34,7 +34,6 @@ const LineChartComp = ({
             bgStyle={false}
           >
             {analyticsAvailableYear?.map((year) => {
-              year;
               return (
                 <option key={year} value={year}>
                   {year}

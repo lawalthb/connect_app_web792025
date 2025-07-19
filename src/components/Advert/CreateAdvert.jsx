@@ -56,7 +56,7 @@ const CreateAdvert = ({
     const { identityMedia, shedule, acknowledge, ad_copy, ...rest } = data;
     const payload = {
       ...rest,
-      type: 'banner',
+      type: data.type.toLowerCase(),
       'target_social_circles[0]': selectedOptions[0]?.id ?? '',
       'target_social_circles[1]': selectedOptions[1]?.id ?? '',
       'target_social_circles[2]': selectedOptions[2]?.id ?? '',
@@ -151,6 +151,15 @@ const CreateAdvert = ({
               type="number"
               name={'daily_budget'}
             />
+            <SelectField label={'Type'} name="type">
+              {['Banner', 'Video', 'Carousel'].map((type) => {
+                return (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                );
+              })}
+            </SelectField>
           </div>
 
           <div className="flex items-center gap-x-2 my-10">
