@@ -2,7 +2,6 @@ import { useState } from 'react';
 import BackToPreviousScreen from '../BackToPreviousScreen';
 import Performance from './Performance';
 import CreateAdvert from './CreateAdvert';
-import Preview from './Preveiw';
 import ConfirmAd from './ConfirmAd';
 import AdvertListings from './AdvertListings';
 import {
@@ -15,14 +14,18 @@ import {
 import Loader from '../Loader/Loader';
 import { useQuery } from '@tanstack/react-query';
 import { getCurrentYear } from '../Utils/methods';
+import { useAdvertImageStore } from '@/zustandStore/useAdvertImageStore';
+import { useCountryStore } from '@/zustandStore/useCountryStore';
 
 const Advert = () => {
   const [createAd, setCreateAd] = useState(false);
   const [preveiwAd, setPreviewAd] = useState(false);
   const [performanceTable, setPerformanceTable] = useState(false);
-  const [previewData, setPreviewData] = useState(null);
   const [confirmAd, setConfirmAd] = useState(null);
   const [year, setYear] = useState(getCurrentYear());
+
+  const { advertImage, clearMediaState } = useAdvertImageStore();
+  const { setSelectedCountry } = useCountryStore();
 
   const { data: impressions = [], isLoading: isloadingImpressions } = useQuery({
     queryKey: ['impressions', year],
@@ -58,10 +61,6 @@ const Advert = () => {
     setYear(newYear);
   };
 
-  const currentYear = getCurrentYear();
-
-  console.log('Current Year:', currentYear);
-
   const handleCreateAd = () => {
     setCreateAd((prev) => !prev);
   };
@@ -75,19 +74,20 @@ const Advert = () => {
     } else {
       setCreateAd(false);
       setPerformanceTable(false);
+      clearMediaState();
+      setSelectedCountry(null);
     }
   };
 
-  const handlePreviewAd = (data) => {
-    console.log('Preview Ad:', data);
-    setPreviewData(data);
+  const handlePreviewAd = () => {
     setCreateAd(false);
     setPreviewAd(true);
   };
 
   const handlePerformanceData = () => {
-    setPerformanceTable((prev) => !prev);
     setCreateAd(false);
+    setPreviewAd(false);
+    setPerformanceTable((prev) => !prev);
   };
 
   if (
@@ -115,19 +115,18 @@ const Advert = () => {
           analyticsAvailableYear={analyticsAvailableYear?.data?.years}
         />
       )}
-      {preveiwAd && (
-        <Preview
-          data={previewData}
-          handleBackToPerformance={handleBackToPerformance}
-          handleConfirmAd={handleConfirmAd}
-        />
-      )}
-      {createAd && (
+
+      {(createAd || preveiwAd) && (
         <CreateAdvert
           handleConfirmAd={handleConfirmAd}
           handlePreviewAd={handlePreviewAd}
           countryList={countryList?.data?.countries}
           socialCircles={socialCircles?.data?.social_circles}
+          preveiwAd={preveiwAd}
+          createAd={createAd}
+          handleBackToPerformance={handleBackToPerformance}
+          advertImage={advertImage}
+          clearMediaState={clearMediaState}
         />
       )}
       {confirmAd && (

@@ -224,6 +224,7 @@ export const postAdvert = async (data) => {
   formData.append('description', data.description ?? '');
   formData.append('budget', data.budget ?? '');
   formData.append('daily_budget', data.daily_budget ?? '');
+  formData.append('destination_url', data.destination_url ?? '');
   formData.append('start_date', data.start_date ?? '');
   formData.append('end_date', data.end_date ?? '');
   formData.append('media_files[]', data['media_files[]'] ?? '');
@@ -231,15 +232,15 @@ export const postAdvert = async (data) => {
 
   formData.append(
     'target_social_circles[0]',
-    data['target_social_circles[0]'] ?? '',
+    data['target_social_circles[0]'] ?? null,
   );
   formData.append(
     'target_social_circles[1]',
-    data['target_social_circles[1]'] ?? '',
+    data['target_social_circles[1]'] ?? null,
   );
   formData.append(
     'target_social_circles[2]',
-    data['target_social_circles[2]'] ?? '',
+    data['target_social_circles[2]'] ?? null,
   );
 
   const response = await fetch('/api/postAdvert', {

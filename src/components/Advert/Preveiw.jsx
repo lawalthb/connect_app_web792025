@@ -1,15 +1,29 @@
+import { useOptionStore } from '@/zustandStore/useOptionStore';
 import Button from '../Button';
 import AdvertFallbackImage from '@/Images/AdvertFallbackImage.png';
+import { useCountryStore } from '@/zustandStore/useCountryStore';
 
-const Preview = ({ data, handleBackToPerformance, handleConfirmAd }) => {
+const Preview = ({
+  data,
+  handleBackToPerformance,
+  disabled,
+  isLoading,
+  previewImage,
+}) => {
+  const { selectedOptions } = useOptionStore();
+  const { selectedCountry } = useCountryStore();
   const preveiwData = [
     {
       name: 'Ad Name',
-      input: data.ad_headline,
+      input: data.ad_name,
     },
     {
-      name: 'Target Audience',
-      input: data.target_audience,
+      name: 'Type',
+      input: data.type,
+    },
+    {
+      name: 'Target Country',
+      input: selectedCountry?.label,
     },
     {
       name: 'Description',
@@ -36,19 +50,23 @@ const Preview = ({ data, handleBackToPerformance, handleConfirmAd }) => {
       input: data.shedule,
     },
     {
-      name: 'Ad Copy',
-      input: data.ad_copy,
+      name: 'Destination Url',
+      input: data.destination_url,
+    },
+    {
+      name: 'Target Audience',
+      input: data.target_audience,
     },
     {
       name: 'Ad Placement',
-      input: data.ad_placement,
+      input: selectedOptions?.map((opt) => opt.name).join(', '),
     },
   ];
   return (
     <div className="w-[90%] lg:w-[70%] mx-auto mt-10 space-y-10">
       <div className=" border border-[#A20030] rounded-[30px] p-3 lg:p-10">
         <img
-          src={data.identityMedia || AdvertFallbackImage.src}
+          src={previewImage || AdvertFallbackImage.src}
           alt="Preview Image"
           className="min-h-[407px] rounded-[10px] w-full object-cover"
         />
@@ -56,9 +74,9 @@ const Preview = ({ data, handleBackToPerformance, handleConfirmAd }) => {
           {preveiwData.map((data, index) => (
             <div
               key={index}
-              className="flex justify-between text-[#5C5C5C] font-normal text-base leading-6"
+              className="flex justify-between gap-x-1 text-[#5C5C5C] font-normal text-base leading-6"
             >
-              <h3>{data.name}</h3>
+              <h3 className="w-max">{data.name}</h3>
               <p>{data.input || '-'}</p>
             </div>
           ))}
@@ -73,8 +91,10 @@ const Preview = ({ data, handleBackToPerformance, handleConfirmAd }) => {
         />
         <Button
           label="Create Advert"
-          onClick={handleConfirmAd}
+          type="submit"
           btnclass="w-full h-14"
+          disabled={disabled}
+          isLoading={isLoading}
         />
       </div>
     </div>

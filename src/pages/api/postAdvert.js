@@ -37,6 +37,7 @@ export default async function handler(req, res) {
       formData.append('description', fields.description || '');
       formData.append('budget', fields.budget || '');
       formData.append('daily_budget', fields.daily_budget || '');
+      formData.append('destination_url', fields.destination_url || '');
       formData.append('start_date', fields.start_date || '');
       formData.append('end_date', fields.end_date || '');
 
