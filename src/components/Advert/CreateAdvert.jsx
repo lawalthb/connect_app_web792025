@@ -9,11 +9,12 @@ import MultiSelectDropdown from '../Input/MultiSelectDropDown';
 import CustomSelect from '../Input/CustomSelect';
 import DateRangeFields from '../Input/DateRangeFields';
 import { useMutation } from '@tanstack/react-query';
-import { postAdvert } from '../Utils/api';
+import { postAdvert, stripeAdPayment } from '../Utils/api';
 import ErrorMsg from '../ErrorMsg';
 import Preview from './Preveiw';
 import { useOptionStore } from '@/zustandStore/useOptionStore';
 import { useCountryStore } from '@/zustandStore/useCountryStore';
+import { useRouter } from 'next/router';
 
 const CreateAdvert = ({
   handleConfirmAd,
@@ -28,6 +29,7 @@ const CreateAdvert = ({
 }) => {
   const { selectedOptions, toggleOption, resetOptions } = useOptionStore();
   const { selectedCountry, setSelectedCountry } = useCountryStore();
+  const route = useRouter();
 
   const methods = useForm();
   const { control } = methods;
@@ -36,13 +38,30 @@ const CreateAdvert = ({
   const startDate = useWatch({ control, name: 'start_date' });
   const endDate = useWatch({ control, name: 'end_date' });
 
+  const {
+    mutate: stripeAdPayments,
+    isPending: isLoadingStripeAdPayment,
+    error: stripeAdError,
+  } = useMutation({
+    mutationFn: stripeAdPayment,
+    onSuccess: (data) => {
+      route.push(data.data.payment_link);
+    },
+    onError: (err) => {
+      console.error('Payment Initialization failed:', err.message);
+    },
+  });
+
   const { mutate, isPending, error, reset } = useMutation({
     mutationFn: postAdvert,
-    onSuccess: () => {
+    onSuccess: (data) => {
       reset();
       setSelectedCountry(null);
       resetOptions();
-      handleConfirmAd();
+      // handleConfirmAd();
+      console.log('Advert created successfully:', data);
+      handleStripePayment(data.data.id);
+
       clearMediaState();
       setSelectedCountry(null);
     },
@@ -50,6 +69,14 @@ const CreateAdvert = ({
       console.error('Advert update failed:', err.message);
     },
   });
+
+  const handleStripePayment = (id) => {
+    stripeAdPayments({
+      id,
+      payment_gateway: 'stripe', // stripe
+      currency: 'USD',
+    });
+  };
 
   const handleOptionToggle = (option) => {
     toggleOption(option);
@@ -206,13 +233,14 @@ const CreateAdvert = ({
                   type="submit"
                   btnclass="w-full h-14"
                   disabled={startDate > endDate}
-                  isLoading={isPending}
+                  isLoading={isPending || isLoadingStripeAdPayment}
                 />
                 <Button
                   label="Preview Ad"
                   variant="outlined"
                   onClick={handlePreviewAd}
                   btnclass="w-full h-14"
+                  disabled={isPending || isLoadingStripeAdPayment}
                 />
               </div>
             </>
@@ -224,11 +252,11 @@ const CreateAdvert = ({
               handleBackToPerformance={handleBackToPerformance}
               handleConfirmAd={handleConfirmAd}
               disabled={startDate > endDate}
-              isLoading={isPending}
+              isLoading={isPending || isLoadingStripeAdPayment}
             />
           )}
         </form>
-        <ErrorMsg errorMessage={error?.message} />
+        <ErrorMsg errorMessage={error?.message || stripeAdError?.message} />
       </FormProvider>
     </div>
   );

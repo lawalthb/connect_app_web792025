@@ -384,6 +384,60 @@ export const explore = async (data) => {
   return response.json();
 };
 
+export const resumeAdvert = async (id) => {
+  const response = await fetch('/api/resumeAdvert', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ id }),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Advert update failed');
+  }
+
+  return response.json();
+};
+
+export const pauseAdvert = async (id) => {
+  const response = await fetch('/api/pauseAdvert', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ id }),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Advert update failed');
+  }
+
+  return response.json();
+};
+
+export const stripeAdPayment = async (data) => {
+  const response = await fetch('/api/stripeAdPayment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Payment Initialization failed');
+  }
+
+  return response.json();
+};
+
 export const swipeCount = async (data) => {
   const response = await fetch('/api/swipeCount', {
     method: 'POST',
@@ -419,7 +473,7 @@ export const getUser = async (id) => {
   return response.json();
 };
 
-export const getUgetAdvertsListings = async (perPage, page) => {
+export const getAdvertsListings = async (perPage, page) => {
   const response = await fetch(
     `/api/getAdvertsListings?per_page=${perPage}&page=${page}`,
     {
@@ -456,7 +510,7 @@ export const getImpressions = async (year) => {
   return response.json();
 };
 
-export const getAnalyticsAvailableYear = async (year) => {
+export const getAnalyticsAvailableYear = async () => {
   const response = await fetch(`/api/getAnalyticsAvailableYear`, {
     method: 'GET',
     headers: {

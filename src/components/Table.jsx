@@ -15,6 +15,8 @@ const Table = ({
   handleClick,
   actionOptions,
   handleFilter,
+  pagination,
+  onPageChange,
 }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [showExport, setShowExport] = useState(false);
@@ -116,6 +118,7 @@ const Table = ({
                               onClose={() => toggleDropdown(null)}
                               handleClick={handleClick}
                               items={actionOptions}
+                              advert={ad}
                             />
                           )}
                         </div>
@@ -171,6 +174,7 @@ const Table = ({
                               onClose={() => toggleDropdown(null)}
                               handleClick={handleClick}
                               items={actionOptions}
+                              advert={ad}
                             />
                           )}
                         </div>
@@ -185,6 +189,42 @@ const Table = ({
           ))}
         </div>
       </div>
+      {pagination && (
+        <div className="flex justify-center items-center mt-6 gap-2">
+          <button
+            onClick={() => onPageChange(pagination.current_page - 1)}
+            disabled={pagination.current_page === 1}
+            className="px-3 py-2 border rounded text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          >
+            Prev
+          </button>
+
+          {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map(
+            (page) => (
+              <button
+                key={page}
+                onClick={() => onPageChange(page)}
+                className={`px-3 py-2 border rounded text-sm ${
+                  page === pagination.current_page
+                    ? 'bg-[#A20030] text-white'
+                    : 'text-gray-700 hover:bg-gray-100 cursor-pointer'
+                }`}
+              >
+                {page}
+              </button>
+            ),
+          )}
+
+          <button
+            onClick={() => onPageChange(pagination.current_page + 1)}
+            disabled={pagination.current_page === pagination.last_page}
+            className="px-3 py-2 border rounded text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div>
+      )}
+
       {showExport && (
         <ExportModal showExport={showExport} handleExport={handleExportModal}>
           <div className="flex flex-col gap-4">

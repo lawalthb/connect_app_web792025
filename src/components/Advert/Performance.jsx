@@ -28,12 +28,12 @@ const Performance = ({
     }
   }, [selectedYear]);
 
-  const simplifiedData = impressions.map((item) => ({
+  const simplifiedData = impressions?.map((item) => ({
     month: item.month,
     impressions: item.impressions,
   }));
 
-  const simplifiedConversionsData = impressions.map((item) => ({
+  const simplifiedConversionsData = impressions?.map((item) => ({
     label: item.month,
     value: item.conversions,
     rest: item.impressions - item.conversions,
@@ -42,27 +42,27 @@ const Performance = ({
   const performanceData = [
     {
       name: 'Total Budget',
-      amount: advertDashboardData.total_budget,
+      amount: advertDashboardData?.total_budget,
     },
     {
       name: 'Total Ads',
-      amount: advertDashboardData.total_ads,
+      amount: advertDashboardData?.total_ads,
     },
     {
       name: 'Remaining Budget',
-      amount: advertDashboardData.remaining_budget,
+      amount: advertDashboardData?.remaining_budget,
     },
     {
       name: 'Impressions',
-      amount: advertDashboardData.total_impressions,
+      amount: advertDashboardData?.total_impressions,
     },
     {
       name: 'Clicks',
-      amount: advertDashboardData.total_clicks,
+      amount: advertDashboardData?.total_clicks,
     },
     {
       name: 'Conversions',
-      amount: advertDashboardData.total_conversions,
+      amount: advertDashboardData?.total_conversions,
     },
   ];
 
@@ -88,7 +88,7 @@ const Performance = ({
 
       <div className="overflow-x-auto mt-6">
         <div className="flex gap-4 min-w-max grid-cols-5">
-          {performanceData.map((data, index) => (
+          {performanceData?.map((data, index) => (
             <div
               key={index}
               className="flex justify-between bg-[#A200301C] rounded-[16px] w-[227px] text-[#2E2E2E] p-6 shrink-0"
