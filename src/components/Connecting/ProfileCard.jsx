@@ -25,14 +25,14 @@ const ProfileCard = ({
     >
       <div className="relative w-full rounded-[30px] overflow-hidden">
         {swipeDirection === 'right' && (
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-green-600 text-white px-4 py-2 rounded-xl text-lg font-semibold shadow-lg transition duration-300 ease-out opacity-100 scale-100">
-            Accepted
+          <div className="absolute right-7 top-[48%] -translate-y-1/2 z-30 bg-green-600 text-white px-4 py-2 rounded-xl text-[40px] font-semibold shadow-lg transition duration-300 ease-out opacity-100 scale-100">
+            Connected
           </div>
         )}
 
         {swipeDirection === 'left' && (
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-red-600 text-white px-4 py-2 rounded-xl text-lg font-semibold shadow-lg transition duration-300 ease-out opacity-100 scale-100">
-            Rejected
+          <div className="absolute left-7 top-[48%] -translate-y-1/2 z-30 bg-red-600 text-white px-4 py-2 rounded-xl text-[40px] font-semibold shadow-lg transition duration-300 ease-out opacity-100 scale-100">
+            Nope
           </div>
         )}
 

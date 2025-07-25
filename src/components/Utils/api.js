@@ -156,6 +156,19 @@ export const getPost = async () => {
   return response.json();
 };
 
+export const getConversation = async () => {
+  const response = await fetch('/api/getConversation', {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch Feeds');
+  }
+
+  return response.json();
+};
+
 export const getSubscription = async () => {
   const response = await fetch('/api/getSubscription', {
     credentials: 'include',
@@ -438,6 +451,24 @@ export const stripeAdPayment = async (data) => {
   return response.json();
 };
 
+export const sendMessages = async (data) => {
+  const response = await fetch('/api/sendMessages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Message sending failed');
+  }
+
+  return response.json();
+};
+
 export const swipeCount = async (data) => {
   const response = await fetch('/api/swipeCount', {
     method: 'POST',
@@ -476,6 +507,26 @@ export const getUser = async (id) => {
 export const getAdvertsListings = async (perPage, page) => {
   const response = await fetch(
     `/api/getAdvertsListings?per_page=${perPage}&page=${page}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    },
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Fetch advert listings failed');
+  }
+
+  return response.json();
+};
+
+export const getMessages = async (id, page, perPage) => {
+  const response = await fetch(
+    `/api/getMessages?page=${page}&per_page=${perPage}&id=${id}`,
     {
       method: 'GET',
       headers: {

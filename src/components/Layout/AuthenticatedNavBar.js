@@ -8,9 +8,9 @@ import SettingsIcon from '@/Images/Icons/SettingsIcon';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { IoMdNotificationsOutline } from 'react-icons/io';
-import { RxAvatar, RxHamburgerMenu } from 'react-icons/rx';
+import { RxHamburgerMenu } from 'react-icons/rx';
 import { IoClose } from 'react-icons/io5';
-import Logout from '../Logout';
+import ProfileHeader from '../ProfileHeader';
 
 const AuthenticatedNavBar = () => {
   const pathname = usePathname();
@@ -67,16 +67,15 @@ const AuthenticatedNavBar = () => {
             );
           })}
           <div className="hidden lg:flex items-center gap-4 mr-3 ml-32">
-            <Logout />
             <IoMdNotificationsOutline className="text-[#444750] size-6 cursor-pointer" />
-            <RxAvatar className="text-[#444750] size-6 cursor-pointer" />
+            <ProfileHeader />
           </div>
         </div>
 
         {/* Mobile Hamburger Icon */}
         <div className="absolute top-6 right-0 lg:hidden flex items-center gap-4 mr-3">
           <IoMdNotificationsOutline className="text-[#444750] size-6 cursor-pointer" />
-          <RxAvatar className="text-[#444750] size-6 cursor-pointer" />
+          <ProfileHeader />
           {!menuOpen ? (
             <RxHamburgerMenu
               className="text-[#444750] size-6 cursor-pointer"

@@ -4,9 +4,25 @@ import EmptyChat from './EmptyChat';
 import EmptyChatRoom from '@/Images/EmptyChatRoom.png';
 import { useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
+import { useScrollToBottom } from '../Hooks/useScrollToBottom';
 
-const ChatRoom = ({ user, messages, onSend, onBack }) => {
+const ChatRoom = ({
+  user,
+  signedInUser,
+  messages,
+  pagination,
+  onSend,
+  onBack,
+  handleViewMore,
+  isLoadingMessages,
+  resetPage,
+}) => {
   const [input, setInput] = useState('');
+  console.log(isLoadingMessages, 'isLoadingMessages');
+
+  const chatContainerRef = useScrollToBottom([isLoadingMessages]);
+
+  const reversedMessages = messages?.slice().reverse();
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -44,11 +60,13 @@ const ChatRoom = ({ user, messages, onSend, onBack }) => {
         />
         <div>
           <h4 className="text-sm font-medium text-[#141414]">{user.name}</h4>
-          <span className="text-xs text-green-500">Online</span>
+          {user?.participants?.is_online && (
+            <span className="text-xs text-green-500">Online</span>
+          )}
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto px-4 py-3">
-        {messages.length === 0 ? (
+      <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-4 py-3">
+        {reversedMessages.length === 0 ? (
           <div>
             <EmptyChat
               image={EmptyChatRoom}
@@ -60,21 +78,29 @@ const ChatRoom = ({ user, messages, onSend, onBack }) => {
           </div>
         ) : (
           <div className="space-y-4">
-            {messages.map((msg) => (
+            {pagination?.has_more && (
               <div
-                key={msg.id}
-                className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}
+                onClick={handleViewMore}
+                className="text-center text-[#A20030] cursor-pointer"
+              >
+                View more
+              </div>
+            )}
+            {reversedMessages?.map((msg) => (
+              <div
+                key={msg?.id}
+                className={`flex ${msg?.user?.id === signedInUser.id ? 'justify-end' : 'justify-start'}`}
               >
                 <div
                   className={`px-4 py-2 rounded-lg max-w-xs text-sm ${
-                    msg.sender === 'me'
+                    msg?.user?.id === signedInUser.id
                       ? 'bg-[#A20030] text-white rounded-br-none'
                       : 'bg-gray-100 text-gray-800 rounded-bl-none'
                   }`}
                 >
-                  <p>{msg.text}</p>
+                  <p>{msg?.message}</p>
                   <span className="block text-[10px] text-right mt-1 opacity-60">
-                    {msg.time}
+                    {msg?.created_at_human}
                   </span>
                 </div>
               </div>
@@ -86,7 +112,10 @@ const ChatRoom = ({ user, messages, onSend, onBack }) => {
         <input
           type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            setInput(e.target.value);
+            resetPage();
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSend();
           }}

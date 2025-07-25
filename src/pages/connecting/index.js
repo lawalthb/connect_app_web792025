@@ -48,7 +48,7 @@ const Connecting = () => {
           activeTab={activeTab}
         />
       </div>
-      {isLoading || (isLoadingSocialCircles && <Loader />)}
+      {(isLoading || isLoadingSocialCircles) && <Loader />}
       {!isLoading && !isLoadingSocialCircles && (
         <div className="px-1 md:px-20">
           {activeTab === 'Connect with others' && (

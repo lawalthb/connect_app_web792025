@@ -155,7 +155,7 @@ const CreateAdvert = ({
                   />
                 </div>
                 <MultiSelectDropdown
-                  label="Ad Placement"
+                  label="Social Circle"
                   options={socialCircles}
                   selectedOptions={selectedOptions}
                   handleOptionToggle={handleOptionToggle}
@@ -186,7 +186,7 @@ const CreateAdvert = ({
                 <ImageUpload />
               </div>
               <div className="flex gap-x-4">
-                <SelectField label={'Target Audience'} name="target_audience">
+                <SelectField label={'Ad Placement'} name="target_audience">
                   {[
                     'Swipe page',
                     'Livestreaming page',
