@@ -10,7 +10,7 @@ import BackToPreviousScreen from '../BackToPreviousScreen';
 import { FormProvider, useForm } from 'react-hook-form';
 import InputField from '../Input/InputField';
 
-const ConnectWithOthersDetail = ({ profiles, socialId }) => {
+const ConnectWithOthersDetail = ({ profiles, socialId, handleButtonClick }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [profile, setProfile] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -64,6 +64,8 @@ const ConnectWithOthersDetail = ({ profiles, socialId }) => {
             profiles={profiles}
             handleViewProfile={handleViewProfile}
             socialId={socialId}
+            handleUserData={handleUserData}
+            handleButtonClick={handleButtonClick}
           />
 
           {showFilter && (

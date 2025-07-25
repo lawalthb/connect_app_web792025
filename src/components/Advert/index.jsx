@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BackToPreviousScreen from '../BackToPreviousScreen';
 import Performance from './Performance';
 import CreateAdvert from './CreateAdvert';
@@ -16,6 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getCurrentYear } from '../Utils/methods';
 import { useAdvertImageStore } from '@/zustandStore/useAdvertImageStore';
 import { useCountryStore } from '@/zustandStore/useCountryStore';
+import { useRouter } from 'next/router';
 
 const Advert = () => {
   const [createAd, setCreateAd] = useState(false);
@@ -23,6 +24,8 @@ const Advert = () => {
   const [performanceTable, setPerformanceTable] = useState(false);
   const [confirmAd, setConfirmAd] = useState(null);
   const [year, setYear] = useState(getCurrentYear());
+
+  const router = useRouter();
 
   const { advertImage, clearMediaState } = useAdvertImageStore();
   const { setSelectedCountry } = useCountryStore();
@@ -56,6 +59,12 @@ const Advert = () => {
     queryKey: ['socialCircle'],
     queryFn: getSocialCircles,
   });
+
+  useEffect(() => {
+    if (router.query?.success === 'true') {
+      setPerformanceTable(true);
+    }
+  }, [router.query?.success]);
 
   const handleYearChange = (newYear) => {
     setYear(newYear);

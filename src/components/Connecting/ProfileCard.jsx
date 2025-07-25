@@ -2,7 +2,12 @@ import Image from 'next/image';
 import Button from '../Button';
 import React, { useState } from 'react';
 
-const ProfileCard = ({ profile, handleViewProfile, swipeDirection }) => {
+const ProfileCard = ({
+  profile,
+  handleViewProfile,
+  swipeDirection,
+  handleButtonClick,
+}) => {
   const [isImageClicked, setIsImageClicked] = useState(false);
   const [showCircles, setShowCircles] = useState(false);
 
@@ -87,7 +92,11 @@ const ProfileCard = ({ profile, handleViewProfile, swipeDirection }) => {
                     {profile.social_circles.map((option, index) => (
                       <div
                         key={option.id}
-                        className="bg-[#A20030] text-white rounded-[50px] px-4 sm:px-5 py-1.5 sm:py-2 shadow-md text-sm sm:text-base leading-6 font-medium whitespace-nowrap"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleButtonClick(option.id);
+                        }}
+                        className="bg-[#A20030] cursor-pointer text-white rounded-[50px] px-4 sm:px-5 py-1.5 sm:py-2 shadow-md text-sm sm:text-base leading-6 font-medium whitespace-nowrap"
                       >
                         {`#${option.name}`}
                       </div>

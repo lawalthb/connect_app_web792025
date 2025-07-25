@@ -10,7 +10,13 @@ import { useMutation } from '@tanstack/react-query';
 import { swipeCount } from './Utils/api';
 import { useRouter } from 'next/router';
 
-const ProfileCourasel = ({ handleViewProfile, profiles, socialId }) => {
+const ProfileCourasel = ({
+  handleViewProfile,
+  profiles,
+  socialId,
+  handleUserData,
+  handleButtonClick,
+}) => {
   const router = useRouter();
   const [previousIndex, setPreviousIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState(null);
@@ -35,6 +41,7 @@ const ProfileCourasel = ({ handleViewProfile, profiles, socialId }) => {
 
   const handleSlideChange = (swiper) => {
     const currentIndex = swiper.realIndex;
+    handleUserData(profiles[currentIndex]);
     let direction = null;
 
     if (currentIndex > previousIndex) {
@@ -89,6 +96,7 @@ const ProfileCourasel = ({ handleViewProfile, profiles, socialId }) => {
               profile={profile}
               handleViewProfile={handleViewProfile}
               swipeDirection={activeIndex === index ? swipeDirection : null}
+              handleButtonClick={handleButtonClick}
             />
           </SwiperSlide>
         ))}

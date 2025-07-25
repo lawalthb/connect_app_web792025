@@ -43,6 +43,7 @@ const ConnectWithOthers = ({ socialCircles }) => {
         <ConnectWithOthersDetail
           profiles={optionDetailData.data}
           socialId={loadingId}
+          handleButtonClick={handleButtonClick}
         />
       )}
     </div>
