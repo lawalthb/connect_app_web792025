@@ -1,11 +1,12 @@
 // zustandStore/useAdvertImageStore.js
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import AddImageIcon from '@/Images/Icons/AddImageIcon.svg';
 
 export const useAdvertImageStore = create(
   persist(
     (set) => ({
-      advertImage: null,
+      advertImage: AddImageIcon,
       mediaType: null,
       error: null,
       setAdvertImage: (image) => set({ advertImage: image }),

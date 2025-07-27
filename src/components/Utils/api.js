@@ -433,8 +433,8 @@ export const pauseAdvert = async (id) => {
   return response.json();
 };
 
-export const stripeAdPayment = async (data) => {
-  const response = await fetch('/api/stripeAdPayment', {
+export const adPayment = async (data) => {
+  const response = await fetch('/api/adPayment', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
