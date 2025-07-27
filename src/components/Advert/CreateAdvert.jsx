@@ -168,7 +168,7 @@ const CreateAdvert = ({
                   {[
                     'Swipe page',
                     'Livestreaming page',
-                    'Post page',
+                    'Feed page',
                     'Stories',
                   ].map((audience) => {
                     return (
@@ -185,7 +185,7 @@ const CreateAdvert = ({
                   name={'daily_budget'}
                 />
                 <SelectField label={'Type'} name="type">
-                  {['Banner', 'Video'].map((type) => {
+                  {['Picture', 'Video'].map((type) => {
                     return (
                       <option key={type} value={type}>
                         {type}
