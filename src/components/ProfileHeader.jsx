@@ -1,21 +1,16 @@
-import { useState } from 'react';
 import { RxAvatar } from 'react-icons/rx';
 import Logout from './Logout';
-import { useRouter } from 'next/router';
 
-const ProfileHeader = () => {
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const router = useRouter();
-
-  const handleProfileClick = () => {
-    setUserMenuOpen(false);
-    router.push('/profile');
-  };
+const ProfileHeader = ({
+  userMenuOpen,
+  handleProfileClick,
+  handleMenuOpen,
+}) => {
   return (
     <div className="relative">
       <RxAvatar
         className="text-[#444750] size-6 cursor-pointer"
-        onClick={() => setUserMenuOpen((prev) => !prev)}
+        onClick={handleMenuOpen}
       />
 
       {userMenuOpen && (
@@ -29,7 +24,7 @@ const ProfileHeader = () => {
           </button>
           <div className="border-t" />
           <div
-            onClick={() => setUserMenuOpen(false)}
+            onClick={handleMenuOpen}
             className="px-4 py-2 text-sm hover:bg-gray-100 text-[#444750]"
           >
             <Logout />

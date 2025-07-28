@@ -5,11 +5,13 @@ import Daniella from '@/Images/Daniella.png';
 import Modal from '../Modal';
 import SearchField from '../Input/SearchField';
 import Feeds from './Feeds';
+import PostStories from './PostStories';
 
 const ConnectionFeed = ({ data }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [expandImage, setExpandImage] = useState(false);
+  const [postStories, setPostStories] = useState(false);
   const [url, setUrl] = useState('');
 
   const handleShowMore = (identifier) => {
@@ -28,6 +30,10 @@ const ConnectionFeed = ({ data }) => {
     setUrl(url);
     setExpandImage((prev) => !prev);
   };
+
+  const handlePostStories = () => {
+    setPostStories((prev) => !prev);
+  };
   return (
     <div className="md:px-20 w-full mb-20">
       <>
@@ -40,7 +46,7 @@ const ConnectionFeed = ({ data }) => {
           </div>
         </div>
         <div className="w-full lg:w-[562px] mx-auto my-20">
-          <ConnectStory />
+          <ConnectStory handlePostStories={handlePostStories} />
           <div>
             {data?.data.map((feed) => {
               return (
@@ -57,6 +63,9 @@ const ConnectionFeed = ({ data }) => {
           </div>
         </div>
       </>
+      {postStories && (
+        <PostStories onClose={handlePostStories} show={postStories} />
+      )}
 
       {expandImage && (
         <Modal isOpen={expandImage} onClose={handleExpandImage} size="max-w-xl">

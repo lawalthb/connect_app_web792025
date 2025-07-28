@@ -8,6 +8,7 @@ import useUserStore from '@/zustandStore/useUserStore';
 import { useQuery } from '@tanstack/react-query';
 import { getPost, getSocialCircles } from '@/components/Utils/api';
 import Loader from '@/components/Loader/Loader';
+import Discovery from '@/components/Connecting/Discovery';
 
 const Connecting = () => {
   const [activeTab, setActiveTab] = useState('Connecting Feed');
@@ -43,7 +44,8 @@ const Connecting = () => {
       <div className="px-5 md:px-28">
         <TabSelector
           firstTabName={'Connecting Feed'}
-          secondTabName={'Connect with others'}
+          secondTabName={'Category'}
+          thirdTabName={'Discovery'}
           onTabChange={onTabChange}
           activeTab={activeTab}
         />
@@ -51,7 +53,7 @@ const Connecting = () => {
       {(isLoading || isLoadingSocialCircles) && <Loader />}
       {!isLoading && !isLoadingSocialCircles && (
         <div className="px-1 md:px-20">
-          {activeTab === 'Connect with others' && (
+          {activeTab === 'Category' && (
             <ConnectWithOthers
               socialCircles={socialCircles?.data?.social_circles}
             />
@@ -59,6 +61,7 @@ const Connecting = () => {
           {activeTab === 'Connecting Feed' && (
             <ConnectionFeed data={data?.data} />
           )}
+          {activeTab === 'Discovery' && <Discovery data={data?.data} />}
         </div>
       )}
     </div>

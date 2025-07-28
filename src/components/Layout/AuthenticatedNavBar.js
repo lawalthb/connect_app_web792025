@@ -11,11 +11,14 @@ import { IoMdNotificationsOutline } from 'react-icons/io';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { IoClose } from 'react-icons/io5';
 import ProfileHeader from '../ProfileHeader';
+import Notification from '../Notification';
 
 const AuthenticatedNavBar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [userNotificationOpen, setUserNotificationOpen] = useState(false);
 
   const subNav = [
     { name: 'Connecting', path: '/connecting', icon: ConnectingIcon },
@@ -35,6 +38,20 @@ const AuthenticatedNavBar = () => {
 
   const handleMenuClick = () => {
     setMenuOpen((prev) => !prev);
+  };
+
+  const handleProfileClick = () => {
+    setUserMenuOpen(false);
+    router.push('/profile');
+  };
+
+  const handleMenuOpen = () => {
+    setUserNotificationOpen(false);
+    setUserMenuOpen((prev) => !prev);
+  };
+  const handleNotificationClick = () => {
+    setUserMenuOpen(false);
+    setUserNotificationOpen((prev) => !prev);
   };
 
   return (
@@ -67,15 +84,29 @@ const AuthenticatedNavBar = () => {
             );
           })}
           <div className="hidden lg:flex items-center gap-4 mr-3 ml-32">
-            <IoMdNotificationsOutline className="text-[#444750] size-6 cursor-pointer" />
-            <ProfileHeader />
+            <Notification
+              userNotificationOpen={userNotificationOpen}
+              handleNotificationClick={handleNotificationClick}
+            />
+            <ProfileHeader
+              userMenuOpen={userMenuOpen}
+              handleProfileClick={handleProfileClick}
+              handleMenuOpen={handleMenuOpen}
+            />
           </div>
         </div>
 
         {/* Mobile Hamburger Icon */}
         <div className="absolute top-6 right-0 lg:hidden flex items-center gap-4 mr-3">
-          <IoMdNotificationsOutline className="text-[#444750] size-6 cursor-pointer" />
-          <ProfileHeader />
+          <Notification
+            userNotificationOpen={userNotificationOpen}
+            handleNotificationClick={handleNotificationClick}
+          />
+          <ProfileHeader
+            userMenuOpen={userMenuOpen}
+            handleProfileClick={handleProfileClick}
+            handleMenuOpen={handleMenuOpen}
+          />
           {!menuOpen ? (
             <RxHamburgerMenu
               className="text-[#444750] size-6 cursor-pointer"

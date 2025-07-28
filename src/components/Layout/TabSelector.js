@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 const TabSelector = ({
   firstTabName,
   secondTabName,
+  thirdTabName,
   onTabChange,
   activeTab,
 }) => {
@@ -22,6 +23,9 @@ const TabSelector = ({
   const secondTabBorderColor =
     activeTab === secondTabName ? activeColor : inActiveColor;
 
+  const thirdTabBorderColor =
+    activeTab === thirdTabName ? activeColor : inActiveColor;
+
   return (
     <div className="flex w-full py-16">
       <h3
@@ -35,6 +39,12 @@ const TabSelector = ({
         className={`${secondTabBorderColor} w-1/2 font-semibold text-center text-base cursor-pointer border-b hover:border-[#A20030] hover:text-[#A20030] transition-colors`}
       >
         {secondTabName}
+      </h3>
+      <h3
+        onClick={() => handleTabChange(thirdTabName)}
+        className={`${thirdTabBorderColor} w-1/2 font-semibold text-center text-base cursor-pointer border-b hover:border-[#A20030] hover:text-[#A20030] transition-colors`}
+      >
+        {thirdTabName}
       </h3>
     </div>
   );

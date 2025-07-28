@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import DefaultMaleAvatar from '@/Images/DefaultMaleAvatar.png';
 import CameraIcon from '@/Images/Icons/CameraIcon.svg';
 
-const UserAvatar = ({ updateImage = true }) => {
+const UserAvatar = ({ updateImage = true, isStories = false }) => {
   const fileInputRef = useRef(null);
   const [avatarSrc, setAvatarSrc] = useState(DefaultMaleAvatar.src);
 
@@ -22,11 +22,13 @@ const UserAvatar = ({ updateImage = true }) => {
   };
 
   return (
-    <div className="relative size-[129.63px] rounded-full bg-[#A2003070] flex items-center justify-center">
+    <div
+      className={`relative ${isStories ? 'size-40 rounded-lg' : 'size-[129.63px] rounded-full'} bg-[#A2003070] flex items-center justify-center`}
+    >
       <img
         src={avatarSrc}
         alt="User Avatar"
-        className="object-fill size-[114.37px] text-black rounded-full"
+        className={`object-fill ${isStories ? 'size-36' : 'size-[114.37px] rounded-full'}  text-black `}
       />
       {updateImage && (
         <div
