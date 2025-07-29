@@ -50,7 +50,7 @@ const ConnectionFeed = ({ data }) => {
           <div>
             {data?.data.map((feed) => {
               return (
-                <div key={feed.id}>
+                <div key={feed.id} className="mb-5">
                   <Feeds
                     feed={feed}
                     handleExpandImage={handleExpandImage}

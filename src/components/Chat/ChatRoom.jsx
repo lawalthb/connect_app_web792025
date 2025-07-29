@@ -1,10 +1,13 @@
-import { FiSend } from 'react-icons/fi';
+import { FiSend, FiImage, FiMic, FiSmile } from 'react-icons/fi';
 import Image from 'next/image';
 import EmptyChat from './EmptyChat';
 import EmptyChatRoom from '@/Images/EmptyChatRoom.png';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useScrollToBottom } from '../Hooks/useScrollToBottom';
+import EmojiPicker from 'emoji-picker-react';
+import { ReactMediaRecorder } from 'react-media-recorder';
+import { IoClose } from 'react-icons/io5';
 
 const ChatRoom = ({
   user,
@@ -18,19 +21,24 @@ const ChatRoom = ({
   resetPage,
 }) => {
   const [input, setInput] = useState('');
-  console.log(isLoadingMessages, 'isLoadingMessages');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+  const [audioBlob, setAudioBlob] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
 
+  const fileInputRef = useRef(null);
   const chatContainerRef = useScrollToBottom([isLoadingMessages]);
-
   const reversedMessages = messages?.slice().reverse();
 
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim() && !selectedFile && !audioBlob) return;
 
     const newMessage = {
       id: messages.length + 1,
       sender: 'me',
-      text: input,
+      text: input.trim(),
+      file: selectedFile,
+      audio: audioBlob,
       time: new Date().toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',
@@ -39,15 +47,28 @@ const ChatRoom = ({
 
     onSend(newMessage);
     setInput('');
+    setSelectedFile(null);
+    setAudioBlob(null);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) setSelectedFile(file);
+  };
+
+  const handleEmojiSelect = (emojiObject) => {
+    if (!emojiObject?.emoji) return;
+    setInput((prev) => prev + emojiObject.emoji);
+    setEmojiPickerOpen(false);
   };
 
   return (
-    <div className="flex flex-col h-[calc(100svh-8rem)] ">
+    <div className="flex flex-col h-[calc(100svh-8rem)]">
+      {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b">
         <button
-          type="button"
           onClick={onBack}
-          className="md:hidden text-sm text-[#A20030] font-medium cursor-pointer"
+          className="md:hidden text-[#A20030] text-sm font-medium"
         >
           <IoIosArrowBack />
         </button>
@@ -65,17 +86,17 @@ const ChatRoom = ({
           )}
         </div>
       </div>
+
+      {/* Messages */}
       <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-4 py-3">
         {reversedMessages.length === 0 ? (
-          <div>
-            <EmptyChat
-              image={EmptyChatRoom}
-              title="Start a Conversation"
-              description={`Send a message to ${user.name}`}
-              width="120"
-              height="120"
-            />
-          </div>
+          <EmptyChat
+            image={EmptyChatRoom}
+            title="Start a Conversation"
+            description={`Send a message to ${user.name}`}
+            width="120"
+            height="120"
+          />
         ) : (
           <div className="space-y-4">
             {pagination?.has_more && (
@@ -86,10 +107,14 @@ const ChatRoom = ({
                 View more
               </div>
             )}
-            {reversedMessages?.map((msg) => (
+            {reversedMessages.map((msg) => (
               <div
                 key={msg?.id}
-                className={`flex ${msg?.user?.id === signedInUser.id ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${
+                  msg?.user?.id === signedInUser.id
+                    ? 'justify-end'
+                    : 'justify-start'
+                }`}
               >
                 <div
                   className={`px-4 py-2 rounded-lg max-w-xs text-sm ${
@@ -98,6 +123,23 @@ const ChatRoom = ({
                       : 'bg-gray-100 text-gray-800 rounded-bl-none'
                   }`}
                 >
+                  {msg?.file && (
+                    <div className="mb-2">
+                      <Image
+                        src={URL.createObjectURL(msg.file)}
+                        alt="attachment"
+                        width={150}
+                        height={150}
+                      />
+                    </div>
+                  )}
+                  {msg?.audio && (
+                    <audio
+                      controls
+                      src={URL.createObjectURL(msg.audio)}
+                      className="mb-2"
+                    />
+                  )}
                   <p>{msg?.message}</p>
                   <span className="block text-[10px] text-right mt-1 opacity-60">
                     {msg?.created_at_human}
@@ -108,27 +150,141 @@ const ChatRoom = ({
           </div>
         )}
       </div>
-      <div className="px-4 py-3 border-t flex items-center gap-3">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => {
-            setInput(e.target.value);
-            resetPage();
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') handleSend();
-          }}
-          placeholder="Type a message..."
-          className="flex-1 px-4 py-2 border rounded-full text-sm text-gray-500 outline-none focus:ring-1 focus:ring-[#A20030]"
-        />
-        <button
-          onClick={handleSend}
-          className="text-gray-500 bg-[#A20030] hover:bg-[#870026] p-2 rounded-full"
-        >
-          <FiSend className="w-5 h-5" />
-        </button>
-      </div>
+
+      {/* Input & Controls */}
+      <ReactMediaRecorder
+        audio
+        blobPropertyBag={{ type: 'audio/webm' }}
+        render={({ status, startRecording, stopRecording, mediaBlobUrl }) => {
+          useEffect(() => {
+            if (mediaBlobUrl && !audioBlob) {
+              fetch(mediaBlobUrl)
+                .then((res) => res.blob())
+                .then((blob) => {
+                  setAudioBlob(blob);
+                  setInput('Audio recorded');
+                });
+              setIsRecording(false);
+            }
+          }, [mediaBlobUrl]);
+
+          const toggleRecording = () => {
+            if (status !== 'recording') {
+              setIsRecording(true);
+              setInput('Recording...');
+              startRecording();
+            } else {
+              stopRecording();
+            }
+          };
+
+          return (
+            <>
+              <div className="px-4 py-3 border-t flex items-center gap-3 relative">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="text-gray-500 cursor-pointer"
+                >
+                  <FiImage className="w-5 h-5" />
+                </button>
+
+                {/* Emoji Picker */}
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setEmojiPickerOpen((prev) => !prev)}
+                  >
+                    <FiSmile className="w-5 h-5 text-gray-500 cursor-pointer" />
+                  </button>
+                  {emojiPickerOpen && (
+                    <div className="absolute bottom-12 left-0 z-10 ">
+                      <EmojiPicker onEmojiClick={handleEmojiSelect} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Mic Button */}
+                <button
+                  type="button"
+                  onClick={toggleRecording}
+                  className={`text-gray-500 cursor-pointer ${
+                    status === 'recording' ? 'animate-pulse text-red-500' : ''
+                  }`}
+                >
+                  <FiMic className="w-5 h-5" />
+                </button>
+
+                {/* Input Field */}
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    resetPage();
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSend();
+                  }}
+                  placeholder="Type a message..."
+                  disabled={isRecording}
+                  className="flex-1 px-4 py-2 border rounded-full text-sm text-gray-500 outline-none focus:ring-1 focus:ring-[#A20030]"
+                />
+
+                {/* Send Button */}
+                <button
+                  onClick={handleSend}
+                  className="text-white bg-[#A20030] hover:bg-[#870026] p-2 rounded-full"
+                >
+                  <FiSend className="w-5 h-5" />
+                </button>
+
+                {/* File Input */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept="image/*,video/*"
+                  onChange={handleFileChange}
+                />
+              </div>
+              {audioBlob && (
+                <div className="flex items-center gap-2 ml-2">
+                  <audio
+                    controls
+                    src={URL.createObjectURL(audioBlob)}
+                    className="w-40"
+                  />
+                  <IoClose
+                    onClick={() => {
+                      setAudioBlob(null);
+                      setInput('');
+                    }}
+                    className="size-4 text-red-500 cursor-pointer"
+                  />
+                </div>
+              )}
+              {selectedFile && (
+                <div className="flex items-center gap-2 ml-2 mt-2">
+                  <Image
+                    src={URL.createObjectURL(selectedFile)}
+                    alt="Preview"
+                    width={100}
+                    height={100}
+                    className="rounded-lg object-cover"
+                  />
+                  <IoClose
+                    onClick={() => {
+                      setSelectedFile(null);
+                    }}
+                    className="size-4 text-red-500 cursor-pointer"
+                  />
+                </div>
+              )}
+            </>
+          );
+        }}
+      />
     </div>
   );
 };

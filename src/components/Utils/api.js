@@ -452,12 +452,21 @@ export const adPayment = async (data) => {
 };
 
 export const sendMessages = async (data) => {
+  const formData = new FormData();
+
+  // Append FormData fields
+  formData.append('id', data.id);
+  formData.append('message', data.message || '');
+  formData.append('type', data.type || 'text');
+
+  // Append file if available
+  if (data?.file) {
+    formData.append('file', data.file);
+  }
+
   const response = await fetch('/api/sendMessages', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
+    body: formData,
     credentials: 'include',
   });
 
@@ -538,7 +547,25 @@ export const getMessages = async (id, page, perPage) => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || 'Fetch advert listings failed');
+    throw new Error(errorData.message || 'Fetch messages failed');
+  }
+
+  return response.json();
+};
+
+export const readMessages = async (id) => {
+  if (!id) return;
+  const response = await fetch(`/api/readMessages?id=${id}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Read messages failed');
   }
 
   return response.json();
@@ -576,4 +603,26 @@ export const getAnalyticsAvailableYear = async () => {
   }
 
   return response.json();
+};
+
+export const uploadFile = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch('/api/upload/avatar', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload file');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Upload error:', error);
+    throw error;
+  }
 };

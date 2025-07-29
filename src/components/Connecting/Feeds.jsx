@@ -3,6 +3,7 @@ import WorldIcon from '@/Images/Icons/WorldIcon.svg';
 import ExpandImageIcon from '@/Images/Icons/ExpandImageIcon.svg';
 import { PiDotsThreeOutlineVertical } from 'react-icons/pi';
 import { formatRelativeTime } from '../Utils/methods';
+import LikeShareComment from './LikeShareComment';
 
 const Feeds = ({ feed, handleExpandImage, handleShowMore, showMore }) => {
   const formattedDate =
@@ -64,6 +65,7 @@ const Feeds = ({ feed, handleExpandImage, handleShowMore, showMore }) => {
           className="object-fill w-full h-[250px] text-black "
         />
       </div>
+      <LikeShareComment />
     </div>
   );
 };

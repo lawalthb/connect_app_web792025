@@ -1,12 +1,22 @@
 import { useEffect, useState } from 'react';
 import ChatUsers from './ChatUsers';
-import ChatRoom from './ChatRoom';
+// import ChatRoom from './ChatRoom';
 import EmptyChat from './EmptyChat';
 import EmptyChatRoom from '@/Images/EmptyChatRoom.png';
-import { getConversation, getMessages, sendMessages } from '../Utils/api';
+import {
+  getConversation,
+  getMessages,
+  readMessages,
+  sendMessages,
+} from '../Utils/api';
 import Loader from '../Loader/Loader';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useUserStore from '@/zustandStore/useUserStore';
+import dynamic from 'next/dynamic';
+
+const ChatRoom = dynamic(() => import('./ChatRoom'), {
+  ssr: false,
+});
 
 const ChatView = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);
@@ -53,6 +63,16 @@ const ChatView = () => {
     },
   });
 
+  const { mutate: readMessage, isPending: isReadingMessage } = useMutation({
+    mutationFn: readMessages(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    },
+    onError: (err) => {
+      console.error('Message read failed:', err.message);
+    },
+  });
+
   useEffect(() => {
     setId(conversations?.data?.conversations[0]?.id);
   }, [isLoadingConversations]);
@@ -78,10 +98,12 @@ const ChatView = () => {
   }, [data?.data?.messages, isLoadingMessages]);
 
   const handleSendMessage = (conversationId, message) => {
+    console.log(message);
     const payload = {
       id: conversationId,
       message: message.text,
       type: 'text',
+      file: message.file,
     };
     sendMessage(payload);
 
@@ -96,6 +118,7 @@ const ChatView = () => {
     setPage(1);
     setId(user.id);
     setSelectedConversation(user);
+    readMessage(id);
   };
 
   const handleBack = () => {
