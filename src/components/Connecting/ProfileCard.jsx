@@ -26,7 +26,7 @@ const ProfileCard = ({
       <div className="relative w-full rounded-[30px] overflow-hidden">
         {swipeDirection === 'right' && (
           <div className="absolute right-7 top-[48%] -translate-y-1/2 z-30 bg-green-600 text-white px-4 py-2 rounded-xl text-[40px] font-semibold shadow-lg transition duration-300 ease-out opacity-100 scale-100">
-            Connected
+            Connect
           </div>
         )}
 
@@ -76,7 +76,7 @@ const ProfileCard = ({
                         className="max-h-[40px] lg:max-h-[60px]"
                       >
                         <Image
-                          src={option?.file_url + option?.file_name}
+                          src={option?.profile_url}
                           alt={option?.alt_text || 'User'}
                           width={60}
                           height={60}
@@ -89,7 +89,7 @@ const ProfileCard = ({
 
                 {showCircles && (
                   <div className="flex overflow-x-scroll scrollbar-hidden gap-2 sm:gap-4 mt-2 items-center justify-start">
-                    {profile.social_circles.map((option, index) => (
+                    {profile?.social_circles?.map((option, index) => (
                       <div
                         key={option.id}
                         onClick={(e) => {

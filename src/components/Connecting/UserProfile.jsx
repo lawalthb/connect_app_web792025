@@ -65,7 +65,7 @@ const UserProfile = ({ userData }) => {
           {user_data.profile_images.map((img, index) => (
             <SwiperSlide key={index}>
               <Image
-                src={img.file_url}
+                src={img.profile_url}
                 alt={`Profile Image ${index + 1}`}
                 width={805}
                 height={783}
@@ -90,7 +90,7 @@ const UserProfile = ({ userData }) => {
       <ConnectCategiries
         socialCircles={user_data?.social_circles}
         isProfile={true}
-        extraClass="max-h-[600px] overflow-y-auto scrollbar-hidden"
+        extraClass="max-h-[350px] overflow-y-auto scrollbar-hidden"
       />
       <ConnectStory extraStyle="text-[24px]" />
       <Feeds

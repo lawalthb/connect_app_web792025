@@ -1,5 +1,7 @@
 import { TbWorldSearch } from 'react-icons/tb';
 import { LiaUserEditSolid } from 'react-icons/lia';
+import { LiaLinkSolid } from 'react-icons/lia';
+import { RiWechatLine } from 'react-icons/ri';
 
 const ProfileDetail = ({ userData }) => {
   const data = [
@@ -17,6 +19,10 @@ const ProfileDetail = ({ userData }) => {
     },
   ];
 
+  const socialLinks = userData?.social_links
+    ? JSON.parse(userData.social_links)?.map((link) => link.platform)
+    : null;
+
   return (
     <div className="border border-[#A20030] p-4 rounded-lg bg-white shadow-md my-10">
       <h3 className="text-[#2B2F38] font-semibold text-[36px] leading-8 text-center">
@@ -25,6 +31,9 @@ const ProfileDetail = ({ userData }) => {
       <p className="text-[#667085] text-base font-normal leading-[22px] text-center">
         {`@${userData?.username}`}
       </p>
+      <div className="float-right">
+        <RiWechatLine className=" size-10 -mt-10 cursor-pointer text-[#A20030]" />
+      </div>
       <div className="flex justify-center gap-10 items-center mt-3">
         {data.map((item, index) => (
           <div
@@ -53,6 +62,10 @@ const ProfileDetail = ({ userData }) => {
         <div className="flex gap-2 items-center text-[#667085]">
           <LiaUserEditSolid className="size-5" />
           <p className="font-normal text-sm leading-[22px]">{userData?.bio}</p>
+        </div>
+        <div className="flex gap-2 items-center text-[#667085] my-2">
+          <LiaLinkSolid className="size-5" />
+          <p className="font-normal text-sm leading-[22px]">{socialLinks}</p>
         </div>
       </div>
     </div>

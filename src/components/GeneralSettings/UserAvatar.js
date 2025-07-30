@@ -7,21 +7,22 @@ const UserAvatar = ({
   handleFileChange,
   fileType,
   filePreview,
+  image,
 }) => {
   const fileInputRef = useRef(null);
 
   return (
     <div
       className={`relative ${
-        isStories ? 'size-40 rounded-lg' : 'size-[129.63px] rounded-full'
+        isStories ? 'size-72 rounded-lg' : 'size-[129.63px] rounded-full'
       } bg-[#A2003070] flex items-center justify-center`}
     >
       {fileType === 'image' ? (
         <img
-          src={filePreview}
+          src={filePreview || image.url}
           alt="Preview"
           className={`object-cover ${
-            isStories ? 'size-36 rounded-md' : 'size-[114.37px] rounded-full'
+            isStories ? 'size-64 rounded-md' : 'size-[114.37px] rounded-full'
           }`}
         />
       ) : (
@@ -29,7 +30,7 @@ const UserAvatar = ({
           src={filePreview}
           controls
           className={`object-cover ${
-            isStories ? 'size-36 rounded-md' : 'size-[114.37px] rounded-full'
+            isStories ? 'size-64 rounded-md' : 'size-[114.37px] rounded-full'
           }`}
         />
       )}

@@ -8,6 +8,8 @@ import { useScrollToBottom } from '../Hooks/useScrollToBottom';
 import EmojiPicker from 'emoji-picker-react';
 import { ReactMediaRecorder } from 'react-media-recorder';
 import { IoClose } from 'react-icons/io5';
+import { CiVideoOn } from 'react-icons/ci';
+import { MdOutlineLocalPhone } from 'react-icons/md';
 
 const ChatRoom = ({
   user,
@@ -65,25 +67,32 @@ const ChatRoom = ({
   return (
     <div className="flex flex-col h-[calc(100svh-8rem)]">
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b">
-        <button
-          onClick={onBack}
-          className="md:hidden text-[#A20030] text-sm font-medium"
-        >
-          <IoIosArrowBack />
-        </button>
-        <Image
-          width={40}
-          height={40}
-          src={user.image}
-          alt={user.name}
-          className="size-10 rounded-full object-cover"
-        />
-        <div>
-          <h4 className="text-sm font-medium text-[#141414]">{user.name}</h4>
-          {user?.participants?.is_online && (
-            <span className="text-xs text-green-500">Online</span>
-          )}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3 px-4 py-3 border-b">
+          <button
+            type="button"
+            onClick={onBack}
+            className="md:hidden text-[#A20030] text-sm font-medium"
+          >
+            <IoIosArrowBack />
+          </button>
+          <Image
+            width={40}
+            height={40}
+            src={user.image}
+            alt={user.name}
+            className="size-10 rounded-full object-cover"
+          />
+          <div>
+            <h4 className="text-sm font-medium text-[#141414]">{user.name}</h4>
+            {user?.participants?.is_online && (
+              <span className="text-xs text-green-500">Online</span>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-x-3">
+          <CiVideoOn className="size-6 text-gray-700 cursor-pointer" />
+          <MdOutlineLocalPhone className="size-6 text-gray-700 cursor-pointer" />
         </div>
       </div>
 

@@ -6,10 +6,8 @@ import DefaultMaleAvatar from '@/Images/DefaultMaleAvatar.png';
 import { uploadFile } from '../Utils/api';
 import { useMutation } from '@tanstack/react-query';
 
-const ProfileImage = ({ show, onClose }) => {
-  const [filePreviews, setFilePreviews] = useState(
-    Array(6).fill(DefaultMaleAvatar.src),
-  );
+const ProfileImage = ({ show, onClose, profileImages }) => {
+  const [filePreviews, setFilePreviews] = useState(Array(6).fill(null));
   const [fileTypes, setFileTypes] = useState(Array(6).fill('image'));
   const [filesToSend, setFilesToSend] = useState(Array(6).fill(null));
 
@@ -60,12 +58,13 @@ const ProfileImage = ({ show, onClose }) => {
       showFilterIcon
     >
       <div className="my-10 flex flex-wrap gap-3 justify-center">
-        {[...Array(6)].map((_, index) => (
+        {profileImages?.slice(0, 5).map((image, index) => (
           <UserAvatar
             key={index}
             handleFileChange={(e) => handleFileChange(e, index)}
             filePreview={filePreviews[index]}
             fileType={fileTypes[index]}
+            image={image}
           />
         ))}
       </div>

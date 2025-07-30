@@ -182,6 +182,19 @@ export const getSubscription = async () => {
   return response.json();
 };
 
+export const getProfileImages = async () => {
+  const response = await fetch('/api/getProfileImages', {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch Images');
+  }
+
+  return response.json();
+};
+
 export const getCountry = async () => {
   const response = await fetch('/api/getCountry', {
     credentials: 'include',
@@ -381,6 +394,24 @@ export const updateSocialCircles = async (data) => {
 
 export const explore = async (data) => {
   const response = await fetch('/api/explore', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Explore users failed');
+  }
+
+  return response.json();
+};
+
+export const exploreByPost = async (data) => {
+  const response = await fetch('/api/exploreByPost', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -617,6 +648,29 @@ export const uploadFile = async (file) => {
 
     if (!response.ok) {
       throw new Error('Failed to upload file');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Upload error:', error);
+    throw error;
+  }
+};
+
+export const postStories = async (data) => {
+  const formData = new FormData();
+  formData.append('file', data.file);
+  formData.append('content', data.content);
+
+  try {
+    const response = await fetch('/api/postStories', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload story');
     }
 
     const data = await response.json();

@@ -7,7 +7,7 @@ import SearchField from '../Input/SearchField';
 import Feeds from './Feeds';
 import PostStories from './PostStories';
 
-const ConnectionFeed = ({ data }) => {
+const ConnectionFeed = ({ data, profileImages }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [expandImage, setExpandImage] = useState(false);
@@ -64,7 +64,11 @@ const ConnectionFeed = ({ data }) => {
         </div>
       </>
       {postStories && (
-        <PostStories onClose={handlePostStories} show={postStories} />
+        <PostStories
+          onClose={handlePostStories}
+          show={postStories}
+          profileImages={profileImages}
+        />
       )}
 
       {expandImage && (

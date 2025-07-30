@@ -65,9 +65,11 @@ const CreateAdvert = ({
 
   const onSubmit = (data) => {
     const { identityMedia, shedule, acknowledge, ad_copy, ...rest } = data;
+    const advertType =
+      data.type == 'Picture' ? 'banner' : data.type.toLowerCase();
     const payload = {
       ...rest,
-      type: data.type.toLowerCase(),
+      type: advertType,
       'target_social_circles[0]': selectedOptions[0]?.id ?? '',
       'target_social_circles[1]': selectedOptions[1]?.id ?? '',
       'target_social_circles[2]': selectedOptions[2]?.id ?? '',

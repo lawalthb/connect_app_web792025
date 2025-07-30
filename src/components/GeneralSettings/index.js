@@ -15,6 +15,7 @@ import {
   changePassword,
   deleteAccount,
   getCountry,
+  getProfileImages,
   getSubscription,
   useLogout,
 } from '../Utils/api';
@@ -34,6 +35,11 @@ const GeneralSettings = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['subscription'],
     queryFn: getSubscription,
+  });
+
+  const { data: profileImages, isLoading: isLoadingProfileImages } = useQuery({
+    queryKey: ['profileImages'],
+    queryFn: getProfileImages,
   });
 
   const { data: countryList, isLoading: isLoadingCountry } = useQuery({
@@ -127,7 +133,8 @@ const GeneralSettings = () => {
     deleteAccountMutation(data);
   };
 
-  if (isLoading && isLoadingCountry) return <Loader />;
+  if (isLoading || isLoadingCountry || isLoadingProfileImages)
+    return <Loader />;
 
   return (
     <div className="mt-16 pb-60">
@@ -140,6 +147,8 @@ const GeneralSettings = () => {
         <MainSettings
           handleSettingsClick={handleSettingsClick}
           userData={user}
+          profileImages={profileImages?.data?.images}
+          mainProfileImage={profileImages?.data?.main_profile_image}
         />
       )}
       {activeSettings.notification && <Notifications />}
@@ -151,6 +160,7 @@ const GeneralSettings = () => {
         show={activeSettings.profileimage}
         onClose={handleBackToHomePage}
         data={data?.data}
+        profileImages={profileImages?.data?.images}
       />
 
       <ChangePassword

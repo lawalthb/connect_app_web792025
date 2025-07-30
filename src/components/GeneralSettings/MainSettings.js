@@ -2,7 +2,12 @@ import Logout from './Logout';
 import SettingsCard from './SettingsCard';
 import SettingsHeader from './SettingsHeader';
 
-const MainSettings = ({ handleSettingsClick, userData }) => {
+const MainSettings = ({
+  handleSettingsClick,
+  userData,
+  profileImages,
+  mainProfileImage,
+}) => {
   const settingsData = [
     {
       name: 'Account Setting',
@@ -44,7 +49,11 @@ const MainSettings = ({ handleSettingsClick, userData }) => {
 
   return (
     <>
-      <SettingsHeader userData={userData} />
+      <SettingsHeader
+        userData={userData}
+        profileImages={profileImages}
+        mainProfileImage={mainProfileImage}
+      />
       <div className="border border-[#A20030] w-[90%] lg:w-[60%] py-20 px-10 rounded-lg mx-auto mt-20">
         <div className="text-[#5C5C5C]">
           <h3 className="font-semibold text-[18px] leading-6">

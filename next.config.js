@@ -8,6 +8,8 @@ const nextConfig = {
       'avatar.iran.liara.run',
       'connect.udemics.com',
       'flagcdn.com',
+      'connectapp.talosmart.xyz',
+      'connectlawal.s3.us-east-1.amazonaws.com',
     ],
   },
   webpack(config) {

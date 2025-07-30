@@ -6,7 +6,11 @@ import { useEffect, useState } from 'react';
 import { parse } from 'cookie';
 import useUserStore from '@/zustandStore/useUserStore';
 import { useQuery } from '@tanstack/react-query';
-import { getPost, getSocialCircles } from '@/components/Utils/api';
+import {
+  getPost,
+  getProfileImages,
+  getSocialCircles,
+} from '@/components/Utils/api';
 import Loader from '@/components/Loader/Loader';
 import Discovery from '@/components/Connecting/Discovery';
 
@@ -17,6 +21,11 @@ const Connecting = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['post'],
     queryFn: getPost,
+  });
+
+  const { data: profileImages, isLoading: isLoadingProfileImages } = useQuery({
+    queryKey: ['profileImages'],
+    queryFn: getProfileImages,
   });
 
   const {
@@ -50,8 +59,10 @@ const Connecting = () => {
           activeTab={activeTab}
         />
       </div>
-      {(isLoading || isLoadingSocialCircles) && <Loader />}
-      {!isLoading && !isLoadingSocialCircles && (
+      {(isLoading || isLoadingSocialCircles || isLoadingProfileImages) && (
+        <Loader />
+      )}
+      {!isLoading && !isLoadingSocialCircles && !isLoadingProfileImages && (
         <div className="px-1 md:px-20">
           {activeTab === 'Category' && (
             <ConnectWithOthers
@@ -59,7 +70,10 @@ const Connecting = () => {
             />
           )}
           {activeTab === 'Connecting Feed' && (
-            <ConnectionFeed data={data?.data} />
+            <ConnectionFeed
+              data={data?.data}
+              profileImages={profileImages.data.images}
+            />
           )}
           {activeTab === 'Discovery' && <Discovery data={data?.data} />}
         </div>

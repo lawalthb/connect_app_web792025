@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { explore } from '../Utils/api';
+import { explore, exploreByPost } from '../Utils/api';
 import Loader from '../Loader/Loader';
 import ErrorMsg from '../ErrorMsg';
 import { useEffect, useState } from 'react';
@@ -57,7 +57,7 @@ const Discovery = () => {
                 <div className="max-w-[387px] lg:max-w-full">
                   <div className="mb-8 lg:mb-4">
                     <Image
-                      src={user.profile_images[0]?.file_url}
+                      src={user.profile_images[0]?.profile_url}
                       alt={user?.name || 'User'}
                       width={60}
                       height={60}

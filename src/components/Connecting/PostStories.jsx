@@ -3,18 +3,25 @@ import Button from '../Button';
 import UserAvatar from '../GeneralSettings/UserAvatar';
 import Modal from '../Modal';
 import DefaultMaleAvatar from '@/Images/DefaultMaleAvatar.png';
-import { uploadFile } from '../Utils/api';
+import { postStories, uploadFile } from '../Utils/api';
 import { useMutation } from '@tanstack/react-query';
+import InputField from '../Input/InputField';
+import { FormProvider, useForm } from 'react-hook-form';
+import ErrorMsg from '../ErrorMsg';
 
-const PostStories = ({ show, onClose }) => {
-  const [filePreviews, setFilePreviews] = useState(
-    Array(6).fill(DefaultMaleAvatar.src),
-  );
-  const [fileTypes, setFileTypes] = useState(Array(6).fill('image'));
-  const [filesToSend, setFilesToSend] = useState(Array(6).fill(null));
+const PostStories = ({ show, onClose, profileImages }) => {
+  const [filePreviews, setFilePreviews] = useState(Array(1).fill(null));
+  const [fileTypes, setFileTypes] = useState(Array(1).fill('image'));
+  const [filesToSend, setFilesToSend] = useState(Array(1).fill(null));
 
-  const { mutate: uploadAvatar, isPending } = useMutation({
-    mutationFn: uploadFile,
+  const methods = useForm();
+
+  const {
+    mutate: uploadAvatar,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: postStories,
     onSuccess: (data) => {
       console.log('✅ Upload successful:', data);
     },
@@ -45,12 +52,13 @@ const PostStories = ({ show, onClose }) => {
     setFileTypes(updatedTypes);
   };
 
-  console.log(filesToSend, 'filesToSend');
-
-  const handlePostStory = () => {
+  const onSubmit = (data) => {
     filesToSend.forEach((file) => {
-      if (file) console.log(file);
-      //   if (file) uploadAvatar(file);
+      const payload = {
+        ...data,
+        file,
+      };
+      if (file) uploadAvatar(payload);
     });
   };
 
@@ -62,24 +70,31 @@ const PostStories = ({ show, onClose }) => {
       size="max-w-xl"
       showFilterIcon
     >
-      <div className="my-10 flex flex-wrap gap-3 justify-center">
-        {[...Array(6)].map((_, index) => (
-          <UserAvatar
-            key={index}
-            isStories
-            handleFileChange={(e) => handleFileChange(e, index)}
-            filePreview={filePreviews[index]}
-            fileType={fileTypes[index]}
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="my-10 flex flex-wrap gap-3 justify-center">
+            {profileImages?.slice(0, 1).map((image, index) => (
+              <UserAvatar
+                key={index}
+                isStories
+                handleFileChange={(e) => handleFileChange(e, index)}
+                filePreview={filePreviews[index]}
+                fileType={fileTypes[index]}
+                image={image}
+              />
+            ))}
+          </div>
+          <InputField label={'Description'} type="text" name={'content'} />
+          <Button
+            label={'Post Story'}
+            type="submit"
+            btnclass="w-full h-14"
+            disabled={isPending}
+            isLoading={isPending}
           />
-        ))}
-      </div>
-      <Button
-        label={isPending ? 'Posting...' : 'Post Story'}
-        type="button"
-        btnclass="w-full h-14"
-        onClick={handlePostStory}
-        disabled={isPending}
-      />
+        </form>
+        <ErrorMsg errorMessage={error?.message} />
+      </FormProvider>
     </Modal>
   );
 };
