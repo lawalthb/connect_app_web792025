@@ -6,7 +6,6 @@ import { parse } from 'cookie';
 
 const Profile = () => {
   const { user, loading } = useUserStore();
-  console.log(user, 'user in profile');
 
   if (loading) return <Loader />;
 
@@ -14,7 +13,7 @@ const Profile = () => {
     <div>
       <AuthenticatedNavBar />
       {user && (
-        <div className="px-10 lg:px-60 my-20">
+        <div className="px-10 md:px-20 lg:w-max mx-auto my-20">
           <UserProfile userData={user} />
         </div>
       )}

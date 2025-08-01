@@ -5,7 +5,15 @@ import { PiDotsThreeOutlineVertical } from 'react-icons/pi';
 import { formatRelativeTime } from '../Utils/methods';
 import LikeShareComment from './LikeShareComment';
 
-const Feeds = ({ feed, handleExpandImage, handleShowMore, showMore }) => {
+const Feeds = ({
+  feed,
+  handleExpandImage,
+  handleShowMore,
+  showMore,
+  handleComment = () => {},
+  showComment,
+  clickedId,
+}) => {
   const formattedDate =
     feed?.created_at && formatRelativeTime(feed?.created_at);
   return (
@@ -27,10 +35,10 @@ const Feeds = ({ feed, handleExpandImage, handleShowMore, showMore }) => {
           <div>
             <div className="relative">
               <PiDotsThreeOutlineVertical
-                onClick={handleShowMore}
+                onClick={() => handleShowMore(null, feed.id)}
                 className="text-[#292D32] cursor-pointer"
               />
-              {showMore && (
+              {showMore && clickedId === feed.id && (
                 <div className="absolute z-10 right-7 py-4 pl-3 border border-[#FAFAFA] text-[#2E2E2E] bg-white shadow-lg w-[163px] font-normal text-[12px] leading-6 rounded-[10px]">
                   <p
                     onClick={() => handleShowMore('post')}
@@ -65,7 +73,11 @@ const Feeds = ({ feed, handleExpandImage, handleShowMore, showMore }) => {
           className="object-fill w-full h-[250px] text-black "
         />
       </div>
-      <LikeShareComment />
+      <LikeShareComment
+        feed={feed}
+        handleComment={handleComment}
+        showComment={showComment}
+      />
     </div>
   );
 };

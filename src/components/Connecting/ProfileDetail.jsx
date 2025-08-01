@@ -2,8 +2,12 @@ import { TbWorldSearch } from 'react-icons/tb';
 import { LiaUserEditSolid } from 'react-icons/lia';
 import { LiaLinkSolid } from 'react-icons/lia';
 import { RiWechatLine } from 'react-icons/ri';
+import Link from 'next/link';
+import { getCode } from 'country-list';
+import { useRouter } from 'next/router';
 
 const ProfileDetail = ({ userData }) => {
+  const router = useRouter();
   const data = [
     {
       name: 'Post',
@@ -19,8 +23,22 @@ const ProfileDetail = ({ userData }) => {
     },
   ];
 
+  const handleChatClick = () => {
+    router.push('/chat');
+  };
+
+  const countryCode = userData?.country
+    ? getCode(userData?.country?.name)
+    : null;
+  const flagUrl = countryCode
+    ? `https://flagcdn.com/w80/${countryCode.toLowerCase()}.png`
+    : null;
+
   const socialLinks = userData?.social_links
-    ? JSON.parse(userData.social_links)?.map((link) => link.platform)
+    ? JSON.parse(userData.social_links)?.map((link) => ({
+        name: link.platform,
+        url: link.url,
+      }))
     : null;
 
   return (
@@ -32,7 +50,10 @@ const ProfileDetail = ({ userData }) => {
         {`@${userData?.username}`}
       </p>
       <div className="float-right">
-        <RiWechatLine className=" size-10 -mt-10 cursor-pointer text-[#A20030]" />
+        <RiWechatLine
+          onClick={handleChatClick}
+          className=" size-10 -mt-10 cursor-pointer text-[#A20030]"
+        />
       </div>
       <div className="flex justify-center gap-10 items-center mt-3">
         {data.map((item, index) => (
@@ -55,9 +76,18 @@ const ProfileDetail = ({ userData }) => {
         </h3>
         <div className="flex gap-2 items-center text-[#667085] my-2">
           <TbWorldSearch className="size-5 " />
-          <p className="font-normal text-sm leading-[22px] capitalize">
-            {userData?.country?.name}
-          </p>
+          <div className="flex gap-x-3">
+            <p className="font-normal text-sm leading-[22px] capitalize">
+              {userData?.country?.name}
+            </p>
+            {flagUrl && (
+              <img
+                src={flagUrl}
+                alt={`${userData?.country?.name} flag`}
+                className="h-5 w-8"
+              />
+            )}
+          </div>
         </div>
         <div className="flex gap-2 items-center text-[#667085]">
           <LiaUserEditSolid className="size-5" />
@@ -65,7 +95,16 @@ const ProfileDetail = ({ userData }) => {
         </div>
         <div className="flex gap-2 items-center text-[#667085] my-2">
           <LiaLinkSolid className="size-5" />
-          <p className="font-normal text-sm leading-[22px]">{socialLinks}</p>
+          {socialLinks?.[0]?.url && (
+            <Link
+              href={socialLinks?.[0]?.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-normal text-sm leading-[22px] cursor-pointer hover:text-[#A20030]"
+            >
+              {socialLinks?.[0]?.name}
+            </Link>
+          )}
         </div>
       </div>
     </div>

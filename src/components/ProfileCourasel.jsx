@@ -87,7 +87,7 @@ const ProfileCourasel = ({
         }}
         onSlideChange={handleSlideChange}
       >
-        {profiles.map((profile, index) => (
+        {profiles?.map((profile, index) => (
           <SwiperSlide
             key={index}
             className="w-full max-w-[805px] flex justify-center"

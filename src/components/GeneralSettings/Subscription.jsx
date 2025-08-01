@@ -39,7 +39,7 @@ const Subscription = ({ data }) => {
                 ? PremiumIcon
                 : item.name === 'Connect Boost'
                   ? BoostIcon
-                  : null;
+                  : BoostIcon;
 
         const isPremium = item.name === 'Connect Premium';
 

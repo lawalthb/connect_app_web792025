@@ -18,6 +18,19 @@ const ProfileCard = ({
     e.stopPropagation();
     setShowCircles((prev) => !prev);
   };
+
+  const newObj = {
+    profile_url: profile?.profile_url,
+    alt_text: 'Main Picture',
+  };
+  const profileImages = profile?.profile_images || [];
+
+  const combinedImages = [newObj, ...profileImages];
+
+  // const combinedImages = discoverUserModal
+  //   ? [newObj, ...profileImages]
+  //   : [newObj, ...profileImages].slice(0, 7).slice(2);
+
   return (
     <div
       onClick={handleImageClick}
@@ -69,12 +82,9 @@ const ProfileCard = ({
                 </p>
 
                 <div className="flex gap-2 sm:gap-4 mb-8 lg:mb-4 mt-4 items-center justify-start flex-wrap">
-                  {profile?.profile_images?.map((option) => {
+                  {combinedImages?.map((option, index) => {
                     return (
-                      <div
-                        key={option?.id}
-                        className="max-h-[40px] lg:max-h-[60px]"
-                      >
+                      <div key={index} className="max-h-[40px] lg:max-h-[60px]">
                         <Image
                           src={option?.profile_url}
                           alt={option?.alt_text || 'User'}

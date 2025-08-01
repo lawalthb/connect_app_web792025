@@ -28,7 +28,7 @@ const Notification = ({ handleNotificationClick, userNotificationOpen }) => {
             isSubscription={true}
           />
           <NotificationCard
-            title="Send Request:"
+            title="Connect Request:"
             username="Emily"
             isSentRequest={true}
             time="8 hours ago"

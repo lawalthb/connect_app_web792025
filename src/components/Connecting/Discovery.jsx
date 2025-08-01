@@ -5,12 +5,12 @@ import ErrorMsg from '../ErrorMsg';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-const Discovery = () => {
+const Discovery = ({ handleShowSwipePage }) => {
   const [users, setUsers] = useState([]);
   const [userClicked, setUserClicked] = useState('');
 
   const { mutate, isPending, error } = useMutation({
-    mutationFn: explore,
+    mutationFn: exploreByPost,
     onSuccess: (data) => {
       setUsers(data.data);
     },
@@ -35,7 +35,7 @@ const Discovery = () => {
   };
 
   return (
-    <div className="w-full lg:w-[70%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 space-y-3">
+    <div className="w-full lg:w-[70%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 space-y-3 justify-items-center">
       {users?.map((user) => {
         return (
           <div
@@ -57,6 +57,7 @@ const Discovery = () => {
                 <div className="max-w-[387px] lg:max-w-full">
                   <div className="mb-8 lg:mb-4">
                     <Image
+                      onClick={() => handleShowSwipePage(user.id)}
                       src={user.profile_images[0]?.profile_url}
                       alt={user?.name || 'User'}
                       width={60}
