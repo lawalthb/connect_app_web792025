@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { AiOutlineLike } from 'react-icons/ai';
 import { IoShareSocialOutline } from 'react-icons/io5';
 
-const LikeShareComment = ({ feed, handleComment, showComment }) => {
+const LikeShareComment = ({
+  feed,
+  handleComment,
+  showComment,
+  handleShowMore,
+}) => {
   const [input, setInput] = useState('');
   const singleOrPluralLikes = feed.likes_count > 1 ? 'Likes' : 'Like';
   const singleOrPluralComments =
@@ -26,7 +31,12 @@ const LikeShareComment = ({ feed, handleComment, showComment }) => {
       </div>
       <div className="mt-2 w-full ">
         {feed?.comments_count === 0 ? (
-          <h3 className="text-base font-semibold text-gray-600">No Comment</h3>
+          <h3
+            onClick={() => handleComment()}
+            className="text-base font-semibold text-gray-600 cursor-pointer hover:text-[#A20030]"
+          >
+            Comment
+          </h3>
         ) : (
           <h3
             onClick={() => handleComment(feed)}
@@ -35,7 +45,7 @@ const LikeShareComment = ({ feed, handleComment, showComment }) => {
             {`${feed?.comments_count > 0 ? feed.comments_count : ''} ${singleOrPluralComments}`}
           </h3>
         )}
-        {feed?.comments_count > 0 && showComment && (
+        {showComment && (
           <>
             <div className="text-[#050505] text-sm p-3 w-max bg-[#F0F2F5] rounded-[18px] mt-2 mx-8">
               <h3 className=" font-semibold">Jackson Fave</h3>

@@ -23,6 +23,8 @@ const MultiSelectDropdown = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  console.log(options);
+
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <label className="block mb-2 text-sm font-medium text-gray-700">
@@ -60,6 +62,7 @@ const MultiSelectDropdown = ({
                 onChange={() => handleOptionToggle(option)}
                 className="mr-2"
               />
+              <img src={option.icon} alt="icon" className="size-4 mx-0.5" />
               {option.name}
             </label>
           ))}

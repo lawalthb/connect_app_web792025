@@ -5,7 +5,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import ProfileCard from './Connecting/ProfileCard';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { swipeCount } from './Utils/api';
 import { useRouter } from 'next/router';
@@ -32,6 +32,21 @@ const ProfileCourasel = ({
       console.error('Swipe failed:', err.message);
     },
   });
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!swiperRef.current) return;
+
+      if (e.key === 'ArrowRight') {
+        swiperRef.current.slideNext();
+      } else if (e.key === 'ArrowLeft') {
+        swiperRef.current.slidePrev();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleSwipeCount = (swipeStats) => {
     if (swipeStats.daily_limit === swipeStats.total_swipes) {

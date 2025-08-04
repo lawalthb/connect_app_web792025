@@ -2,11 +2,11 @@ import ChatView from '@/components/Chat';
 import AuthenticatedNavBar from '@/components/Layout/AuthenticatedNavBar';
 import { parse } from 'cookie';
 
-const Chat = () => {
+const Chat = ({ token }) => {
   return (
     <div>
       <AuthenticatedNavBar />
-      <ChatView />
+      <ChatView token={token} />
     </div>
   );
 };
@@ -23,6 +23,6 @@ export async function getServerSideProps({ req }) {
   }
 
   return {
-    props: {},
+    props: { token: token },
   };
 }

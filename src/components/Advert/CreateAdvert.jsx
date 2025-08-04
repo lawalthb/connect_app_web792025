@@ -88,6 +88,8 @@ const CreateAdvert = ({
     logo: item.flag,
   }));
 
+  console.log(socialCircles, 'socialCircles');
+
   return (
     <div className="w-[90%] lg:w-[70%] mx-auto mt-10">
       <FormProvider {...methods}>
@@ -165,7 +167,7 @@ const CreateAdvert = ({
               <div className="my-10">
                 <ImageUpload />
               </div>
-              <div className="flex gap-x-4">
+              <div className="flex flex-col md:flex-row gap-x-4">
                 <SelectField label={'Ad Placement'} name="target_audience">
                   {[
                     'Swipe page',

@@ -77,6 +77,7 @@ const Feeds = ({
         feed={feed}
         handleComment={handleComment}
         showComment={showComment}
+        handleShowMore={handleShowMore}
       />
     </div>
   );

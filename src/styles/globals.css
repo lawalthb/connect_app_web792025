@@ -32,3 +32,14 @@ body {
 .scrollbar-hidden::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+
+@keyframes bounce {
+  from {
+    transform: scaleY(0.3);
+    opacity: 0.5;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}

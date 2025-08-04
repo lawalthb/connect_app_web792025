@@ -25,6 +25,7 @@
     "jspdf-autotable": "^5.0.2",
     "lottie-react": "^2.4.1",
     "next": "15.3.2",
+    "pusher-js": "^8.4.0",
     "react": "^19.0.0",
     "react-country-region-selector": "^4.0.2",
     "react-datepicker": "^8.4.0",

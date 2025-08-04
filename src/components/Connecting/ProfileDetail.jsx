@@ -46,7 +46,7 @@ const ProfileDetail = ({ userData }) => {
       <h3 className="text-[#2B2F38] font-semibold text-[36px] leading-8 text-center">
         {userData?.name}
       </h3>
-      <p className="text-[#667085] text-base font-normal leading-[22px] text-center">
+      <p className="text-[#667085] text-[20px] font-normal leading-[22px] text-center mt-3">
         {`@${userData?.username}`}
       </p>
       <div className="float-right">
@@ -64,7 +64,7 @@ const ProfileDetail = ({ userData }) => {
             <h3 className="text-[#2B2F38] font-semibold text-[24px] leading-[26px]">
               {item.input}
             </h3>
-            <p className="text-[#667085] text-sm font-normal leading-[22px] w-max">
+            <p className="text-[#667085] text-[20px] font-normal leading-[22px] w-max mt-2">
               {item.name}
             </p>
           </div>
@@ -77,7 +77,7 @@ const ProfileDetail = ({ userData }) => {
         <div className="flex gap-2 items-center text-[#667085] my-2">
           <TbWorldSearch className="size-5 " />
           <div className="flex gap-x-3">
-            <p className="font-normal text-sm leading-[22px] capitalize">
+            <p className="font-normal text-[20px] leading-[22px] capitalize">
               {userData?.country?.name}
             </p>
             {flagUrl && (
@@ -89,9 +89,11 @@ const ProfileDetail = ({ userData }) => {
             )}
           </div>
         </div>
-        <div className="flex gap-2 items-center text-[#667085]">
+        <div className="flex gap-2 items-center justified-start text-[#667085]">
           <LiaUserEditSolid className="size-5" />
-          <p className="font-normal text-sm leading-[22px]">{userData?.bio}</p>
+          <p className="font-normal text-[20px] leading-[22px]">
+            {userData?.bio}
+          </p>
         </div>
         <div className="flex gap-2 items-center text-[#667085] my-2">
           <LiaLinkSolid className="size-5" />
@@ -100,9 +102,9 @@ const ProfileDetail = ({ userData }) => {
               href={socialLinks?.[0]?.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-normal text-sm leading-[22px] cursor-pointer hover:text-[#A20030]"
+              className="font-normal text-[20px] leading-[22px] cursor-pointer hover:text-[#A20030]"
             >
-              {socialLinks?.[0]?.name}
+              {socialLinks?.[0]?.url}
             </Link>
           )}
         </div>

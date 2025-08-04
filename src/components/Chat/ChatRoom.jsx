@@ -7,9 +7,10 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { useScrollToBottom } from '../Hooks/useScrollToBottom';
 import EmojiPicker from 'emoji-picker-react';
 import { ReactMediaRecorder } from 'react-media-recorder';
-import { IoClose } from 'react-icons/io5';
 import { CiVideoOn } from 'react-icons/ci';
 import { MdOutlineLocalPhone } from 'react-icons/md';
+import Modal from '../Modal';
+import { IoClose } from 'react-icons/io5';
 
 const ChatRoom = ({
   user,
@@ -21,26 +22,70 @@ const ChatRoom = ({
   handleViewMore,
   isLoadingMessages,
   resetPage,
+  handleCallInitiation,
 }) => {
   const [input, setInput] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [timerId, setTimerId] = useState(null);
 
   const fileInputRef = useRef(null);
   const chatContainerRef = useScrollToBottom([isLoadingMessages]);
   const reversedMessages = messages?.slice().reverse();
 
-  const handleSend = () => {
-    if (!input.trim() && !selectedFile && !audioBlob) return;
+  const startRecordingTimer = () => {
+    const id = setInterval(() => {
+      setRecordingTime((prev) => prev + 1);
+    }, 1000);
+    setTimerId(id);
+  };
 
+  const stopRecordingTimer = () => {
+    clearInterval(timerId);
+  };
+
+  const handleSendAudio = () => {
+    // send audioBlob
+    const newMessage = {
+      id: messages.length + 1,
+      sender: 'me',
+      text: 'Audio',
+      file: audioBlob,
+      type: 'audio',
+      time: new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    };
+    handleDiscardAudio();
+    onSend(newMessage);
+  };
+
+  const handleDiscardAudio = () => {
+    console.log('discarded');
+    setAudioBlob(null);
+    setRecordingTime(0);
+    setIsRecording(false);
+    setSelectedFile(null);
+  };
+
+  const handleSend = () => {
+    if (audioBlob) {
+      handleSendAudio();
+      return;
+    }
+    if (!input.trim() && !selectedFile && !audioBlob) return;
+    console.log('triggered');
     const newMessage = {
       id: messages.length + 1,
       sender: 'me',
       text: input.trim(),
       file: selectedFile,
       audio: audioBlob,
+      type: selectedFile ? 'image' : 'text',
       time: new Date().toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',
@@ -51,6 +96,7 @@ const ChatRoom = ({
     setInput('');
     setSelectedFile(null);
     setAudioBlob(null);
+    handleDiscardAudio();
   };
 
   const handleFileChange = (e) => {
@@ -91,8 +137,14 @@ const ChatRoom = ({
           </div>
         </div>
         <div className="flex items-center gap-x-3">
-          <CiVideoOn className="size-6 text-gray-700 cursor-pointer" />
-          <MdOutlineLocalPhone className="size-6 text-gray-700 cursor-pointer" />
+          <CiVideoOn
+            onClick={() => handleCallInitiation('video')}
+            className="size-6 text-gray-700 cursor-pointer"
+          />
+          <MdOutlineLocalPhone
+            onClick={() => handleCallInitiation('audio')}
+            className="size-6 text-gray-700 cursor-pointer"
+          />
         </div>
       </div>
 
@@ -171,7 +223,7 @@ const ChatRoom = ({
                 .then((res) => res.blob())
                 .then((blob) => {
                   setAudioBlob(blob);
-                  setInput('Audio recorded');
+                  // setInput('Audio recorded');
                 });
               setIsRecording(false);
             }
@@ -180,10 +232,13 @@ const ChatRoom = ({
           const toggleRecording = () => {
             if (status !== 'recording') {
               setIsRecording(true);
-              setInput('Recording...');
+              startRecordingTimer();
+              // setInput('Recording...');
               startRecording();
             } else {
               stopRecording();
+              stopRecordingTimer();
+              handleDiscardAudio();
             }
           };
 
@@ -204,10 +259,10 @@ const ChatRoom = ({
                     type="button"
                     onClick={() => setEmojiPickerOpen((prev) => !prev)}
                   >
-                    <FiSmile className="w-5 h-5 text-gray-500 cursor-pointer" />
+                    <FiSmile className="w-5 h-5 text-gray-500 cursor-pointer mt-1" />
                   </button>
                   {emojiPickerOpen && (
-                    <div className="absolute bottom-12 left-0 z-10 ">
+                    <div className="absolute bottom-12 left-0 z-10">
                       <EmojiPicker onEmojiClick={handleEmojiSelect} />
                     </div>
                   )}
@@ -225,25 +280,50 @@ const ChatRoom = ({
                 </button>
 
                 {/* Input Field */}
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => {
-                    setInput(e.target.value);
-                    resetPage();
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSend();
-                  }}
-                  placeholder="Type a message..."
-                  disabled={isRecording}
-                  className="flex-1 px-4 py-2 border rounded-full text-sm text-gray-500 outline-none focus:ring-1 focus:ring-[#A20030]"
-                />
+                {isRecording ? (
+                  <div className="flex items-center gap-2 w-full">
+                    <span className="text-sm text-gray-500">
+                      {Math.floor(recordingTime / 60)}:
+                      {String(recordingTime % 60).padStart(2, '0')}
+                    </span>
+                    <div className="flex justify-center space-x-[2px]  w-full">
+                      {[...Array(50)].map((_, i) => (
+                        <div
+                          key={i}
+                          className="w-[3px] bg-gray-500 rounded"
+                          style={{
+                            height: `${6 + Math.random() * 20}px`,
+                            animation: `bounce ${0.6 + i * 0.1}s ease-in-out infinite alternate`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => {
+                      setInput(e.target.value);
+                      handleDiscardAudio();
+                      resetPage();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSend();
+                    }}
+                    placeholder="Type a message..."
+                    disabled={isRecording}
+                    className="flex-1 px-4 py-2 border rounded-full text-sm text-gray-500 outline-none focus:ring-1 focus:ring-[#A20030]"
+                  />
+                )}
 
                 {/* Send Button */}
                 <button
-                  onClick={handleSend}
-                  className="text-white bg-[#A20030] hover:bg-[#870026] p-2 rounded-full"
+                  onClick={() => {
+                    handleSend();
+                    isRecording && toggleRecording();
+                  }}
+                  className="text-white bg-[#A20030] hover:bg-[#870026] p-2 rounded-full cursor-pointer"
                 >
                   <FiSend className="w-5 h-5" />
                 </button>
@@ -257,7 +337,7 @@ const ChatRoom = ({
                   onChange={handleFileChange}
                 />
               </div>
-              {audioBlob && (
+              {/* {audioBlob && (
                 <div className="flex items-center gap-2 ml-2">
                   <audio
                     controls
@@ -272,23 +352,28 @@ const ChatRoom = ({
                     className="size-4 text-red-500 cursor-pointer"
                   />
                 </div>
-              )}
+              )} */}
               {selectedFile && (
-                <div className="flex items-center gap-2 ml-2 mt-2">
-                  <Image
-                    src={URL.createObjectURL(selectedFile)}
-                    alt="Preview"
-                    width={100}
-                    height={100}
-                    className="rounded-lg object-cover"
-                  />
-                  <IoClose
-                    onClick={() => {
-                      setSelectedFile(null);
-                    }}
-                    className="size-4 text-red-500 cursor-pointer"
-                  />
-                </div>
+                <Modal
+                  isOpen={selectedFile}
+                  onClose={() => setSelectedFile(null)}
+                  size="max-w-[705px] max-h-fit overflow-y-scroll"
+                >
+                  <div className="relative flex w-full h-96 items-center gap-2 ml-2 mt-2">
+                    <Image
+                      src={URL.createObjectURL(selectedFile)}
+                      alt="Preview"
+                      fill
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                  <button
+                    onClick={handleSend}
+                    className="text-white bg-[#A20030] hover:bg-[#870026] py-4 rounded-full mt-5 w-full flex items-center justify-center gap-x-2 cursor-pointer"
+                  >
+                    Send <FiSend className="w-5 h-5" />
+                  </button>
+                </Modal>
               )}
             </>
           );

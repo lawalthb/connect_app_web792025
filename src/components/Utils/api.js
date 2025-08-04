@@ -527,6 +527,24 @@ export const swipeCount = async (data) => {
   return response.json();
 };
 
+export const initialteCall = async (data) => {
+  const response = await fetch('/api/initialteCall', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Call initiation failed');
+  }
+
+  return response.json();
+};
+
 export const getUser = async (id) => {
   const response = await fetch(`/api/getUser?id=${id}`, {
     method: 'GET',

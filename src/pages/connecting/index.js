@@ -130,7 +130,7 @@ const Connecting = () => {
         <Modal
           isOpen={showSwipe}
           onClose={handleCloseSwipePage}
-          title="Connect"
+          title="ConnectApp"
           size="max-w-[905px] max-h-[calc(100vh-50px)] overflow-y-scroll"
         >
           {isPending ? (
@@ -151,7 +151,7 @@ const Connecting = () => {
         <Modal
           isOpen={showSwipe}
           onClose={handleViewProfile}
-          size="max-w-[505px] max-h-[calc(100vh-150px)] overflow-y-scroll"
+          size="max-w-[805px] max-h-[calc(100vh-150px)] overflow-y-scroll"
         >
           <UserProfile userData={userData} />
         </Modal>

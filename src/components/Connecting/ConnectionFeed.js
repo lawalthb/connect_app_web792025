@@ -13,6 +13,7 @@ const ConnectionFeed = ({ data, profileImages }) => {
   const [expandImage, setExpandImage] = useState(false);
   const [postStories, setPostStories] = useState(false);
   const [url, setUrl] = useState('');
+  const [showComment, setShowComment] = useState(false);
 
   const handleShowMore = (identifier) => {
     if (identifier === 'post') {
@@ -26,6 +27,11 @@ const ConnectionFeed = ({ data, profileImages }) => {
   const handleFilter = () => {
     setShowFilter((prev) => !prev);
   };
+
+  const handleComment = () => {
+    setShowComment((prev) => !prev);
+  };
+
   const handleExpandImage = (url) => {
     setUrl(url);
     setExpandImage((prev) => !prev);
@@ -56,6 +62,8 @@ const ConnectionFeed = ({ data, profileImages }) => {
                     handleExpandImage={handleExpandImage}
                     handleShowMore={handleShowMore}
                     showMore={showMore}
+                    handleComment={handleComment}
+                    showComment={showComment}
                   />
                 </div>
               );
