@@ -6,6 +6,7 @@ const TabSelector = ({
   thirdTabName,
   onTabChange,
   activeTab,
+  isAuth = false,
 }) => {
   const handleTabChange = useCallback(
     (newValue) => {
@@ -40,12 +41,14 @@ const TabSelector = ({
       >
         {secondTabName}
       </h3>
-      <h3
-        onClick={() => handleTabChange(thirdTabName)}
-        className={`${thirdTabBorderColor} w-1/2 font-semibold text-center text-base cursor-pointer border-b hover:border-[#A20030] hover:text-[#A20030] transition-colors`}
-      >
-        {thirdTabName}
-      </h3>
+      {!isAuth && (
+        <h3
+          onClick={() => handleTabChange(thirdTabName)}
+          className={`${thirdTabBorderColor} w-1/2 font-semibold text-center text-base cursor-pointer border-b hover:border-[#A20030] hover:text-[#A20030] transition-colors`}
+        >
+          {thirdTabName}
+        </h3>
+      )}
     </div>
   );
 };

@@ -21,6 +21,7 @@ const UserAuth = ({
         secondTabName={secondTabName}
         onTabChange={onTabChange}
         activeTab={activeTab}
+        isAuth={true}
       />
       <div className="mx-auto w-full lg:w-[420px]">
         {activeTab === 'Login with your email' && <LoginUser />}
