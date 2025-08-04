@@ -14,8 +14,14 @@ const ConnectionFeed = ({ data, profileImages }) => {
   const [postStories, setPostStories] = useState(false);
   const [url, setUrl] = useState('');
   const [showComment, setShowComment] = useState(false);
+  const [feedId, setFeedId] = useState(false);
+  const [id, setId] = useState(false);
 
-  const handleShowMore = (identifier) => {
+  const handleShowMore = (identifier, id) => {
+    if (id) {
+      setId(id);
+    }
+    setId;
     if (identifier === 'post') {
       console.log(identifier);
     } else if (identifier === 'delete') {
@@ -28,7 +34,8 @@ const ConnectionFeed = ({ data, profileImages }) => {
     setShowFilter((prev) => !prev);
   };
 
-  const handleComment = () => {
+  const handleComment = (id) => {
+    setFeedId(id);
     setShowComment((prev) => !prev);
   };
 
@@ -64,6 +71,8 @@ const ConnectionFeed = ({ data, profileImages }) => {
                     showMore={showMore}
                     handleComment={handleComment}
                     showComment={showComment}
+                    feedId={feedId}
+                    clickedId={id}
                   />
                 </div>
               );

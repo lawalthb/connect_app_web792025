@@ -1,9 +1,10 @@
 import Button from '../Button';
 
 const SubscriptionCard = ({ icon: Icon, isPremium, handleSubsribe, data }) => {
+  const formattedLabel = 'unlimited_daily_connections'.replace(/_/g, ' ');
   return (
     <div>
-      <div className="group transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-lg rounded-lg border border-[#A20030] rounded-lg p-5 h-[288px] bg-white transition-colors duration-300">
+      <div className="group ease-in-out hover:scale-[1.02] hover:shadow-lg border border-[#A20030] rounded-lg p-5 bg-white transition-colors duration-300 h-max">
         <div className="w-full space-y-4">
           <div
             className={`flex items-center justify-between p-6 rounded-lg transition-colors duration-300 ${
@@ -41,6 +42,22 @@ const SubscriptionCard = ({ icon: Icon, isPremium, handleSubsribe, data }) => {
           <p className="text-[#5C5C5C] font-semibold text-[18px] leading-6">
             Included
           </p>
+          <div className="flex flex-col gap-3">
+            {data?.features?.map((feature) => (
+              <label
+                key={feature}
+                className="inline-flex items-center gap-2 cursor-pointer text-base font-normal text-gray-800 capitalize"
+              >
+                <input
+                  type="checkbox"
+                  value={feature.toLowerCase()}
+                  checked={true}
+                  className="accent-[#A20030] w-4 h-4"
+                />
+                {feature.replace(/_/g, ' ')}
+              </label>
+            ))}
+          </div>
           <p className="text-[#5C5C5C] font-normal text-base leading-6 max-w-[641px]">
             {data.description}
           </p>

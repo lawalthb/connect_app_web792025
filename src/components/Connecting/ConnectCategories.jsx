@@ -6,7 +6,6 @@ const ConnectCategiries = ({
   socialCircles,
   handleButtonClick = () => {},
   isProfile = false,
-  isLoading,
   loadingId,
   extraClass = '',
   error,
@@ -29,7 +28,10 @@ const ConnectCategiries = ({
             <Image
               width={70}
               height={70}
-              src={options?.icon || options?.logo_url}
+              src={
+                options?.icon ||
+                `https://connect.udemics.com/${options?.logo_url}/${options?.logo}`
+              }
               alt="Social circle"
             />
             <h3 className="text-[#A20030] font-semibold text-lg text-center">
@@ -41,7 +43,6 @@ const ConnectCategiries = ({
                 variant="outlined"
                 onClick={() => handleButtonClick(options.id)}
                 className="w-[204px] h-[45px]"
-                isLoading={loadingId === options.id && isLoading}
               />
             )}
             {loadingId === options.id && (

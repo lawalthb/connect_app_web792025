@@ -25,6 +25,7 @@ import ProfileImage from './ProfileImage';
 
 const GeneralSettings = () => {
   const [activeSettings, setActiveSettings] = useState({});
+  const [socialId, setSocialId] = useState(null);
 
   const router = useRouter();
 
@@ -87,8 +88,10 @@ const GeneralSettings = () => {
 
   useEffect(() => {
     const { active } = router.query;
+    const { id } = router.query;
 
     if (active) {
+      setSocialId(id);
       const normalizedKey = active.replace(/\s+/g, '').toLowerCase();
 
       const newSettings = Object.fromEntries(
@@ -99,7 +102,7 @@ const GeneralSettings = () => {
         ...newSettings,
         [normalizedKey]: true,
       });
-      router.replace('/settings', undefined, { shallow: true });
+      // router.replace('/settings', undefined, { shallow: true });
     }
   }, [router.query]);
 
@@ -119,6 +122,13 @@ const GeneralSettings = () => {
   const allInactive = Object.values(activeSettings).every((value) => !value);
 
   const handleBackToHomePage = useCallback(() => {
+    const { id } = router.query;
+    console.log(id);
+    if (id) {
+      router.push(`/connecting?active=categories&id=${id}`);
+
+      return;
+    }
     setActiveSettings({});
   }, []);
 

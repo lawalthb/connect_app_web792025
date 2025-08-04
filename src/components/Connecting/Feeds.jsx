@@ -13,6 +13,7 @@ const Feeds = ({
   handleComment = () => {},
   showComment,
   clickedId,
+  feedId,
 }) => {
   const formattedDate =
     feed?.created_at && formatRelativeTime(feed?.created_at);
@@ -78,6 +79,7 @@ const Feeds = ({
         handleComment={handleComment}
         showComment={showComment}
         handleShowMore={handleShowMore}
+        feedId={feedId}
       />
     </div>
   );

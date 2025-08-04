@@ -58,7 +58,7 @@ const Discovery = ({ handleShowSwipePage }) => {
                   <div className="mb-8 lg:mb-4">
                     <Image
                       onClick={() => handleShowSwipePage(user.id)}
-                      src={user.profile_images[0]?.profile_url}
+                      src={user.profile_images?.[0]?.profile_url}
                       alt={user?.name || 'User'}
                       width={60}
                       height={60}

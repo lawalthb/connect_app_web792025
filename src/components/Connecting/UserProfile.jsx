@@ -25,6 +25,8 @@ const UserProfile = ({ userData }) => {
   const [showMore, setShowMore] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [id, setId] = useState(false);
+  const [feedId, setFeedId] = useState(false);
+  const [url, setUrl] = useState('');
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['getUser', userData.id],
@@ -32,7 +34,8 @@ const UserProfile = ({ userData }) => {
     enabled: !!userData.id,
   });
 
-  const handleExpandImage = () => {
+  const handleExpandImage = (url) => {
+    setUrl(url);
     setExpandImage((prev) => !prev);
   };
 
@@ -49,7 +52,8 @@ const UserProfile = ({ userData }) => {
     setShowMore((prev) => !prev);
   };
 
-  const handleComment = () => {
+  const handleComment = (id) => {
+    setFeedId(id);
     setShowComment((prev) => !prev);
   };
 
@@ -110,7 +114,7 @@ const UserProfile = ({ userData }) => {
       <ConnectCategiries
         socialCircles={user_data?.social_circles}
         isProfile={true}
-        extraClass="max-h-[350px] overflow-y-auto scrollbar-hidden"
+        extraClass="max-h-[480px] overflow-y-auto scrollbar-hidden"
       />
       <ConnectStory extraStyle="text-[24px]" />
       {user_data?.recent_posts.map((post) => {
@@ -124,6 +128,7 @@ const UserProfile = ({ userData }) => {
               handleComment={handleComment}
               showComment={showComment}
               clickedId={id}
+              feedId={feedId}
             />
           </div>
         );
@@ -133,7 +138,7 @@ const UserProfile = ({ userData }) => {
         <Modal isOpen={expandImage} onClose={handleExpandImage} size="max-w-xl">
           {' '}
           <img
-            src={Daniella.src}
+            src={url}
             alt="Image"
             className="object-fill w-full text-black pr-1.5"
           />

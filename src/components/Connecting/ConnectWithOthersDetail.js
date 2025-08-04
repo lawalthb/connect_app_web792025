@@ -9,11 +9,19 @@ import UserProfile from './UserProfile';
 import BackToPreviousScreen from '../BackToPreviousScreen';
 import { FormProvider, useForm } from 'react-hook-form';
 import InputField from '../Input/InputField';
+import CustomSelect from '../Input/CustomSelect';
+import { useCountryStore } from '@/zustandStore/useCountryStore';
 
-const ConnectWithOthersDetail = ({ profiles, socialId, handleButtonClick }) => {
+const ConnectWithOthersDetail = ({
+  profiles,
+  socialId,
+  handleButtonClick,
+  countryList,
+}) => {
   const [showFilter, setShowFilter] = useState(false);
   const [profile, setProfile] = useState(false);
   const [userData, setUserData] = useState(null);
+  const { selectedCountry, setSelectedCountry } = useCountryStore();
 
   useEffect(() => {
     const data = profiles[0];
@@ -24,6 +32,18 @@ const ConnectWithOthersDetail = ({ profiles, socialId, handleButtonClick }) => {
   const onSubmit = (data) => {
     console.log(data);
   };
+
+  const handleChange = (selectedOption) => {
+    setSelectedCountry(selectedOption);
+  };
+
+  const formattedCountries = countryList?.flat();
+
+  const options = formattedCountries?.map((item) => ({
+    value: item.id,
+    label: item.name,
+    logo: item.flag,
+  }));
 
   const handleUserData = (data) => {
     setUserData(data);
@@ -53,12 +73,25 @@ const ConnectWithOthersDetail = ({ profiles, socialId, handleButtonClick }) => {
               label="Subscription"
               btnclass="w-full lg:w-auto h-10 whitespace-nowrap px-6 lg:px-16"
               btnstyle="rounded"
-              onClick={() => router.push('/settings?active=subscription')}
+              onClick={() =>
+                router.push(`/settings?active=subscription&id=${socialId}`)
+              }
             />
             <div className="w-full lg:w-auto">
               <FilterButton handleFilter={handleFilter} />
             </div>
           </div>
+          {socialId === 11 && (
+            <div className="flex gap-10 w-full md:w-1/2">
+              <CustomSelect
+                value={selectedCountry}
+                onChange={handleChange}
+                options={options}
+                label="Target Country"
+                placeholder="Choose country..."
+              />
+            </div>
+          )}
 
           <ProfileCourasel
             profiles={profiles}

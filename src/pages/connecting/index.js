@@ -17,6 +17,7 @@ import Discovery from '@/components/Connecting/Discovery';
 import ProfileCourasel from '@/components/ProfileCourasel';
 import Modal from '@/components/Modal';
 import UserProfile from '@/components/Connecting/UserProfile';
+import { useRouter } from 'next/router';
 
 const Connecting = () => {
   const [activeTab, setActiveTab] = useState('Connecting Feed');
@@ -25,6 +26,9 @@ const Connecting = () => {
   const [profile, setProfile] = useState(false);
   const [userData, setUserData] = useState(null);
   const [userId, seUserId] = useState(null);
+  const [socialId, setSocialId] = useState(null);
+
+  const router = useRouter();
 
   const { user, loading, refreshUser } = useUserStore();
 
@@ -59,12 +63,25 @@ const Connecting = () => {
     queryFn: getSocialCircles,
   });
 
+  useEffect(() => {
+    const { active } = router.query;
+    const { id } = router.query;
+
+    if (active) {
+      setActiveTab('Category');
+      setSocialId(id);
+      // router.replace('/settings', undefined, { shallow: true });
+    }
+  }, [router.query]);
+
   // console.log(loading, 'loading');
   // useEffect(() => {
   //   refreshUser();
   // }, []);
 
   const onTabChange = (newValue) => {
+    router.replace('/connecting', undefined, { shallow: true });
+    setSocialId(null);
     setActiveTab(newValue);
   };
   const handleShowSwipePage = (id) => {
@@ -109,6 +126,7 @@ const Connecting = () => {
           {activeTab === 'Category' && (
             <ConnectWithOthers
               socialCircles={socialCircles?.data?.social_circles}
+              socialId={socialId}
             />
           )}
           {activeTab === 'Connecting Feed' && (

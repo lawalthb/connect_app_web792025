@@ -66,7 +66,7 @@ const PostStories = ({ show, onClose, profileImages }) => {
     <Modal
       isOpen={show}
       onClose={onClose}
-      title="Add Media"
+      title="Add Story"
       size="max-w-xl"
       showFilterIcon
     >
@@ -84,7 +84,7 @@ const PostStories = ({ show, onClose, profileImages }) => {
               />
             ))}
           </div>
-          <InputField label={'Description'} type="text" name={'content'} />
+          <InputField label={'Caption'} type="text" name={'content'} />
           <Button
             label={'Post Story'}
             type="submit"
