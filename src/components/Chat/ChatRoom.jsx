@@ -11,6 +11,7 @@ import { CiVideoOn } from 'react-icons/ci';
 import { MdOutlineLocalPhone } from 'react-icons/md';
 import Modal from '../Modal';
 import { IoClose } from 'react-icons/io5';
+import FormLabel from '../FormLabel';
 
 const ChatRoom = ({
   user,
@@ -31,10 +32,13 @@ const ChatRoom = ({
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [timerId, setTimerId] = useState(null);
+  const [viewImage, setViewImage] = useState(false);
+  const [imgUrl, setImgUrl] = useState(null);
 
   const fileInputRef = useRef(null);
   const chatContainerRef = useScrollToBottom([isLoadingMessages]);
-  const reversedMessages = messages?.slice().reverse();
+  const reversedMessages = messages;
+  // const reversedMessages = messages?.slice().reverse();
 
   const startRecordingTimer = () => {
     const id = setInterval(() => {
@@ -45,6 +49,12 @@ const ChatRoom = ({
 
   const stopRecordingTimer = () => {
     clearInterval(timerId);
+  };
+
+  const handleViewImage = (img) => {
+    console.log(img);
+    setViewImage((prev) => !prev);
+    setImgUrl(img);
   };
 
   const handleSendAudio = () => {
@@ -110,6 +120,8 @@ const ChatRoom = ({
     setEmojiPickerOpen(false);
   };
 
+  console.log(reversedMessages, 'msg');
+
   return (
     <div className="flex flex-col h-[calc(100svh-8rem)]">
       {/* Header */}
@@ -172,35 +184,40 @@ const ChatRoom = ({
               <div
                 key={msg?.id}
                 className={`flex ${
-                  msg?.user?.id === signedInUser.id
+                  msg?.user?.id === signedInUser?.id
                     ? 'justify-end'
                     : 'justify-start'
                 }`}
               >
                 <div
                   className={`px-4 py-2 rounded-lg max-w-xs text-sm ${
-                    msg?.user?.id === signedInUser.id
+                    msg?.user?.id === signedInUser?.id
                       ? 'bg-[#A20030] text-white rounded-br-none'
                       : 'bg-gray-100 text-gray-800 rounded-bl-none'
                   }`}
                 >
-                  {msg?.file && (
-                    <div className="mb-2">
+                  {(msg?.file || msg?.metadata) && (
+                    <div className="mb-2 cursor-pointer">
                       <Image
-                        src={URL.createObjectURL(msg.file)}
+                        onClick={() =>
+                          handleViewImage(
+                            msg?.file?.url || msg?.metadata?.file_url,
+                          )
+                        }
+                        src={msg?.file?.url || msg?.metadata?.file_url}
                         alt="attachment"
                         width={150}
                         height={150}
                       />
                     </div>
                   )}
-                  {msg?.audio && (
+                  {/* {msg?.audio && (
                     <audio
                       controls
-                      src={URL.createObjectURL(msg.audio)}
+                      src={URL?.createObjectURL(msg.audio)}
                       className="mb-2"
                     />
-                  )}
+                  )} */}
                   <p>{msg?.message}</p>
                   <span className="block text-[10px] text-right mt-1 opacity-60">
                     {msg?.created_at_human}
@@ -359,7 +376,7 @@ const ChatRoom = ({
                   onClose={() => setSelectedFile(null)}
                   size="max-w-[705px] max-h-fit overflow-y-scroll"
                 >
-                  <div className="relative flex w-full h-96 items-center gap-2 ml-2 mt-2">
+                  <div className="relative flex w-full h-96 items-center gap-2 ml-2 my-2">
                     <Image
                       src={URL.createObjectURL(selectedFile)}
                       alt="Preview"
@@ -367,12 +384,44 @@ const ChatRoom = ({
                       className="rounded-lg object-cover"
                     />
                   </div>
+
+                  <FormLabel id="caption" name="caption" label="Caption" />
+                  <input
+                    id="caption"
+                    type="text"
+                    value={input}
+                    onChange={(e) => {
+                      setInput(e.target.value);
+                      // handleDiscardAudio();
+                      resetPage();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSend();
+                    }}
+                    placeholder="Type a message..."
+                    disabled={isRecording}
+                    className="flex-1 px-4 py-2 border rounded-full text-sm w-full mt-2 text-gray-500 outline-none focus:ring-1 focus:ring-[#A20030]"
+                  />
+
                   <button
                     onClick={handleSend}
                     className="text-white bg-[#A20030] hover:bg-[#870026] py-4 rounded-full mt-5 w-full flex items-center justify-center gap-x-2 cursor-pointer"
                   >
                     Send <FiSend className="w-5 h-5" />
                   </button>
+                </Modal>
+              )}
+              {viewImage && (
+                <Modal
+                  isOpen={viewImage}
+                  onClose={() => handleViewImage(null)}
+                  size="max-w-xl"
+                >
+                  <img
+                    src={imgUrl}
+                    alt="Image"
+                    className="object-fill w-full text-black pr-1.5 max-h-[calc(100vh-150px)]"
+                  />
                 </Modal>
               )}
             </>

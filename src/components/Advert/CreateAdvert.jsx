@@ -88,8 +88,6 @@ const CreateAdvert = ({
     logo: item.flag,
   }));
 
-  console.log(socialCircles, 'socialCircles');
-
   return (
     <div className="w-[90%] lg:w-[70%] mx-auto mt-10">
       <FormProvider {...methods}>

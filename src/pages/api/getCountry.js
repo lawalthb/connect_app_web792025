@@ -7,18 +7,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const cookies = parse(req.headers.cookie || '');
-    const token = cookies.token;
+    // const cookies = parse(req.headers.cookie || '');
+    // const token = cookies.token;
 
-    if (!token) {
-      return res.status(401).json({ message: 'Unauthorized: No token found' });
-    }
+    // if (!token) {
+    //   return res.status(401).json({ message: 'Unauthorized: No token found' });
+    // }
 
-    const response = await fetch(`${API_URL}/countries`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(`${API_URL}/countries`);
 
     const result = await response.json();
     res.status(response.status).json(result);

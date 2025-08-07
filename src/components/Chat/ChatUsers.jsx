@@ -3,11 +3,13 @@ import EmptyChat from './EmptyChat';
 import EmptyChatUsers from '@/Images/EmptyChatUsers.png';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import SearchField from '../Input/SearchField';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const ChatUsers = ({ conversations, onSelectConversation, user }) => {
   const [showChat, setShowChat] = useState(true);
   const [showConnects, setShowConnects] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [filteredConversations, setFilteredConversations] = useState([]);
   const hasUsers = conversations && conversations.length > 0;
 
   const handleView = (identifier) => {
@@ -18,6 +20,19 @@ const ChatUsers = ({ conversations, onSelectConversation, user }) => {
       setShowChat(true);
       setShowConnects(false);
     }
+  };
+
+  console.log(filteredConversations);
+
+  useEffect(() => {
+    const filteredList = conversations.filter((conversation) =>
+      conversation.name.toLowerCase().includes(searchValue.toLowerCase()),
+    );
+    setFilteredConversations(filteredList);
+  }, [searchValue]);
+
+  const handleSearch = (e) => {
+    setSearchValue(e.target.value);
   };
 
   return (
@@ -37,8 +52,8 @@ const ChatUsers = ({ conversations, onSelectConversation, user }) => {
         </h3>
         <BsThreeDotsVertical className="cursor-pointer" />
       </div>
-      <div className="w-[384px] mx-auto mb-4">
-        <SearchField />
+      <div className="w-full mx-auto mb-4">
+        <SearchField onChange={handleSearch} value={searchValue} />
       </div>
       {showConnects && (
         <div className="flex items-center justify-center h-[calc(100svh-10rem)]">
@@ -53,19 +68,17 @@ const ChatUsers = ({ conversations, onSelectConversation, user }) => {
         <div>
           {hasUsers ? (
             <div className="space-y-3 overflow-y-auto h-[calc(100svh-14rem)] pr-2">
-              {conversations.map((conversation) => (
+              {filteredConversations.map((conversation) => (
                 <div
+                  onClick={() => onSelectConversation(conversation)}
                   key={conversation.id}
                   className="flex justify-between p-3 items-center hover:bg-gray-100 cursor-pointer rounded-lg"
                 >
-                  <div
-                    onClick={() => onSelectConversation(conversation)}
-                    className="flex items-center gap-3"
-                  >
+                  <div className="flex items-center gap-3">
                     <Image
+                      src={conversation?.image}
                       width={40}
                       height={40}
-                      src={conversation?.image}
                       alt={conversation.name}
                       className="size-12 rounded-full object-cover"
                     />
