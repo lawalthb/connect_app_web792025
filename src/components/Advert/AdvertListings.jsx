@@ -31,6 +31,10 @@ const AdvertListings = () => {
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [confirmAction, setConfirmAction] = useState(null);
+  const [addName, setAddName] = useState('');
+  const [advertStatus, setAdvertStatus] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const queryClient = useQueryClient();
 
@@ -70,8 +74,22 @@ const AdvertListings = () => {
 
   const { data = [], isLoading } = useQuery({
     queryKey: ['AdvertListings', perPage, page],
-    queryFn: () => getAdvertsListings(perPage, page),
-    enabled: !!perPage || !!page,
+    queryFn: () =>
+      getAdvertsListings(
+        perPage,
+        page,
+        addName,
+        advertStatus,
+        startDate,
+        endDate,
+      ),
+    enabled:
+      !!perPage ||
+      !!page ||
+      !!addName ||
+      !!advertStatus ||
+      !!startDate ||
+      !!endDate,
   });
 
   const methods = useForm({
@@ -86,6 +104,10 @@ const AdvertListings = () => {
 
   const onSubmit = (data) => {
     console.log(data);
+    setAddName(data.name);
+    setAdvertStatus(data.status);
+    setStartDate(data.start_date);
+    setEndDate(data.end_date);
   };
 
   const handleClick = (actionKey, id) => {

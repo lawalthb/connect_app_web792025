@@ -14,6 +14,10 @@ const MainSettings = ({
       description: 'Access your account settings',
     },
     {
+      name: 'Verify me',
+      description: 'Verify your account',
+    },
+    {
       name: 'Profile Image',
       description: 'Access your profile image',
     },

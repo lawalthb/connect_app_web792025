@@ -196,7 +196,7 @@ const ChatView = ({ token }) => {
     // subscribeToChatRoom();
     const payload = {
       id: conversationId,
-      message: message.text,
+      message: message.message,
       type: message.type,
       file: message.file,
     };

@@ -5,7 +5,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import ProfileCard from './Connecting/ProfileCard';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { swipeCount } from './Utils/api';
 import { useRouter } from 'next/router';
@@ -16,11 +16,14 @@ const ProfileCourasel = ({
   socialId,
   handleUserData,
   handleButtonClick,
+  userId,
+  selectedCountryId,
 }) => {
   const router = useRouter();
   const [previousIndex, setPreviousIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [usersProfile, setUsersProfile] = useState(profiles);
   const swiperRef = useRef(null);
 
   const { mutate } = useMutation({
@@ -32,6 +35,29 @@ const ProfileCourasel = ({
       console.error('Swipe failed:', err.message);
     },
   });
+
+  useEffect(() => {
+    if (selectedCountryId) {
+      const filteredProfile = profiles.filter(
+        (profile) => profile.country_id === selectedCountryId,
+      );
+      setUsersProfile(filteredProfile);
+    }
+  }, [selectedCountryId]);
+  // Find starting index based on userId
+  const startingIndex = useMemo(() => {
+    if (!profiles || profiles.length === 0) return 0;
+    if (userId) {
+      const foundIndex = profiles.findIndex((p) => p.id === userId);
+      return foundIndex !== -1 ? foundIndex : 0;
+    }
+    return 0;
+  }, [profiles, userId]);
+
+  useEffect(() => {
+    setPreviousIndex(startingIndex);
+    setActiveIndex(startingIndex);
+  }, [startingIndex]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -85,6 +111,13 @@ const ProfileCourasel = ({
     }
   };
 
+  if (usersProfile.length < 1)
+    return (
+      <h3 className="text-center text-gray-500 font-semibold text-base mt-32">
+        No profile available
+      </h3>
+    );
+
   return (
     <div className="w-full max-w-[805px] mx-auto">
       <Swiper
@@ -93,6 +126,7 @@ const ProfileCourasel = ({
         spaceBetween={30}
         slidesPerView={1}
         navigation
+        initialSlide={startingIndex}
         loop={true}
         grabCursor={true}
         className="rounded-[30px]"
@@ -102,7 +136,7 @@ const ProfileCourasel = ({
         }}
         onSlideChange={handleSlideChange}
       >
-        {profiles?.map((profile, index) => (
+        {usersProfile?.map((profile, index) => (
           <SwiperSlide
             key={index}
             className="w-full max-w-[805px] flex justify-center"

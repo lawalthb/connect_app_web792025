@@ -37,6 +37,7 @@ const Discovery = ({ handleShowSwipePage }) => {
   return (
     <div className="w-full lg:w-[70%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 space-y-3 justify-items-center">
       {users?.map((user) => {
+        console.log(user, 'user');
         return (
           <div
             key={user.id}
@@ -44,7 +45,7 @@ const Discovery = ({ handleShowSwipePage }) => {
             className="w-[283px] h-[380px] relative"
           >
             <Image
-              src={user?.profile_url}
+              src={user?.user?.profile_url}
               alt="User"
               fill
               className="object-cover rounded-[10px]"
@@ -57,15 +58,17 @@ const Discovery = ({ handleShowSwipePage }) => {
                 <div className="max-w-[387px] lg:max-w-full">
                   <div className="mb-8 lg:mb-4">
                     <Image
-                      onClick={() => handleShowSwipePage(user.id)}
-                      src={user.profile_images?.[0]?.profile_url}
+                      onClick={() => handleShowSwipePage(user.user.id)}
+                      src={user?.user?.profile_images?.[0]?.profile_url}
                       alt={user?.name || 'User'}
                       width={60}
                       height={60}
                       className="cursor-pointer rounded-full object-cover aspect-square"
                     />
                   </div>
-                  <h3 className="font-semibold text-base">{user?.name}</h3>
+                  <h3 className="font-semibold text-base">
+                    {user?.user?.name}
+                  </h3>
                 </div>
               </div>
             </>

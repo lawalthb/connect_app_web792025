@@ -8,7 +8,8 @@ export default async function handler(req, res) {
   const cookies = parse(req.headers.cookie || '');
   const token = cookies.token;
 
-  const { per_page, page } = req.query;
+  const { per_page, page, addName, advertStatus, startDate, endDate } =
+    req.query;
 
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized: No token found' });
@@ -16,7 +17,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `${API_URL}/ads?per_page=${per_page}&page=${page}`,
+      `${API_URL}/ads?per_page=${per_page}&page=${page}&ad_name=${addName}status=${advertStatus}&start_date=${startDate}&end_date=${endDate}`,
       {
         method: 'GET',
         headers: {

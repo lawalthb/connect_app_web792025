@@ -22,6 +22,7 @@ import {
 import Loader from '../Loader/Loader';
 import useUserStore from '@/zustandStore/useUserStore';
 import ProfileImage from './ProfileImage';
+import VerifyMe from './VerifyMe';
 
 const GeneralSettings = () => {
   const [activeSettings, setActiveSettings] = useState({});
@@ -136,6 +137,10 @@ const GeneralSettings = () => {
     changePasswordMutation(data);
   };
 
+  const onSubmitVerification = (data) => {
+    // changePasswordMutation(data);
+  };
+
   const handleLogout = () => {
     logout();
   };
@@ -173,6 +178,14 @@ const GeneralSettings = () => {
         profileImages={profileImages?.data?.images}
       />
 
+      <VerifyMe
+        activeSettings={activeSettings}
+        handleBackToHomePage={handleBackToHomePage}
+        onSubmitVerification={onSubmitVerification}
+        // error={changePasswordError}
+        // isLoading={isLoadingChangePassword}
+        // isSuccess={isChangePasswordSuccess}
+      />
       <ChangePassword
         activeSettings={activeSettings}
         handleBackToHomePage={handleBackToHomePage}

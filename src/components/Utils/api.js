@@ -562,9 +562,16 @@ export const getUser = async (id) => {
   return response.json();
 };
 
-export const getAdvertsListings = async (perPage, page) => {
+export const getAdvertsListings = async (
+  perPage,
+  page,
+  addName,
+  advertStatus,
+  startDate,
+  endDate,
+) => {
   const response = await fetch(
-    `/api/getAdvertsListings?per_page=${perPage}&page=${page}`,
+    `/api/getAdvertsListings?per_page=${perPage}&page=${page}&ad_name=${addName}status=${advertStatus}&start_date=${startDate}&end_date=${endDate}`,
     {
       method: 'GET',
       headers: {

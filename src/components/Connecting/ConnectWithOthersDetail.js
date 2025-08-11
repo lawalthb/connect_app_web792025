@@ -82,7 +82,7 @@ const ConnectWithOthersDetail = ({
             </div>
           </div>
           {socialId === 11 && (
-            <div className="flex gap-10 w-full md:w-1/2">
+            <div className="flex gap-10 w-full md:w-1/2 z-10">
               <CustomSelect
                 value={selectedCountry}
                 onChange={handleChange}
@@ -99,6 +99,7 @@ const ConnectWithOthersDetail = ({
             socialId={socialId}
             handleUserData={handleUserData}
             handleButtonClick={handleButtonClick}
+            selectedCountryId={selectedCountry?.value}
           />
 
           {showFilter && (

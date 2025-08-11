@@ -61,6 +61,7 @@ const SignUpUser = () => {
     const payload = {
       name: `${data.first_name} ${data.last_name}`,
       email: data.email,
+      phone_number: data.phone_number,
       password: data.password,
       username: `${data.first_name} ${data.last_name}`,
       country_id: selectedCountry?.value,
@@ -132,6 +133,11 @@ const SignUpUser = () => {
                     label={'Email Address'}
                     type="email"
                     name={'email'}
+                  />
+                  <InputField
+                    label={'Phone Number'}
+                    type="number"
+                    name={'phone_number'}
                   />
                   <InputField
                     label={'Password'}

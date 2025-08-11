@@ -160,6 +160,7 @@ const Connecting = () => {
               socialId={[26]}
               handleUserData={handleUserData}
               handleButtonClick={handleButtonClick}
+              userId={userId}
             />
           )}
         </Modal>
