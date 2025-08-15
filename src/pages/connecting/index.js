@@ -133,6 +133,7 @@ const Connecting = () => {
             <ConnectionFeed
               data={data?.data}
               profileImages={profileImages?.data?.images}
+              socialCircles={socialCircles?.data?.social_circles}
             />
           )}
           {activeTab === 'Discovery' && (
@@ -172,7 +173,10 @@ const Connecting = () => {
           onClose={handleViewProfile}
           size="max-w-[805px] max-h-[calc(100vh-150px)] overflow-y-scroll"
         >
-          <UserProfile userData={userData} />
+          <UserProfile
+            userData={userData}
+            socialCircles={socialCircles?.data?.social_circles}
+          />
         </Modal>
       )}
     </div>

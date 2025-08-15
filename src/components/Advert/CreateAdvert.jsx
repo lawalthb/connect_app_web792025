@@ -38,6 +38,7 @@ const CreateAdvert = ({
   const startDate = useWatch({ control, name: 'start_date' });
   const budget = useWatch({ control, name: 'budget' });
   const endDate = useWatch({ control, name: 'end_date' });
+  const acknowledgeTerms = methods.watch('acknowledge');
 
   const { mutate, isPending, error, reset } = useMutation({
     mutationFn: postAdvert,
@@ -204,7 +205,9 @@ const CreateAdvert = ({
                   className="font-normal text-sm text-[#5C5C5C]"
                 >
                   By continuing, you acknowledge you have agreed to the{' '}
-                  <span className="text-[#A20030]">Terms and Conditions</span>
+                  <span className="text-[#A20030] cursor-pointer">
+                    Terms and Conditions
+                  </span>
                 </label>
               </div>
               <div className="flex gap-x-5 items-center max-w-[510px] ml-auto">
@@ -212,7 +215,7 @@ const CreateAdvert = ({
                   label="Create Advert"
                   type="submit"
                   btnclass="w-full h-14"
-                  disabled={startDate > endDate}
+                  disabled={startDate > endDate || !acknowledgeTerms}
                   isLoading={isPending}
                 />
                 <Button
@@ -220,7 +223,9 @@ const CreateAdvert = ({
                   variant="outlined"
                   onClick={handlePreviewAd}
                   btnclass="w-full h-14"
-                  disabled={isPending}
+                  disabled={
+                    isPending || startDate > endDate || !acknowledgeTerms
+                  }
                 />
               </div>
             </>

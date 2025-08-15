@@ -627,6 +627,61 @@ export const readMessages = async (id) => {
   return response.json();
 };
 
+export const reportUser = async (data, id) => {
+  if (!id) return;
+  const response = await fetch(`/api/reportUser?id=${id}`, {
+    method: 'POST',
+
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Report failed');
+  }
+
+  return response.json();
+};
+
+export const postComment = async (data, id) => {
+  if (!id) return;
+  const response = await fetch(`/api/postComment?id=${id}`, {
+    method: 'POST',
+
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Commenting failed');
+  }
+
+  return response.json();
+};
+
+export const deletePost = async (id) => {
+  if (!id) return;
+  const response = await fetch(`/api/deletePost?id=${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Delete failed');
+  }
+
+  return response.json();
+};
+
 export const getImpressions = async (year) => {
   const response = await fetch(`/api/getImpressions?year=${year}`, {
     method: 'GET',
@@ -702,6 +757,29 @@ export const postStories = async (data) => {
     return data;
   } catch (error) {
     console.error('Upload error:', error);
+    throw error;
+  }
+};
+
+export const verifyMe = async (data) => {
+  const formData = new FormData();
+  formData.append('id_card_image', data.id_card_image);
+  formData.append('id_card_type', data.id_card_type);
+
+  try {
+    const response = await fetch('/api/verifyMe', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Verification failed');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Verification failed:', error);
     throw error;
   }
 };

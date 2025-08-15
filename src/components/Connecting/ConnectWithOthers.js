@@ -15,7 +15,7 @@ const ConnectWithOthers = ({ socialCircles, socialId }) => {
     onSuccess: (data) => {
       reset();
       setOptionDetailData(data);
-      setOptionDetail(true);
+      handleOptionDetail();
     },
     onError: (err) => {
       console.error('Explore users failed:', err.message);
@@ -33,6 +33,10 @@ const ConnectWithOthers = ({ socialCircles, socialId }) => {
       mutate({ social_id: [socialId] });
     }
   }, []);
+
+  const handleOptionDetail = () => {
+    setOptionDetail((prev) => !prev);
+  };
 
   const handleButtonClick = (id) => {
     setLoadingId(id);
@@ -60,6 +64,8 @@ const ConnectWithOthers = ({ socialCircles, socialId }) => {
           socialId={loadingId}
           handleButtonClick={handleButtonClick}
           countryList={countryList?.data?.countries}
+          handleBack={handleOptionDetail}
+          socialCircles={socialCircles}
         />
       )}
     </div>

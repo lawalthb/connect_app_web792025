@@ -36,6 +36,7 @@ const ChatView = ({ token }) => {
   const [messages, setMessages] = useState([]);
   const [viewMore, setViewMore] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [incomingCall, setIncomingCall] = useState(null);
   const uid = Math.floor(Math.random() * 1000000);
 
   const [agoraConfig, setAgoraConfig] = useState({
@@ -112,6 +113,37 @@ const ChatView = ({ token }) => {
       console.error('Message read failed:', err.message);
     },
   });
+
+  // useEffect(() => {
+  //   if (!selectedConversation?.id) return;
+
+  //   const pusher = new Pusher('0e0b5123273171ff212d', { cluster: 'eu' });
+  //   const channel = pusher.subscribe(`conversation.${selectedConversation.id}`);
+
+  //   channel.bind('call.initiated', (data) => {
+  //     console.log('Incoming call:', data);
+  //     setIncomingCall(data.agora_config);
+  //   });
+
+  //   return () => {
+  //     channel.unbind_all();
+  //     channel.unsubscribe();
+  //   };
+  // }, [selectedConversation?.id]);
+
+  const handleAcceptCall = () => {
+    setAgoraConfig({
+      appId: incomingCall.app_id,
+      channelName: incomingCall.channel_name,
+      token: incomingCall.token,
+      uid: incomingCall.uid,
+    });
+    setIncomingCall(null); // clear incoming state
+  };
+
+  const handleRejectCall = () => {
+    setIncomingCall(null);
+  };
 
   useEffect(() => {
     setId(conversations?.data?.conversations[0]?.id);
@@ -302,6 +334,27 @@ const ChatView = ({ token }) => {
             uid={agoraConfig.uid}
             handleEndCall={handleEndCall}
           />
+        </Modal>
+      )}
+      {incomingCall && (
+        <Modal isOpen={true} onClose={handleRejectCall}>
+          <div className="p-4">
+            <p>Incoming call from {incomingCall.caller_name}</p>
+            <button
+              type="button"
+              onClick={handleAcceptCall}
+              className="bg-green-500 text-white p-2"
+            >
+              Accept
+            </button>
+            <button
+              type="button"
+              onClick={handleRejectCall}
+              className="bg-red-500 text-white p-2"
+            >
+              Decline
+            </button>
+          </div>
         </Modal>
       )}
     </div>

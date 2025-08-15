@@ -13,15 +13,6 @@ import Modal from '../Modal';
 import { IoClose } from 'react-icons/io5';
 import FormLabel from '../FormLabel';
 
-// NOTE: This is a defensive, drop-in replacement for the original ChatRoom component.
-// Main goals:
-// - avoid invalid hook usage (moved away from render-prop hooks)
-// - safe defaults for `messages` and `messages.length`
-// - consistent message shape (use `message` for text, and `file` for attachments)
-// - robust handling of local Blob URLs so previews work (uses <img> / <audio> / <video> instead of next/image)
-// - timers use refs (avoids stale state issues) and are cleaned up on unmount
-// - don't discard recorded audio automatically when stopping recording
-
 const ChatRoom = ({
   user,
   signedInUser,

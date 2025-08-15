@@ -2,7 +2,7 @@ import { parse } from 'cookie';
 import { API_URL } from '@/components/Utils/api';
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
+  if (req.method !== 'DELETE') return res.status(405).end();
 
   const cookies = parse(req.headers.cookie || '');
   const token = cookies.token;
@@ -14,15 +14,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch(
-      `${API_URL}/conversations/${id}/messages/read`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    const response = await fetch(`${API_URL}/posts/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-    );
+    });
 
     const data = await response.json();
 
@@ -32,7 +29,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json(data);
   } catch (error) {
-    console.error('Error reading messages:', error);
-    return res.status(500).json({ message: 'Server error reading messages' });
+    console.error('Error deleting post:', error);
+    return res.status(500).json({ message: 'Server error deleting post' });
   }
 }

@@ -4,6 +4,7 @@ import ExpandImageIcon from '@/Images/Icons/ExpandImageIcon.svg';
 import { PiDotsThreeOutlineVertical } from 'react-icons/pi';
 import { formatRelativeTime } from '../Utils/methods';
 import LikeShareComment from './LikeShareComment';
+import Image from 'next/image';
 
 const Feeds = ({
   feed,
@@ -12,9 +13,14 @@ const Feeds = ({
   showMore,
   handleComment = () => {},
   showComment,
-  clickedId,
   feedId,
+  socialCircles,
+  signedInUser,
 }) => {
+  const socialIcons = socialCircles?.filter(
+    (socials) =>
+      socials.id === (feed?.social_circle_id || feed?.social_circle?.id),
+  );
   const formattedDate =
     feed?.created_at && formatRelativeTime(feed?.created_at);
   return (
@@ -22,10 +28,25 @@ const Feeds = ({
       <div className="px-5">
         <div className="flex justify-between items-center">
           <div className="pl-16">
-            <h3 className="text-semibold text-black text-[15px] leading-5">
-              {feed?.user?.name || feed?.name}
-              <span className="text-[10px] text-gray-500 ml-1">{`@${feed?.user?.username || feed?.username}`}</span>
-            </h3>
+            <div className="flex gap-x-5">
+              <h3 className="text-semibold text-black text-[15px] leading-5">
+                {feed?.user?.name || feed?.name}
+                <span className="text-[10px] text-gray-500 ml-1">{`@${feed?.user?.username || feed?.username}`}</span>
+              </h3>
+              <div>
+                {' '}
+                <Image
+                  width={20}
+                  height={20}
+                  src={
+                    socialIcons?.[0]?.icon ||
+                    `https://connect.udemics.com/${socialIcons?.[0]?.logo_url}/${socialIcons?.[0]?.logo}`
+                  }
+                  alt="Social circle"
+                />
+              </div>
+            </div>
+
             <div className="flex items-center gap-1.5">
               <p className="text-semibold text-[#65676B] text-[13px] leading-5">
                 {formattedDate}
@@ -39,7 +60,7 @@ const Feeds = ({
                 onClick={() => handleShowMore(null, feed.id)}
                 className="text-[#292D32] cursor-pointer"
               />
-              {showMore && clickedId === feed.id && (
+              {showMore && feedId === feed.id && (
                 <div className="absolute z-10 right-7 py-4 pl-3 border border-[#FAFAFA] text-[#2E2E2E] bg-white shadow-lg w-[163px] font-normal text-[12px] leading-6 rounded-[10px]">
                   <p
                     onClick={() => handleShowMore('post')}
@@ -47,12 +68,14 @@ const Feeds = ({
                   >
                     Report Post
                   </p>
-                  <p
-                    onClick={() => handleShowMore('delete')}
-                    className="cursor-pointer hover:text-[#A20030]"
-                  >
-                    Delete
-                  </p>
+                  {signedInUser?.id === (feed?.user_id || feed?.user?.id) && (
+                    <p
+                      onClick={() => handleShowMore('delete')}
+                      className="cursor-pointer hover:text-[#A20030]"
+                    >
+                      Delete
+                    </p>
+                  )}
                 </div>
               )}
             </div>

@@ -13,6 +13,8 @@ const PostFeed = ({ socialCircles }) => {
   const methods = useForm();
   const router = useRouter();
 
+  const termsAndConditions = methods.watch('terms_condition');
+
   const { mutate, isPending, isSuccess, isError, error } = useMutation({
     mutationFn: posts,
     onSuccess: () => {
@@ -73,6 +75,7 @@ const PostFeed = ({ socialCircles }) => {
               type="submit"
               btnclass="w-[252px] mt-10 h-14"
               isLoading={isPending}
+              disabled={!termsAndConditions}
             />
           </form>
         </FormProvider>

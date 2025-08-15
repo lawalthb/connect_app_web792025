@@ -6,32 +6,56 @@ import Modal from '../Modal';
 import SearchField from '../Input/SearchField';
 import Feeds from './Feeds';
 import PostStories from './PostStories';
+import ReportPostModal from './ReportPostModal';
+import ConfirmAd from '../Advert/ConfirmAd';
+import { useMutation } from '@tanstack/react-query';
+import { deletePost } from '../Utils/api';
+import useUserStore from '@/zustandStore/useUserStore';
 
-const ConnectionFeed = ({ data, profileImages }) => {
+const ConnectionFeed = ({ data, profileImages, socialCircles }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [expandImage, setExpandImage] = useState(false);
   const [postStories, setPostStories] = useState(false);
   const [url, setUrl] = useState('');
   const [showComment, setShowComment] = useState(false);
-  const [feedId, setFeedId] = useState(false);
-  const [id, setId] = useState(false);
+  const [feedId, setFeedId] = useState(null);
+  const [reportPost, setReportPost] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const { user, loading } = useUserStore();
+
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: ({ id }) => deletePost(id),
+    onSuccess: () => {
+      setFeedId(null);
+      handleConfirmDelete();
+    },
+    onError: (err) => {
+      console.error('Delete failed:', err.message);
+    },
+  });
 
   const handleShowMore = (identifier, id) => {
     if (id) {
-      setId(id);
+      setFeedId(id);
     }
-    setId;
     if (identifier === 'post') {
-      console.log(identifier);
+      handleReportPost();
     } else if (identifier === 'delete') {
-      console.log(identifier);
+      handleConfirmDelete();
     }
     setShowMore((prev) => !prev);
   };
 
   const handleFilter = () => {
     setShowFilter((prev) => !prev);
+  };
+  const handleReportPost = () => {
+    setReportPost((prev) => !prev);
+  };
+  const handleConfirmDelete = () => {
+    setConfirmDelete((prev) => !prev);
   };
 
   const handleComment = (id) => {
@@ -47,6 +71,11 @@ const ConnectionFeed = ({ data, profileImages }) => {
   const handlePostStories = () => {
     setPostStories((prev) => !prev);
   };
+
+  const handleDelete = () => {
+    mutate({ id: feedId });
+  };
+
   return (
     <div className="md:px-20 w-full mb-20">
       <>
@@ -72,7 +101,8 @@ const ConnectionFeed = ({ data, profileImages }) => {
                     handleComment={handleComment}
                     showComment={showComment}
                     feedId={feedId}
-                    clickedId={id}
+                    socialCircles={socialCircles}
+                    signedInUser={user}
                   />
                 </div>
               );
@@ -96,6 +126,29 @@ const ConnectionFeed = ({ data, profileImages }) => {
             className="object-fill w-full text-black pr-1.5 max-h-[calc(100vh-150px)]"
           />
         </Modal>
+      )}
+      {reportPost && (
+        <ReportPostModal
+          isOpen={reportPost}
+          onClose={handleReportPost}
+          feedId={feedId}
+        />
+      )}
+      {confirmDelete && (
+        <ConfirmAd
+          isOpen={confirmDelete}
+          onClose={() => {
+            handleConfirmDelete();
+          }}
+          title={'Delete Post'}
+          description={
+            'Are you sure you want to delete this post? This action is irreversable'
+          }
+          onConfirm={handleDelete}
+          confirmation={true}
+          isLoading={isPending}
+          error={error}
+        />
       )}
     </div>
   );

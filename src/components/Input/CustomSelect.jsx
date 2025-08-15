@@ -54,10 +54,11 @@ const CustomSelect = ({
   options,
   label = 'Select Platform',
   placeholder = 'Choose platform...',
+  labelClass = 'text-sm font-medium',
 }) => {
   return (
     <div className="w-full">
-      <label className="block text-sm font-medium text-gray-600 mb-1">
+      <label className={`${labelClass} block mb-1 text-gray-600`}>
         {label}
       </label>
       <Select

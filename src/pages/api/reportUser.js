@@ -9,20 +9,21 @@ export default async function handler(req, res) {
 
   const { id } = req.query;
 
+  const payload = req.body;
+
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized: No token found' });
   }
 
   try {
-    const response = await fetch(
-      `${API_URL}/conversations/${id}/messages/read`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    const response = await fetch(`${API_URL}/posts/${id}/report`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify(payload),
+    });
 
     const data = await response.json();
 
@@ -32,7 +33,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json(data);
   } catch (error) {
-    console.error('Error reading messages:', error);
-    return res.status(500).json({ message: 'Server error reading messages' });
+    console.error('Error reporting user:', error);
+    return res.status(500).json({ message: 'Server error reporting user' });
   }
 }

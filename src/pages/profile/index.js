@@ -1,20 +1,35 @@
 import UserProfile from '@/components/Connecting/UserProfile';
 import AuthenticatedNavBar from '@/components/Layout/AuthenticatedNavBar';
 import Loader from '@/components/Loader/Loader';
+import { getSocialCircles } from '@/components/Utils/api';
 import useUserStore from '@/zustandStore/useUserStore';
+import { useQuery } from '@tanstack/react-query';
 import { parse } from 'cookie';
 
 const Profile = () => {
   const { user, loading } = useUserStore();
 
-  if (loading) return <Loader />;
+  const {
+    data: socialCircles,
+    isLoading: isLoadingSocialCircles,
+    isError: isSocialCirclesError,
+    error: socialCirclesError,
+  } = useQuery({
+    queryKey: ['socialCircle'],
+    queryFn: getSocialCircles,
+  });
+
+  if (loading || isLoadingSocialCircles) return <Loader />;
 
   return (
     <div>
       <AuthenticatedNavBar />
       {user && (
         <div className="px-10 md:px-20 lg:w-max mx-auto my-20">
-          <UserProfile userData={user} />
+          <UserProfile
+            userData={user}
+            socialCircles={socialCircles?.data?.social_circles}
+          />
         </div>
       )}
     </div>

@@ -18,6 +18,7 @@ import {
   getProfileImages,
   getSubscription,
   useLogout,
+  verifyMe,
 } from '../Utils/api';
 import Loader from '../Loader/Loader';
 import useUserStore from '@/zustandStore/useUserStore';
@@ -66,6 +67,25 @@ const GeneralSettings = () => {
     },
     onError: (err) => {
       console.error('Change password failed:', err.message);
+    },
+  });
+
+  const {
+    mutate: verifyMeMutation,
+    isPending: isVerifying,
+    isSuccess: isVerifySuccess,
+    error: isVerifyError,
+    reset: resetVerifyMeMutation,
+  } = useMutation({
+    mutationFn: verifyMe,
+    onSuccess: () => {
+      setTimeout(() => {
+        resetVerifyMeMutation();
+        handleBackToHomePage();
+      }, 2000);
+    },
+    onError: (err) => {
+      console.error('Verification failed:', err.message);
     },
   });
 
@@ -138,7 +158,8 @@ const GeneralSettings = () => {
   };
 
   const onSubmitVerification = (data) => {
-    // changePasswordMutation(data);
+    console.log(data, 'data');
+    verifyMeMutation(data);
   };
 
   const handleLogout = () => {
@@ -182,9 +203,9 @@ const GeneralSettings = () => {
         activeSettings={activeSettings}
         handleBackToHomePage={handleBackToHomePage}
         onSubmitVerification={onSubmitVerification}
-        // error={changePasswordError}
-        // isLoading={isLoadingChangePassword}
-        // isSuccess={isChangePasswordSuccess}
+        error={isVerifyError}
+        isLoading={isVerifying}
+        isSuccess={isVerifySuccess}
       />
       <ChangePassword
         activeSettings={activeSettings}

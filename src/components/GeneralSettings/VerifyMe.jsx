@@ -6,6 +6,7 @@ import ErrorMsg from '../ErrorMsg';
 import SuccessMsg from '../SuccessMsg';
 import { useEffect } from 'react';
 import ImageUpload from '../ImageUpload';
+import SelectField from '../Input/SelectField';
 
 const VerifyMe = ({
   activeSettings,
@@ -17,13 +18,23 @@ const VerifyMe = ({
 }) => {
   const methods = useForm();
 
-  const { reset } = methods;
+  const { reset, watch } = methods;
+
+  const uploadedImage = watch('id_card_image');
 
   useEffect(() => {
     if (isSuccess) {
       reset();
     }
   }, [isSuccess, reset]);
+
+  const identifications = [
+    { id: 1, name: 'National Id', value: 'national_id' },
+    { id: 2, name: 'Passport', value: 'passport' },
+    { id: 3, name: 'Drivers License', value: 'drivers_license' },
+    { id: 4, name: 'Voters Card', value: 'voters_card' },
+    { id: 5, name: 'International Passport', value: 'international_passport' },
+  ];
   return (
     <Modal
       isOpen={activeSettings.verifyme}
@@ -41,9 +52,20 @@ const VerifyMe = ({
           onSubmit={methods.handleSubmit(onSubmitVerification)}
           className="space-y-4 mt-10"
         >
-          <InputField label={'Select ID type'} type="text" name={'id_type'} />
+          <SelectField
+            label={'Select ID type'}
+            name={'id_card_type'}
+            defaultValue=""
+          >
+            <option value="">Select ID</option>
+            {identifications.map((identification) => (
+              <option key={identification.id} value={identification.value}>
+                {identification.name}
+              </option>
+            ))}
+          </SelectField>
           <div className="my-10">
-            <ImageUpload name="media" />
+            <ImageUpload name="id_card_image" />
           </div>
 
           <Button
@@ -51,12 +73,13 @@ const VerifyMe = ({
             type="submit"
             btnclass="w-full h-14"
             isLoading={isLoading}
+            disabled={!uploadedImage}
           />
         </form>
       </FormProvider>
       <ErrorMsg errorMessage={error?.message} />
       {isSuccess && (
-        <SuccessMsg successMessage="Password changed successfully" />
+        <SuccessMsg successMessage="Verification sent successfully" />
       )}
     </Modal>
   );

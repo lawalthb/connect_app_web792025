@@ -16,17 +16,23 @@ import 'swiper/css';
 import 'swiper/css/effect-flip';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { useQuery } from '@tanstack/react-query';
-import { getUser } from '../Utils/api';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { deletePost, getUser } from '../Utils/api';
 import Loader from '../Loader/Loader';
+import useUserStore from '@/zustandStore/useUserStore';
+import ReportPostModal from './ReportPostModal';
+import ConfirmAd from '../Advert/ConfirmAd';
 
-const UserProfile = ({ userData }) => {
+const UserProfile = ({ userData, socialCircles }) => {
   const [expandImage, setExpandImage] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [showComment, setShowComment] = useState(false);
-  const [id, setId] = useState(false);
   const [feedId, setFeedId] = useState(false);
   const [url, setUrl] = useState('');
+  const [reportPost, setReportPost] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const { user, loading } = useUserStore();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['getUser', userData.id],
@@ -34,20 +40,41 @@ const UserProfile = ({ userData }) => {
     enabled: !!userData.id,
   });
 
+  const {
+    mutate,
+    isPending,
+    error: errorDeleting,
+  } = useMutation({
+    mutationFn: ({ id }) => deletePost(id),
+    onSuccess: () => {
+      setFeedId(null);
+      handleConfirmDelete();
+    },
+    onError: (err) => {
+      console.error('Delete failed:', err.message);
+    },
+  });
+
   const handleExpandImage = (url) => {
     setUrl(url);
     setExpandImage((prev) => !prev);
   };
 
+  const handleReportPost = () => {
+    setReportPost((prev) => !prev);
+  };
+  const handleConfirmDelete = () => {
+    setConfirmDelete((prev) => !prev);
+  };
+
   const handleShowMore = (identifier, id) => {
     if (id) {
-      setId(id);
+      setFeedId(id);
     }
-    setId;
     if (identifier === 'post') {
-      console.log(identifier);
+      handleReportPost();
     } else if (identifier === 'delete') {
-      console.log(identifier);
+      handleConfirmDelete();
     }
     setShowMore((prev) => !prev);
   };
@@ -69,7 +96,9 @@ const UserProfile = ({ userData }) => {
 
   const combinedImages = [newObj, ...profileImages];
 
-  console.log(combinedImages, 'profileImages');
+  const handleDelete = () => {
+    mutate({ id: feedId });
+  };
 
   return (
     <div>
@@ -127,8 +156,9 @@ const UserProfile = ({ userData }) => {
               showMore={showMore}
               handleComment={handleComment}
               showComment={showComment}
-              clickedId={id}
               feedId={feedId}
+              socialCircles={socialCircles}
+              signedInUser={user}
             />
           </div>
         );
@@ -143,6 +173,29 @@ const UserProfile = ({ userData }) => {
             className="object-fill w-full text-black pr-1.5"
           />
         </Modal>
+      )}
+      {reportPost && (
+        <ReportPostModal
+          isOpen={reportPost}
+          onClose={handleReportPost}
+          feedId={feedId}
+        />
+      )}
+      {confirmDelete && (
+        <ConfirmAd
+          isOpen={confirmDelete}
+          onClose={() => {
+            handleConfirmDelete();
+          }}
+          title={'Delete Post'}
+          description={
+            'Are you sure you want to delete this post? This action is irreversable'
+          }
+          onConfirm={handleDelete}
+          confirmation={true}
+          isLoading={isPending}
+          error={errorDeleting}
+        />
       )}
     </div>
   );
