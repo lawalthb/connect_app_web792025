@@ -37,15 +37,13 @@ const ChatView = ({ token }) => {
   const [viewMore, setViewMore] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
   const [incomingCall, setIncomingCall] = useState(null);
-  const uid = Math.floor(Math.random() * 1000000);
+  const [callType, setCallType] = useState(null);
 
   const [agoraConfig, setAgoraConfig] = useState({
-    appId: '314065900d1d4ef19ed5c8d247d6c247',
-    channelName: 'call_1754435708_6892907c1f875',
-    token:
-      '006314065900d1d4ef19ed5c8d247d6c247IAD2NIedM/32FDiQuRWGIlfAZbJrTR9Du/DCBYIhtP/bInchkiKEpFSKIgAfHgEA/OGTaAQAAQCMnpJoAwCMnpJoAgCMnpJoBACMnpJo',
+    appId: '',
+    channelName: '',
+    token: '',
     uid: '',
-    // uid: '169446',
   });
 
   const queryClient = useQueryClient();
@@ -92,6 +90,7 @@ const ChatView = ({ token }) => {
     mutationFn: initialteCall,
     onSuccess: (data) => {
       console.log(data);
+      setCallType(data.data.call);
       setAgoraConfig({
         appId: data.data.agora_config.app_id,
         channelName: data.data.agora_config.channel_name,
@@ -130,6 +129,15 @@ const ChatView = ({ token }) => {
   //     channel.unsubscribe();
   //   };
   // }, [selectedConversation?.id]);
+
+  const handleEndCall = () => {
+    setAgoraConfig({
+      appId: '',
+      channelName: '',
+      token: '',
+      uid: '',
+    });
+  };
 
   const handleAcceptCall = () => {
     setAgoraConfig({
@@ -275,8 +283,6 @@ const ChatView = ({ token }) => {
     initiateCall(payload);
   };
 
-  const handleEndCall = () => {};
-
   if (isLoadingConversations || loading || isLoadingMessages) return <Loader />;
 
   return (
@@ -324,7 +330,7 @@ const ChatView = ({ token }) => {
       {agoraConfig.uid && (
         <Modal
           isOpen={agoraConfig.appId}
-          onClose={() => {}}
+          onClose={handleEndCall}
           size="max-w-[705px] max-h-fit"
         >
           <VideoCall
@@ -333,6 +339,8 @@ const ChatView = ({ token }) => {
             token={agoraConfig.token}
             uid={agoraConfig.uid}
             handleEndCall={handleEndCall}
+            callType={callType.call_type}
+            remoteUser={callType.initiator}
           />
         </Modal>
       )}
