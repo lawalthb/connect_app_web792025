@@ -332,21 +332,23 @@ const ChatRoom = ({
                     }`}
                   >
                     {/* Attachment preview (only render when we actually have a file URL or raw blob) */}
-                    {fileUrl && msg?.type !== 'audio' && (
-                      <div className="mb-2 cursor-pointer">
-                        {/* use plain <img> to support blob: and external urls without Next/Image constraints */}
-                        <img
-                          onClick={() => handleViewImage(fileUrl)}
-                          src={fileUrl}
-                          alt="attachment"
-                          style={{
-                            width: 150,
-                            height: 150,
-                            objectFit: 'cover',
-                          }}
-                        />
-                      </div>
-                    )}
+                    {fileUrl &&
+                      msg?.type !== 'audio' &&
+                      msg?.type !== 'video' && (
+                        <div className="mb-2 cursor-pointer">
+                          {/* use plain <img> to support blob: and external urls without Next/Image constraints */}
+                          <img
+                            onClick={() => handleViewImage(fileUrl)}
+                            src={fileUrl}
+                            alt="attachment"
+                            style={{
+                              width: 150,
+                              height: 150,
+                              objectFit: 'cover',
+                            }}
+                          />
+                        </div>
+                      )}
 
                     {/* Audio / Video */}
                     {(msg?.type === 'audio' ||
@@ -361,13 +363,8 @@ const ChatRoom = ({
                     {msg?.type === 'video' && (
                       <video
                         controls
-                        src={
-                          msg?.file?.url ||
-                          (msg?.file?.raw
-                            ? URL.createObjectURL(msg.file.raw)
-                            : undefined)
-                        }
-                        className="mb-2"
+                        src={msg?.file?.url || msg?.metadata?.file_url}
+                        className="mb-2 py-1 pr-2 rounded-lg b"
                         style={{ maxWidth: 300 }}
                       />
                     )}
@@ -484,12 +481,21 @@ const ChatRoom = ({
         >
           <div className="relative flex w-full h-96 items-center gap-2 ml-2 my-2">
             {selectedFilePreview ? (
-              // use <img> here for blob support
-              <img
-                src={selectedFilePreview}
-                alt="Preview"
-                className="rounded-lg object-cover w-full h-full"
-              />
+              selectedFile.type.startsWith('video/') ? (
+                // ✅ Video preview
+                <video
+                  controls
+                  src={selectedFilePreview}
+                  className="rounded-lg object-contain w-full h-full bg-black"
+                />
+              ) : (
+                // ✅ Image preview
+                <img
+                  src={selectedFilePreview}
+                  alt="Preview"
+                  className="rounded-lg object-cover w-full h-full"
+                />
+              )
             ) : (
               <div className="w-full h-full bg-gray-100 rounded-lg" />
             )}

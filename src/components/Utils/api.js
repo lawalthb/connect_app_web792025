@@ -182,6 +182,19 @@ export const getSubscription = async () => {
   return response.json();
 };
 
+export const getLatestLivestream = async () => {
+  const response = await fetch('/api/getLatestLivestream', {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch livestreams');
+  }
+
+  return response.json();
+};
+
 export const getProfileImages = async () => {
   const response = await fetch('/api/getProfileImages', {
     credentials: 'include',
@@ -662,6 +675,25 @@ export const postComment = async (data, id) => {
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Commenting failed');
+  }
+
+  return response.json();
+};
+
+export const viewStream = async (id) => {
+  if (!id) return;
+  const response = await fetch(`/api/viewStream?id=${id}`, {
+    method: 'POST',
+
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Stream failed');
   }
 
   return response.json();

@@ -1,17 +1,33 @@
 import Daniella from '@/Images/Daniella.png';
 import { FaCirclePlus } from 'react-icons/fa6';
 
-const ConnectStory = ({ extraStyle = 'text-[16px]', handlePostStories }) => {
+const ConnectStory = ({
+  extraStyle = 'text-[16px]',
+  handlePostStories,
+  handleViewStories,
+  connectFeedPage = false,
+  hasUnseenStories = false,
+  story,
+}) => {
+  const ringColor = story.user.isOwn
+    ? 'from-border-[#A20030] to-border-[#A20030]'
+    : hasUnseenStories
+      ? 'from-border-[#A20030] to-border-[#A20030]'
+      : 'from-gray-400 to-gray-500';
   return (
     <div>
-      <h3 className={`text-black font-medium leading-6 ${extraStyle}`}>
-        Connect Story
-      </h3>
+      {!connectFeedPage && (
+        <h3 className={`text-black font-medium leading-6 ${extraStyle}`}>
+          Connect Story
+        </h3>
+      )}
       <div className="relative w-[75px]">
         <img
-          src={Daniella.src}
+          onClick={handleViewStories}
+          src={story.user.avatar}
+          alt={story.user.name}
           alt="Image"
-          className="object-fill w-[75px] h-[108px] text-black border border-[#A20030] p-1 rounded-[20px] my-5"
+          className={`object-fill w-[75px] h-[108px] cursor-pointer text-black border ${ringColor} p-1 rounded-[20px] my-5`}
         />
         <FaCirclePlus
           onClick={handlePostStories}

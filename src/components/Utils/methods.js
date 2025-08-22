@@ -138,3 +138,20 @@ export const socialMediaLogos = [
 ];
 
 export const getCurrentYear = () => new Date().getFullYear();
+
+export const streamData = [
+  {
+    id: 1,
+    title: 'Watch Livestream',
+    description:
+      'Work efficiently with teammates and clients, stay in sync on projects and keep company data safe.',
+    link: 'See all livestream',
+  },
+  {
+    id: 2,
+    title: 'Upcoming Livestream',
+    description:
+      'Work efficiently with teammates and clients, stay in sync on projects and keep company data safe.',
+    link: 'See all',
+  },
+];

@@ -1,5 +1,4 @@
 import Button from '../Button';
-import Daniella from '@/Images/Daniella.png';
 
 const UpcomingLiveStreamCard = ({ option, handleJoinStream }) => {
   return (
@@ -19,7 +18,7 @@ const UpcomingLiveStreamCard = ({ option, handleJoinStream }) => {
           />
         </div>
         <img
-          src={option.url || Daniella.src}
+          src={option.banner_image_url}
           alt="Image"
           className="object-fill size-[345px] text-black mr-20 rounded-[10px]"
         />

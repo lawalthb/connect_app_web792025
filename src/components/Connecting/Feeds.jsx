@@ -62,12 +62,14 @@ const Feeds = ({
               />
               {showMore && feedId === feed.id && (
                 <div className="absolute z-10 right-7 py-4 pl-3 border border-[#FAFAFA] text-[#2E2E2E] bg-white shadow-lg w-[163px] font-normal text-[12px] leading-6 rounded-[10px]">
-                  <p
-                    onClick={() => handleShowMore('post')}
-                    className="cursor-pointer hover:text-[#A20030]"
-                  >
-                    Report Post
-                  </p>
+                  {signedInUser?.id !== (feed?.user_id || feed?.user?.id) && (
+                    <p
+                      onClick={() => handleShowMore('post')}
+                      className="cursor-pointer hover:text-[#A20030]"
+                    >
+                      Report Post
+                    </p>
+                  )}
                   {signedInUser?.id === (feed?.user_id || feed?.user?.id) && (
                     <p
                       onClick={() => handleShowMore('delete')}
@@ -87,9 +89,7 @@ const Feeds = ({
       </div>
       <div className="relative mt-3">
         <div className="cursor-pointer absolute right-3 top-3 size-[50px] bg-[#000000AD] rounded-full flex items-center justify-center">
-          <ExpandImageIcon
-            onClick={() => handleExpandImage(feed?.user?.profile_url)}
-          />
+          <ExpandImageIcon onClick={() => handleExpandImage(feed)} />
         </div>
         <img
           src={feed?.user?.profile_url}

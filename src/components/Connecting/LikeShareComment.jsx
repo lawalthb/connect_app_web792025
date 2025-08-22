@@ -57,7 +57,7 @@ const LikeShareComment = ({ feed, handleComment, showComment, feedId }) => {
           </h3>
         ) : (
           <h3
-            onClick={() => handleComment(feed)}
+            onClick={() => handleComment(feed.id)}
             className="text-base font-semibold text-gray-600 cursor-pointer hover:text-[#A20030]"
           >
             {`${feed?.comments_count > 0 ? feed.comments_count : ''} ${singleOrPluralComments}`}

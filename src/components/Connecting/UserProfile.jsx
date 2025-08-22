@@ -16,7 +16,7 @@ import 'swiper/css';
 import 'swiper/css/effect-flip';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deletePost, getUser } from '../Utils/api';
 import Loader from '../Loader/Loader';
 import useUserStore from '@/zustandStore/useUserStore';
@@ -34,6 +34,8 @@ const UserProfile = ({ userData, socialCircles }) => {
 
   const { user, loading } = useUserStore();
 
+  const queryClient = useQueryClient();
+
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['getUser', userData.id],
     queryFn: () => getUser(userData.id),
@@ -49,6 +51,7 @@ const UserProfile = ({ userData, socialCircles }) => {
     onSuccess: () => {
       setFeedId(null);
       handleConfirmDelete();
+      queryClient.invalidateQueries({ queryKey: ['getUser'] });
     },
     onError: (err) => {
       console.error('Delete failed:', err.message);

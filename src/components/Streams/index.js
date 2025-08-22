@@ -9,43 +9,41 @@ import { AiOutlineLike } from 'react-icons/ai';
 import { BiDislike } from 'react-icons/bi';
 import { RiShareForwardLine } from 'react-icons/ri';
 import Comments from '../Comments';
+import BackToPreviousScreen from '../BackToPreviousScreen';
+import { streamData } from '../Utils/methods';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getLatestLivestream, viewStream } from '../Utils/api';
+import Loader from '../Loader/Loader';
+import dynamic from 'next/dynamic';
+
+const LiveStreamViewer = dynamic(() => import('./LiveStreamViewer'), {
+  ssr: false,
+});
 
 const Stream = () => {
   const [upcomingStream, setUpcomingStream] = useState(false);
   const [availableStream, setAvailableStream] = useState(false);
-  const streamData = [
-    {
-      id: 1,
-      title: 'Watch Livestream',
-      description:
-        'Work efficiently with teammates and clients, stay in sync on projects and keep company data safe.',
-      link: 'See all livestream',
-    },
-    {
-      id: 2,
-      title: 'Upcoming Livestream',
-      description:
-        'Work efficiently with teammates and clients, stay in sync on projects and keep company data safe.',
-      link: 'See all',
-    },
-  ];
+  const [liveStreamData, setStreamLiveStreamData] = useState(null);
 
-  const upcomingStreamData = [
-    {
-      id: 1,
-      title: 'Solemnization of Holy Matrimony',
-      description:
-        'Work efficiently with teammates and clients, stay in sync on projects and keep company data safe.',
-      url: '',
+  const { data, isLoading: isLoadingLatestLivestream } = useQuery({
+    queryKey: ['latestLivestream'],
+    queryFn: getLatestLivestream,
+  });
+
+  const {
+    mutate,
+    isPending: isLoadingLiveStreamData,
+    error: errorViewingStream,
+  } = useMutation({
+    mutationFn: ({ id }) => viewStream(id),
+    onSuccess: (data) => {
+      setStreamLiveStreamData(data);
+      setAvailableStream(true);
     },
-    {
-      id: 2,
-      title: 'Happy Hour Hangout',
-      description:
-        'Work efficiently with teammates and clients, stay in sync on projects and keep company data safe.',
-      url: '',
+    onError: (err) => {
+      console.error('Stream failed:', err.message);
     },
-  ];
+  });
 
   const handleUpcomingStream = () => {
     setUpcomingStream((prev) => !prev);
@@ -58,8 +56,15 @@ const Stream = () => {
     }
   };
   const handleJoinStream = (id) => {
-    setAvailableStream(true);
+    mutate({ id });
   };
+
+  const handleBackToHomePage = () => {
+    setUpcomingStream(false);
+    setAvailableStream(false);
+  };
+
+  if (isLoadingLatestLivestream || isLoadingLiveStreamData) return <Loader />;
   return (
     <>
       {!upcomingStream && !availableStream && (
@@ -76,8 +81,11 @@ const Stream = () => {
           <h3 className="text-[#A20030] font-bold text-[40px] leading-16 text-center mb-24">
             Upcoming Live Stream
           </h3>
+          <div className="mx-20 mb-10">
+            <BackToPreviousScreen onBackClick={handleBackToHomePage} />
+          </div>
           <>
-            {upcomingStreamData.map((option) => (
+            {data?.data.streams?.map((option) => (
               <div key={option.id}>
                 <UpcomingLiveStreamCard
                   option={option}
@@ -94,21 +102,22 @@ const Stream = () => {
             Available Live Stream
           </h2>
           <div className="w-full h-full mt-14">
-            <VideoPlayer src={'https://www.youtube.com/embed/qobh9QeMbl8'} />
+            {/* <VideoPlayer src={'https://www.youtube.com/embed/qobh9QeMbl8'} /> */}
+            {liveStreamData && <LiveStreamViewer streamData={liveStreamData} />}
           </div>
           <div>
             <h3 className="text-[#0F0F0F] font-semibold text-[18px] leading-7 mt-24">
-              Solemization of the holy matrimony
+              {liveStreamData?.data?.stream?.title}
             </h3>
             <div className="flex justify-between items-center">
               <div className="mt-3 flex gap-3">
                 <img
-                  src={Daniella.src}
-                  alt="Image"
+                  src={liveStreamData?.data?.stream?.streamer?.profile_picture}
+                  alt={liveStreamData?.data?.stream?.streamer?.name}
                   className="object-fill size-10 text-black rounded-full"
                 />
                 <h3 className="text-[#0F0F0F] text-base leading-[22px] font-medium">
-                  John Maxwell
+                  {liveStreamData?.data?.stream?.streamer?.name}
                 </h3>
                 <ConfirmIcon />
                 <div className="flex gap-3 ml-5">
@@ -138,7 +147,7 @@ const Stream = () => {
             </div>
             <div className="bg-[#0000000D] border-[#0000001A] rounded-[12px] p-2 mt-3">
               <p className="text-[#0F0F0F] text-[14px] font-medium">
-                100 viewers online
+                {`${liveStreamData?.data?.stream?.current_viewers.toLocaleString()} viewers online`}
               </p>
             </div>
           </div>
