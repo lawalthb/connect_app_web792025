@@ -31,6 +31,7 @@ export default async function handler(req, res) {
     try {
       const formData = new FormData();
       formData.append('content', fields.content);
+      formData.append('type', fields.type);
 
       const file = files.media;
       if (file?.filepath) {

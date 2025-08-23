@@ -1,17 +1,20 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { AiOutlineLike } from 'react-icons/ai';
 import { IoShareSocialOutline } from 'react-icons/io5';
 import { postComment } from '../Utils/api';
+import { FiSend } from 'react-icons/fi';
 
 const LikeShareComment = ({ feed, handleComment, showComment, feedId }) => {
   const [input, setInput] = useState('');
+  const queryClient = useQueryClient();
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: ({ data, id }) => postComment(data, id),
     onSuccess: () => {
       setInput('');
       handleComment();
+      queryClient.invalidateQueries({ queryKey: ['post'] });
     },
     onError: (err) => {
       console.error('Commenting failed:', err.message);
@@ -26,7 +29,7 @@ const LikeShareComment = ({ feed, handleComment, showComment, feedId }) => {
     const payload = {
       content: input,
     };
-    if (e.key === 'Enter' && input !== '') {
+    if (input !== '') {
       mutate({ data: payload, id: feedId });
     }
   };
@@ -74,16 +77,25 @@ const LikeShareComment = ({ feed, handleComment, showComment, feedId }) => {
               <p>Comment</p>
               <p className="font-normal">{feed?.human_time}</p>
             </div>
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
-              }}
-              onKeyDown={submitComment}
-              placeholder="Write a comment..."
-              className="w-[90%] ml-12 mt-2 px-4 py-2 border-none rounded-full text-sm text-gray-500 outline-none bg-[#F0F2F5]"
-            />
+            <div className="flex gap-x-4 w-full ">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                }}
+                onKeyDown={(e) => e.key === 'Enter' && submitComment()}
+                placeholder="Write a comment..."
+                className="w-[90%] ml-12 mt-2 px-4 py-2 border-none rounded-full text-sm text-gray-500 outline-none bg-[#F0F2F5]"
+              />
+              <button
+                type="button"
+                onClick={submitComment}
+                className="text-white bg-[#A20030] hover:bg-[#870026] rounded-full mt-2 w-[20%] flex items-center justify-center gap-x-2 cursor-pointer"
+              >
+                Send <FiSend className="size-3" />
+              </button>
+            </div>
           </>
         )}
       </div>

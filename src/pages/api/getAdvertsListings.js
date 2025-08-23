@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `${API_URL}/ads?per_page=${per_page}&page=${page}&ad_name=${addName}status=${advertStatus}&start_date=${startDate}&end_date=${endDate}`,
+      `${API_URL}/ads?per_page=${per_page}&page=${page}&ad_name=${addName}&status=${advertStatus}&start_date=${startDate}&end_date=${endDate}`,
       {
         method: 'GET',
         headers: {

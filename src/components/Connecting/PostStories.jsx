@@ -57,6 +57,7 @@ const PostStories = ({ show, onClose, profileImages }) => {
       const payload = {
         ...data,
         file,
+        type: fileTypes[0],
       };
       if (file) uploadAvatar(payload);
     });

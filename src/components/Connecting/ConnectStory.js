@@ -8,6 +8,7 @@ const ConnectStory = ({
   connectFeedPage = false,
   hasUnseenStories = false,
   story,
+  index,
 }) => {
   const ringColor = story.user.isOwn
     ? 'from-border-[#A20030] to-border-[#A20030]'
@@ -29,10 +30,12 @@ const ConnectStory = ({
           alt="Image"
           className={`object-fill w-[75px] h-[108px] cursor-pointer text-black border ${ringColor} p-1 rounded-[20px] my-5`}
         />
-        <FaCirclePlus
-          onClick={handlePostStories}
-          className="fill-[#A20030] absolute bottom-2.5 right-2.5 cursor-pointer"
-        />
+        {index === 0 && (
+          <FaCirclePlus
+            onClick={handlePostStories}
+            className="fill-[#A20030] absolute bottom-2.5 right-2.5 cursor-pointer"
+          />
+        )}
       </div>
     </div>
   );

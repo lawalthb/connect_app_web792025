@@ -232,6 +232,7 @@ const ConnectionFeed = ({ data, profileImages, socialCircles }) => {
                 handlePostStories={handlePostStories}
                 handleViewStories={() => openStory(index)}
                 connectFeedPage={true}
+                index={index}
               />
             ))}
           </div>

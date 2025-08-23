@@ -584,7 +584,7 @@ export const getAdvertsListings = async (
   endDate,
 ) => {
   const response = await fetch(
-    `/api/getAdvertsListings?per_page=${perPage}&page=${page}&ad_name=${addName}status=${advertStatus}&start_date=${startDate}&end_date=${endDate}`,
+    `/api/getAdvertsListings?per_page=${perPage}&page=${page}&ad_name=${addName}&status=${advertStatus}&start_date=${startDate}&end_date=${endDate}`,
     {
       method: 'GET',
       headers: {
@@ -773,6 +773,7 @@ export const uploadFile = async (file) => {
 export const postStories = async (data) => {
   const formData = new FormData();
   formData.append('file', data.file);
+  formData.append('type', data.type);
   formData.append('content', data.content);
 
   try {
