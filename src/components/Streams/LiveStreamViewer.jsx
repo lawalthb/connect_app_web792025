@@ -39,69 +39,6 @@ export default function LiveStreamViewer({ streamData }) {
     });
   };
 
-  // 👉 Initialize Agora
-  const initAgoraClient = async () => {
-    try {
-      setConnectionStatus('connecting');
-
-      // Create client if not already created
-      if (!client.current) {
-        client.current = AgoraRTC.createClient({ mode: 'live', codec: 'vp8' });
-      }
-
-      // Subscribe to remote users
-      client.current.on('user-published', async (user, mediaType) => {
-        await client.current.subscribe(user, mediaType);
-        console.log('Subscribed to user:', user.uid, mediaType);
-
-        if (mediaType === 'video') {
-          const remoteTrack = user.videoTrack;
-          remoteVideoTracks.current.set(user.uid, remoteTrack);
-          setRemoteUsers((prev) => [...prev, user]);
-
-          // Play video in container
-          if (videoRef.current) {
-            remoteTrack.play(videoRef.current);
-          }
-        }
-
-        if (mediaType === 'audio') {
-          const remoteTrack = user.audioTrack;
-          remoteAudioTracks.current.set(user.uid, remoteTrack);
-          remoteTrack.play(); // plays audio automatically
-        }
-      });
-
-      client.current.on('user-unpublished', (user, mediaType) => {
-        console.log('User unpublished:', user.uid, mediaType);
-        if (mediaType === 'video') {
-          remoteVideoTracks.current.delete(user.uid);
-        }
-        if (mediaType === 'audio') {
-          remoteAudioTracks.current.delete(user.uid);
-        }
-        setRemoteUsers((prev) => prev.filter((u) => u.uid !== user.uid));
-      });
-
-      client.current.on('user-left', (user) => {
-        console.log('User left:', user.uid);
-        remoteVideoTracks.current.delete(user.uid);
-        remoteAudioTracks.current.delete(user.uid);
-        setRemoteUsers((prev) => prev.filter((u) => u.uid !== user.uid));
-      });
-
-      // Join the channel
-      await client.current.join(app_id, channel_name, token, agora_uid);
-
-      setJoined(true);
-      setConnectionStatus('connected');
-      console.log('Joined Agora channel successfully');
-    } catch (error) {
-      console.error('Agora init error:', error);
-      setConnectionStatus('disconnected');
-    }
-  };
-
   useEffect(() => {
     let isMounted = true;
 
@@ -116,34 +53,119 @@ export default function LiveStreamViewer({ streamData }) {
           });
         }
 
+        // Check if client is already connected or connecting
+        if (
+          client.current.connectionState === 'CONNECTED' ||
+          client.current.connectionState === 'CONNECTING'
+        ) {
+          setJoined(true);
+          setConnectionStatus('connected');
+          return;
+        }
+
+        // Set client role as audience for viewing
+        await client.current.setClientRole('audience');
+
+        // Remove any existing listeners before adding new ones
+        if (client.current) {
+          client.current.removeAllListeners();
+        }
+
         client.current.on('user-published', async (user, mediaType) => {
-          if (!isMounted) return; // 👈 prevent actions after unmount
-          await client.current.subscribe(user, mediaType);
-          console.log('Subscribed to user:', user.uid, mediaType);
+          if (!isMounted) return;
+          try {
+            await client.current.subscribe(user, mediaType);
 
-          if (mediaType === 'video') {
-            const remoteTrack = user.videoTrack;
-            remoteVideoTracks.current.set(user.uid, remoteTrack);
-            setRemoteUsers((prev) => [...prev, user]);
+            if (mediaType === 'video') {
+              const remoteTrack = user.videoTrack;
+              remoteVideoTracks.current.set(user.uid, remoteTrack);
+              setRemoteUsers((prev) => {
+                const newUsers = [...prev, user];
+                console.log('👥 Updated remote users:', newUsers.length);
+                return newUsers;
+              });
 
-            if (videoRef.current) {
-              remoteTrack.play(videoRef.current);
+              if (videoRef.current) {
+                console.log('Playing video in container');
+                await remoteTrack.play(videoRef.current);
+                console.log('Video track playing successfully');
+              } else {
+                console.warn('videoRef.current is null');
+              }
             }
-          }
 
-          if (mediaType === 'audio') {
-            const remoteTrack = user.audioTrack;
-            remoteAudioTracks.current.set(user.uid, remoteTrack);
-            remoteTrack.play();
+            if (mediaType === 'audio') {
+              const remoteTrack = user.audioTrack;
+              remoteAudioTracks.current.set(user.uid, remoteTrack);
+              remoteTrack.play();
+              console.log('Audio track playing');
+            }
+          } catch (error) {
+            console.error('Subscribe error:', error);
           }
         });
+
+        client.current.on('user-unpublished', (user, mediaType) => {
+          if (!isMounted) return;
+          console.log('User unpublished:', user.uid, mediaType);
+          if (mediaType === 'video') {
+            const track = remoteVideoTracks.current.get(user.uid);
+            if (track) {
+              track.stop();
+              remoteVideoTracks.current.delete(user.uid);
+            }
+          }
+          if (mediaType === 'audio') {
+            const track = remoteAudioTracks.current.get(user.uid);
+            if (track) {
+              track.stop();
+              remoteAudioTracks.current.delete(user.uid);
+            }
+          }
+          setRemoteUsers((prev) => prev.filter((u) => u.uid !== user.uid));
+        });
+
+        client.current.on('user-left', (user) => {
+          if (!isMounted) return;
+          console.log('User left:', user.uid);
+          const videoTrack = remoteVideoTracks.current.get(user.uid);
+          const audioTrack = remoteAudioTracks.current.get(user.uid);
+
+          if (videoTrack) {
+            videoTrack.stop();
+            remoteVideoTracks.current.delete(user.uid);
+          }
+          if (audioTrack) {
+            audioTrack.stop();
+            remoteAudioTracks.current.delete(user.uid);
+          }
+          setRemoteUsers((prev) => prev.filter((u) => u.uid !== user.uid));
+        });
+
+        console.log('Attempting to join channel:', {
+          app_id: app_id?.substring(0, 8) + '...',
+          channel_name,
+          agora_uid,
+          currentState: client.current.connectionState,
+        });
+
+        // Double-check before joining
+        if (client.current.connectionState === 'CONNECTED') {
+          console.log('Already connected, skipping join');
+          if (isMounted) {
+            setJoined(true);
+            setConnectionStatus('connected');
+          }
+          return;
+        }
 
         await client.current.join(app_id, channel_name, token, agora_uid);
 
         if (isMounted) {
           setJoined(true);
           setConnectionStatus('connected');
-          console.log('Joined Agora channel successfully');
+          console.log('Successfully joined Agora channel');
+          console.log('video container ref available:', !!videoRef.current);
         }
       } catch (error) {
         if (isMounted) {
@@ -156,19 +178,29 @@ export default function LiveStreamViewer({ streamData }) {
     init();
 
     return () => {
-      isMounted = false; // 👈 stops any async continuation
+      isMounted = false;
 
       const cleanup = async () => {
         try {
+          // Stop all remote tracks
           remoteVideoTracks.current.forEach((track) => track.stop());
           remoteAudioTracks.current.forEach((track) => track.stop());
           remoteVideoTracks.current.clear();
           remoteAudioTracks.current.clear();
 
-          if (client.current) {
+          // Only leave if connected
+          if (
+            client.current &&
+            client.current.connectionState === 'CONNECTED'
+          ) {
             await client.current.leave();
+            console.log('Left Agora channel');
+          }
+
+          // Remove all listeners
+          if (client.current) {
             client.current.removeAllListeners();
-            console.log('Left Agora channel & cleaned up');
+            console.log('Cleaned up event listeners');
           }
         } catch (err) {
           console.error('Cleanup error:', err);
@@ -208,6 +240,7 @@ export default function LiveStreamViewer({ streamData }) {
 
   return (
     <div className="max-w-6xl mx-auto bg-[#E6BAC7] text-white rounded-xl overflow-hidden shadow-2xl">
+      <div className="bg-black/20 p-2 text-xs"></div>
       {/* Header Section */}
       <div className="relative">
         {stream.banner_image_url && (
@@ -298,13 +331,23 @@ export default function LiveStreamViewer({ streamData }) {
         >
           <div
             ref={videoRef}
-            className="w-full h-full flex items-center justify-center"
+            id="remote-video-container"
+            className="w-full h-full"
+            style={{ position: 'relative' }}
           >
             {!joined ? (
-              <div className="flex flex-col items-center space-y-4">
+              <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
                 <div className="animate-spin w-8 h-8 border-4 border-[#A20030] border-t-transparent rounded-full"></div>
                 <p className="text-gray-300">Connecting to stream...</p>
                 <p className="text-sm text-gray-500">Channel: {channel_name}</p>
+              </div>
+            ) : remoteUsers.length === 0 ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
+                <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center">
+                  <User className="w-8 h-8 text-gray-600" />
+                </div>
+                <p className="text-gray-300">Waiting for streamer...</p>
+                <p className="text-sm text-gray-500">Connected to channel</p>
               </div>
             ) : null}
           </div>
