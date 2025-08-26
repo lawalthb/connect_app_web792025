@@ -20,7 +20,7 @@ import Modal from '@/components/Modal';
 import UserProfile from '@/components/Connecting/UserProfile';
 import { useRouter } from 'next/router';
 
-const Connecting = () => {
+const Connecting = ({ token }) => {
   const [activeTab, setActiveTab] = useState('Connecting Feed');
   const [showSwipe, setShowSwipe] = useState(false);
   const [optionDetailData, setOptionDetailData] = useState(false);
@@ -124,15 +124,18 @@ const Connecting = () => {
           activeTab={activeTab}
         />
       </div>
-      {(isLoading || isLoadingSocialCircles || isLoadingProfileImages) && (
-        <Loader />
-      )}
+      {(isLoading ||
+        isLoadingSocialCircles ||
+        isLoadingProfileImages ||
+        isLoadingMyStory) && <Loader />}
       {!isLoading && !isLoadingSocialCircles && !isLoadingProfileImages && (
         <div className="px-1 md:px-20">
           {activeTab === 'Category' && (
             <ConnectWithOthers
               socialCircles={socialCircles?.data?.social_circles}
               socialId={socialId}
+              myStoryData={myStoryData}
+              token={token}
             />
           )}
           {activeTab === 'Connecting Feed' && (
@@ -140,6 +143,8 @@ const Connecting = () => {
               data={data?.data}
               profileImages={profileImages?.data?.images}
               socialCircles={socialCircles?.data?.social_circles}
+              token={token}
+              myStoryData={myStoryData}
             />
           )}
           {activeTab === 'Discovery' && (
@@ -182,6 +187,7 @@ const Connecting = () => {
           <UserProfile
             userData={userData}
             socialCircles={socialCircles?.data?.social_circles}
+            myStoryData={myStoryData}
           />
         </Modal>
       )}
@@ -201,6 +207,6 @@ export async function getServerSideProps({ req }) {
   }
 
   return {
-    props: {},
+    props: { token },
   };
 }

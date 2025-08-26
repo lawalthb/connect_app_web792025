@@ -8,11 +8,12 @@ import Feeds from './Feeds';
 import PostStories from './PostStories';
 import ReportPostModal from './ReportPostModal';
 import ConfirmAd from '../Advert/ConfirmAd';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deletePost } from '../Utils/api';
 import useUserStore from '@/zustandStore/useUserStore';
 import LikeShareComment from './LikeShareComment';
 import StoryViewer from './StoryViewer';
+import { mapStories } from '../Utils/mapStories';
 
 // Mock data for stories
 const storiesData = [
@@ -114,7 +115,13 @@ const storiesData = [
   },
 ];
 
-const ConnectionFeed = ({ data, profileImages, socialCircles }) => {
+const ConnectionFeed = ({
+  data,
+  profileImages,
+  socialCircles,
+  token,
+  myStoryData,
+}) => {
   const [showFilter, setShowFilter] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [expandImage, setExpandImage] = useState(false);
@@ -129,11 +136,16 @@ const ConnectionFeed = ({ data, profileImages, socialCircles }) => {
 
   const { user, loading } = useUserStore();
 
+  const queryClient = useQueryClient();
+
+  const storiesData = mapStories(myStoryData.data);
+
   const { mutate, isPending, error } = useMutation({
     mutationFn: ({ id }) => deletePost(id),
     onSuccess: () => {
       setFeedId(null);
       handleConfirmDelete();
+      queryClient.invalidateQueries({ queryKey: ['post'] });
     },
     onError: (err) => {
       console.error('Delete failed:', err.message);
@@ -262,6 +274,7 @@ const ConnectionFeed = ({ data, profileImages, socialCircles }) => {
           onClose={handlePostStories}
           show={postStories}
           profileImages={profileImages}
+          token={token}
         />
       )}
 

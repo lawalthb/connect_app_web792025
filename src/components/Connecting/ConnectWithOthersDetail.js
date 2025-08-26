@@ -19,6 +19,8 @@ const ConnectWithOthersDetail = ({
   countryList,
   handleBack,
   socialCircles,
+  myStoryData,
+  token,
 }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [profile, setProfile] = useState(false);
@@ -150,7 +152,12 @@ const ConnectWithOthersDetail = ({
         </div>
       )}
       {profile && (
-        <UserProfile userData={userData} socialCircles={socialCircles} />
+        <UserProfile
+          userData={userData}
+          socialCircles={socialCircles}
+          myStoryData={myStoryData}
+          token={token}
+        />
       )}
     </div>
   );

@@ -24,6 +24,7 @@ import ReportPostModal from './ReportPostModal';
 import ConfirmAd from '../Advert/ConfirmAd';
 import StoryViewer from './StoryViewer';
 import PostStories from './PostStories';
+import { mapStories } from '../Utils/mapStories';
 
 const storiesData = [
   {
@@ -124,7 +125,7 @@ const storiesData = [
   },
 ];
 
-const UserProfile = ({ userData, socialCircles }) => {
+const UserProfile = ({ userData, socialCircles, myStoryData, token }) => {
   const [expandImage, setExpandImage] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -137,6 +138,8 @@ const UserProfile = ({ userData, socialCircles }) => {
   const [postStories, setPostStories] = useState(false);
 
   const { user, loading } = useUserStore();
+
+  const storiesData = myStoryData ? mapStories(myStoryData?.data) : [];
 
   const queryClient = useQueryClient();
 
@@ -352,6 +355,7 @@ const UserProfile = ({ userData, socialCircles }) => {
           onClose={handlePostStories}
           show={postStories}
           profileImages={profileImages}
+          token={token}
         />
       )}
       {selectedStory && (
