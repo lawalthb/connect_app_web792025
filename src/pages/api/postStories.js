@@ -32,14 +32,12 @@ export default async function handler(req, res) {
       const formData = new FormData();
       formData.append('content', fields.content);
       formData.append('type', fields.type);
+      formData.append('privacy', fields.privacy);
+      formData.append('allow_replies', fields.allow_replies);
 
-      const file = files.media;
-      if (file?.filepath) {
-        formData.append(
-          'file',
-          fs.createReadStream(file.filepath),
-          file.originalFilename,
-        );
+      const file = files.file;
+      if (file) {
+        formData.append('file', file);
       }
 
       const response = await fetch(`${API_URL}/stories`, {

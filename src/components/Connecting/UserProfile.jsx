@@ -22,6 +22,107 @@ import Loader from '../Loader/Loader';
 import useUserStore from '@/zustandStore/useUserStore';
 import ReportPostModal from './ReportPostModal';
 import ConfirmAd from '../Advert/ConfirmAd';
+import StoryViewer from './StoryViewer';
+import PostStories from './PostStories';
+
+const storiesData = [
+  {
+    id: 1,
+    user: {
+      id: 1,
+      name: 'Your Story',
+      avatar:
+        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop&crop=face',
+      isOwn: true,
+    },
+    stories: [
+      {
+        id: 1,
+        type: 'image',
+        url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=1200&fit=crop',
+        duration: 5000,
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+        views: 24,
+      },
+      {
+        id: 2,
+        type: 'video',
+        url: 'https://player.vimeo.com/external/194837908.sd.mp4?s=c350076905b78c67f74d7ee39fdb4fef01d12420',
+        duration: 15000,
+        timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000),
+        views: 18,
+      },
+    ],
+  },
+  {
+    id: 2,
+    user: {
+      id: 2,
+      name: 'Alice Johnson',
+      avatar:
+        'https://images.unsplash.com/photo-1494790108755-2616b5b35c5a?w=150&h=150&fit=crop&crop=face',
+      isOwn: false,
+    },
+    stories: [
+      {
+        id: 3,
+        type: 'image',
+        url: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&h=1200&fit=crop',
+        duration: 5000,
+        timestamp: new Date(Date.now() - 30 * 60 * 1000),
+        views: 45,
+      },
+    ],
+  },
+  {
+    id: 3,
+    user: {
+      id: 3,
+      name: 'Bob Wilson',
+      avatar:
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+      isOwn: false,
+    },
+    stories: [
+      {
+        id: 4,
+        type: 'image',
+        url: 'https://images.unsplash.com/photo-1528543606781-2f6e6857f318?w=800&h=1200&fit=crop',
+        duration: 5000,
+        timestamp: new Date(Date.now() - 45 * 60 * 1000),
+        views: 32,
+      },
+      {
+        id: 5,
+        type: 'image',
+        url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=1200&fit=crop',
+        duration: 5000,
+        timestamp: new Date(Date.now() - 20 * 60 * 1000),
+        views: 28,
+      },
+    ],
+  },
+  {
+    id: 4,
+    user: {
+      id: 4,
+      name: 'Emma Davis',
+      avatar:
+        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+      isOwn: false,
+    },
+    stories: [
+      {
+        id: 6,
+        type: 'image',
+        url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&h=1200&fit=crop',
+        duration: 5000,
+        timestamp: new Date(Date.now() - 10 * 60 * 1000),
+        views: 67,
+      },
+    ],
+  },
+];
 
 const UserProfile = ({ userData, socialCircles }) => {
   const [expandImage, setExpandImage] = useState(false);
@@ -31,6 +132,9 @@ const UserProfile = ({ userData, socialCircles }) => {
   const [url, setUrl] = useState('');
   const [reportPost, setReportPost] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [selectedStory, setSelectedStory] = useState(null);
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+  const [postStories, setPostStories] = useState(false);
 
   const { user, loading } = useUserStore();
 
@@ -58,6 +162,34 @@ const UserProfile = ({ userData, socialCircles }) => {
     },
   });
 
+  const openStory = (storyIndex) => {
+    console.log('Opening story at index:', storyIndex);
+    setSelectedStory(storiesData[storyIndex]);
+    setCurrentStoryIndex(storyIndex);
+  };
+
+  const closeStory = () => {
+    setSelectedStory(null);
+  };
+
+  const nextStory = () => {
+    if (currentStoryIndex < storiesData.length - 1) {
+      const nextIndex = currentStoryIndex + 1;
+      setCurrentStoryIndex(nextIndex);
+      setSelectedStory(storiesData[nextIndex]);
+    } else {
+      closeStory();
+    }
+  };
+
+  const previousStory = () => {
+    if (currentStoryIndex > 0) {
+      const prevIndex = currentStoryIndex - 1;
+      setCurrentStoryIndex(prevIndex);
+      setSelectedStory(storiesData[prevIndex]);
+    }
+  };
+
   const handleExpandImage = (url) => {
     setUrl(url);
     setExpandImage((prev) => !prev);
@@ -80,6 +212,10 @@ const UserProfile = ({ userData, socialCircles }) => {
       handleConfirmDelete();
     }
     setShowMore((prev) => !prev);
+  };
+
+  const handlePostStories = () => {
+    setPostStories((prev) => !prev);
   };
 
   const handleComment = (id) => {
@@ -148,7 +284,18 @@ const UserProfile = ({ userData, socialCircles }) => {
         isProfile={true}
         extraClass="max-h-[480px] overflow-y-auto scrollbar-hidden"
       />
-      <ConnectStory extraStyle="text-[24px]" />
+      <div className="flex gap-4">
+        {storiesData.map((story, index) => (
+          <ConnectStory
+            key={story.id}
+            story={story}
+            handlePostStories={handlePostStories}
+            handleViewStories={() => openStory(index)}
+            connectFeedPage={true}
+            index={index}
+          />
+        ))}
+      </div>
       {user_data?.recent_posts.map((post) => {
         return (
           <div key={post.id} className="mb-5">
@@ -198,6 +345,23 @@ const UserProfile = ({ userData, socialCircles }) => {
           confirmation={true}
           isLoading={isPending}
           error={errorDeleting}
+        />
+      )}
+      {postStories && (
+        <PostStories
+          onClose={handlePostStories}
+          show={postStories}
+          profileImages={profileImages}
+        />
+      )}
+      {selectedStory && (
+        <StoryViewer
+          story={selectedStory}
+          onClose={closeStory}
+          onNext={nextStory}
+          onPrevious={previousStory}
+          hasNext={currentStoryIndex < storiesData.length - 1}
+          hasPrevious={currentStoryIndex > 0}
         />
       )}
     </div>

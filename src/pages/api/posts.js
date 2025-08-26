@@ -34,14 +34,10 @@ export default async function handler(req, res) {
       formData.append('social_circle_id', fields.social_circle_id);
 
       const file = files.media;
-      if (file?.filepath) {
-        formData.append(
-          'media[0]',
-          fs.createReadStream(file.filepath),
-          file.originalFilename,
-        );
-      }
 
+      if (file) {
+        formData.append('media[0]', file);
+      }
       const response = await fetch(`${API_URL}/posts`, {
         method: 'POST',
         headers: {

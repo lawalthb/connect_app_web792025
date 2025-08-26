@@ -58,6 +58,8 @@ const PostStories = ({ show, onClose, profileImages }) => {
         ...data,
         file,
         type: fileTypes[0],
+        privacy: 'all_connections',
+        allow_replies: 1,
       };
       if (file) uploadAvatar(payload);
     });

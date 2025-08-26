@@ -156,6 +156,19 @@ export const getPost = async () => {
   return response.json();
 };
 
+export const getMyStory = async () => {
+  const response = await fetch('/api/getMyStory', {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch Feeds');
+  }
+
+  return response.json();
+};
+
 export const getConversation = async () => {
   const response = await fetch('/api/getConversation', {
     credentials: 'include',
@@ -775,6 +788,8 @@ export const postStories = async (data) => {
   formData.append('file', data.file);
   formData.append('type', data.type);
   formData.append('content', data.content);
+  formData.append('privacy', data.privacy);
+  formData.append('allow_replies', data.allow_replies);
 
   try {
     const response = await fetch('/api/postStories', {

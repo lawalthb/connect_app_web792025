@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import Daniella from '@/Images/Daniella.png';
 import WorldIcon from '@/Images/Icons/WorldIcon.svg';
 import ExpandImageIcon from '@/Images/Icons/ExpandImageIcon.svg';
@@ -17,12 +18,49 @@ const Feeds = ({
   socialCircles,
   signedInUser,
 }) => {
+  const videoRef = useRef(null);
+
   const socialIcons = socialCircles?.filter(
     (socials) =>
       socials.id === (feed?.social_circle_id || feed?.social_circle?.id),
   );
+
   const formattedDate =
     feed?.created_at && formatRelativeTime(feed?.created_at);
+
+  // ✅ Grab first media item
+  const media = feed?.media?.[0];
+  const mediaUrl = media?.file_url || media?.url;
+
+  // ✅ Detect media type
+  const isVideo =
+    media?.mime_type?.startsWith('video') ||
+    (mediaUrl && /\.(mp4|webm|ogg)$/i.test(mediaUrl));
+
+  // ✅ Auto play/pause logic
+  useEffect(() => {
+    if (!isVideo || !videoRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            videoRef?.current?.play().catch(() => {});
+          } else {
+            videoRef?.current?.pause();
+          }
+        });
+      },
+      { threshold: 0.5 }, // 50% of video must be visible to auto-play
+    );
+
+    observer.observe(videoRef.current);
+
+    return () => {
+      if (videoRef.current) observer.unobserve(videoRef.current);
+    };
+  }, [isVideo]);
+
   return (
     <div className="bg-white rounded-lg pt-5 pb-10 w-full">
       <div className="px-5">
@@ -31,10 +69,11 @@ const Feeds = ({
             <div className="flex gap-x-5">
               <h3 className="text-semibold text-black text-[15px] leading-5">
                 {feed?.user?.name || feed?.name}
-                <span className="text-[10px] text-gray-500 ml-1">{`@${feed?.user?.username || feed?.username}`}</span>
+                <span className="text-[10px] text-gray-500 ml-1">{`@${
+                  feed?.user?.username || feed?.username
+                }`}</span>
               </h3>
               <div>
-                {' '}
                 <Image
                   width={20}
                   height={20}
@@ -87,16 +126,37 @@ const Feeds = ({
           {feed?.content}
         </p>
       </div>
-      <div className="relative mt-3">
-        <div className="cursor-pointer absolute right-3 top-3 size-[50px] bg-[#000000AD] rounded-full flex items-center justify-center">
-          <ExpandImageIcon onClick={() => handleExpandImage(feed)} />
+
+      {mediaUrl && (
+        <div className="relative mt-3">
+          {!isVideo && (
+            <div className="cursor-pointer absolute right-3 top-3 size-[50px] bg-[#000000AD] rounded-full flex items-center justify-center">
+              <ExpandImageIcon onClick={() => handleExpandImage(feed)} />
+            </div>
+          )}
+
+          {/* ✅ Conditional media rendering */}
+          {isVideo ? (
+            <video
+              ref={videoRef}
+              muted
+              playsInline
+              controls
+              className="w-full h-[250px] rounded-lg object-cover"
+            >
+              <source src={mediaUrl} type={media?.mime_type || 'video/mp4'} />
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <img
+              src={mediaUrl}
+              alt="Media"
+              className="object-fill w-full h-[250px] text-black rounded-lg"
+            />
+          )}
         </div>
-        <img
-          src={feed?.user?.profile_url}
-          alt="Image"
-          className="object-fill w-full h-[250px] text-black "
-        />
-      </div>
+      )}
+
       <LikeShareComment
         feed={feed}
         handleComment={handleComment}

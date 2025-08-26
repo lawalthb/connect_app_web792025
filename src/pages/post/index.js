@@ -5,7 +5,7 @@ import { getSocialCircles } from '@/components/Utils/api';
 import { useQuery } from '@tanstack/react-query';
 import { parse } from 'cookie';
 
-const Post = () => {
+const Post = ({ token }) => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['socialCircle'],
     queryFn: getSocialCircles,
@@ -17,7 +17,9 @@ const Post = () => {
     <div className="px-5 md:px-28">
       <AuthenticatedNavBar />
       <div className="my-20">
-        {!isLoading && <PostFeed socialCircles={data?.data?.social_circles} />}
+        {!isLoading && (
+          <PostFeed socialCircles={data?.data?.social_circles} token={token} />
+        )}
       </div>
     </div>
   );
@@ -35,6 +37,6 @@ export async function getServerSideProps({ req }) {
   }
 
   return {
-    props: {},
+    props: { token },
   };
 }

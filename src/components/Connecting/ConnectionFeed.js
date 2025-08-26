@@ -268,7 +268,7 @@ const ConnectionFeed = ({ data, profileImages, socialCircles }) => {
       {expandImage && (
         <Modal isOpen={expandImage} onClose={handleExpandImage} size="max-w-xl">
           <img
-            src={feedData?.user?.profile_url}
+            src={feedData?.media?.[0]?.file_url}
             alt="Image"
             className="object-fill w-full text-black pr-1.5 max-h-[calc(100vh-150px)]"
           />

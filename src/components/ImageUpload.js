@@ -56,8 +56,6 @@ const ImageUpload = ({ name = 'identityMedia' }) => {
     fileInputRef.current.click();
   };
 
-  console.log(advertImage, 'advertImage');
-
   return (
     <div className="w-full space-y-4">
       <Controller

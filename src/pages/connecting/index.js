@@ -8,6 +8,7 @@ import useUserStore from '@/zustandStore/useUserStore';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   explore,
+  getMyStory,
   getPost,
   getProfileImages,
   getSocialCircles,
@@ -32,9 +33,14 @@ const Connecting = () => {
 
   const { user, loading, refreshUser } = useUserStore();
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['post'],
     queryFn: getPost,
+  });
+
+  const { data: myStoryData, isLoading: isLoadingMyStory } = useQuery({
+    queryKey: ['myStory'],
+    queryFn: getMyStory,
   });
 
   const { data: profileImages, isLoading: isLoadingProfileImages } = useQuery({

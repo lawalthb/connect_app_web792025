@@ -11,6 +11,9 @@ import ErrorMsg from '../ErrorMsg';
 import useFormStore from '@/zustandStore/useFormStore';
 import useUserStore from '@/zustandStore/useUserStore';
 import { useHandleOtpRoute } from '../Hooks/customHooks';
+import { getToken } from 'firebase/messaging';
+import { getAppVersion, getDeviceId, getPlatform } from '../Utils/deviceInfo';
+import { messagingPromise } from '../Utils/firebase';
 
 const LoginUser = () => {
   const router = useRouter();
@@ -61,13 +64,46 @@ const LoginUser = () => {
     },
   });
 
-  const onSubmit = (data) => {
+  async function getFcmToken() {
+    try {
+      const messaging = await messagingPromise;
+      if (!messaging) {
+        console.warn('FCM not supported in this browser.');
+        return null;
+      }
+
+      const token = await getToken(messaging, {
+        vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+      });
+
+      if (token) {
+        console.log('✅ FCM Token:', token);
+        return token;
+      } else {
+        console.warn('No FCM token received. Request permission?');
+        return null;
+      }
+    } catch (err) {
+      console.error('FCM token error:', err);
+      return null;
+    }
+  }
+
+  const onSubmit = async (data) => {
     setFormData(data);
+    const device_token = await getFcmToken();
+    const device_id = getDeviceId();
+    const platform = getPlatform();
+    const app_version = getAppVersion();
+
     const payload = {
       email: data.email,
       password: data.password,
       remember_me: true,
-      device_token: 'sample-device-token-for-push-notifications',
+      device_token,
+      device_id,
+      platform,
+      app_version,
     };
     if (isAuthType.login) {
       mutate(payload);
