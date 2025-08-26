@@ -21,7 +21,7 @@ const LiveStreamViewer = dynamic(() => import('./LiveStreamViewer'), {
 });
 
 const Stream = () => {
-  const [upcomingStream, setUpcomingStream] = useState(false);
+  const [watchStream, setWatchStream] = useState(false);
   const [availableStream, setAvailableStream] = useState(false);
   const [liveStreamData, setStreamLiveStreamData] = useState(null);
 
@@ -45,14 +45,14 @@ const Stream = () => {
     },
   });
 
-  const handleUpcomingStream = () => {
-    setUpcomingStream((prev) => !prev);
+  const handleWatchStream = () => {
+    setWatchStream((prev) => !prev);
   };
   const handleViewMore = (id) => {
     if (id === 1) {
-      console.log(id);
+      handleWatchStream();
     } else if (id === 2) {
-      handleUpcomingStream();
+      console.log(id);
     }
   };
   const handleJoinStream = (id) => {
@@ -60,14 +60,14 @@ const Stream = () => {
   };
 
   const handleBackToHomePage = () => {
-    setUpcomingStream(false);
+    setWatchStream(false);
     setAvailableStream(false);
   };
 
   if (isLoadingLatestLivestream || isLoadingLiveStreamData) return <Loader />;
   return (
     <>
-      {!upcomingStream && !availableStream && (
+      {!watchStream && !availableStream && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
           {streamData.map((option) => (
             <div key={option.id}>
@@ -76,7 +76,7 @@ const Stream = () => {
           ))}
         </div>
       )}
-      {upcomingStream && !availableStream && (
+      {watchStream && !availableStream && (
         <div className="flex flex-col -mt-20 w-full">
           <h3 className="text-[#A20030] font-bold text-[40px] leading-16 text-center mb-24">
             Upcoming Live Stream

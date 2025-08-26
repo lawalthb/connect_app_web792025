@@ -103,9 +103,61 @@ export default function LiveStreamViewer({ streamData }) {
   };
 
   useEffect(() => {
-    initAgoraClient();
+    let isMounted = true;
+
+    const init = async () => {
+      try {
+        setConnectionStatus('connecting');
+
+        if (!client.current) {
+          client.current = AgoraRTC.createClient({
+            mode: 'live',
+            codec: 'vp8',
+          });
+        }
+
+        client.current.on('user-published', async (user, mediaType) => {
+          if (!isMounted) return; // 👈 prevent actions after unmount
+          await client.current.subscribe(user, mediaType);
+          console.log('Subscribed to user:', user.uid, mediaType);
+
+          if (mediaType === 'video') {
+            const remoteTrack = user.videoTrack;
+            remoteVideoTracks.current.set(user.uid, remoteTrack);
+            setRemoteUsers((prev) => [...prev, user]);
+
+            if (videoRef.current) {
+              remoteTrack.play(videoRef.current);
+            }
+          }
+
+          if (mediaType === 'audio') {
+            const remoteTrack = user.audioTrack;
+            remoteAudioTracks.current.set(user.uid, remoteTrack);
+            remoteTrack.play();
+          }
+        });
+
+        await client.current.join(app_id, channel_name, token, agora_uid);
+
+        if (isMounted) {
+          setJoined(true);
+          setConnectionStatus('connected');
+          console.log('Joined Agora channel successfully');
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error('Agora init error:', error);
+          setConnectionStatus('disconnected');
+        }
+      }
+    };
+
+    init();
 
     return () => {
+      isMounted = false; // 👈 stops any async continuation
+
       const cleanup = async () => {
         try {
           remoteVideoTracks.current.forEach((track) => track.stop());
@@ -118,8 +170,8 @@ export default function LiveStreamViewer({ streamData }) {
             client.current.removeAllListeners();
             console.log('Left Agora channel & cleaned up');
           }
-        } catch (cleanupError) {
-          console.error('Cleanup error:', cleanupError);
+        } catch (err) {
+          console.error('Cleanup error:', err);
         } finally {
           setJoined(false);
           setConnectionStatus('disconnected');
@@ -265,11 +317,11 @@ export default function LiveStreamViewer({ streamData }) {
                 <span className="text-sm font-medium">LIVE</span>
               </div>
 
-              <div className="bg-black/50 px-3 py-2 rounded-lg backdrop-blur-sm">
+              {/* <div className="bg-black/50 px-3 py-2 rounded-lg backdrop-blur-sm">
                 <span className="text-sm">
                   {stream.current_viewers} viewers
                 </span>
-              </div>
+              </div> */}
             </div>
           )}
         </div>
