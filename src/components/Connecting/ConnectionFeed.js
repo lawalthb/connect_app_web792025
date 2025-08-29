@@ -138,7 +138,7 @@ const ConnectionFeed = ({
 
   const queryClient = useQueryClient();
 
-  const storiesData = mapStories(myStoryData.data);
+  const storiesData = mapStories(myStoryData?.data);
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: ({ id }) => deletePost(id),

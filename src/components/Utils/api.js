@@ -208,6 +208,19 @@ export const getLatestLivestream = async () => {
   return response.json();
 };
 
+export const getStreamComments = async (id) => {
+  const response = await fetch(`/api/getStreamComments?id=${id}`, {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch comments');
+  }
+
+  return response.json();
+};
+
 export const getProfileImages = async () => {
   const response = await fetch('/api/getProfileImages', {
     credentials: 'include',
@@ -693,9 +706,48 @@ export const postComment = async (data, id) => {
   return response.json();
 };
 
+export const postStreamComment = async (data, id) => {
+  if (!id) return;
+  const response = await fetch(`/api/postStreamComment?id=${id}`, {
+    method: 'POST',
+
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Commenting failed');
+  }
+
+  return response.json();
+};
+
 export const viewStream = async (id) => {
   if (!id) return;
   const response = await fetch(`/api/viewStream?id=${id}`, {
+    method: 'POST',
+
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Stream failed');
+  }
+
+  return response.json();
+};
+
+export const leaveStream = async (id) => {
+  if (!id) return;
+  const response = await fetch(`/api/leaveStream?id=${id}`, {
     method: 'POST',
 
     headers: {

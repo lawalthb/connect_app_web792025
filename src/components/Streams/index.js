@@ -11,8 +11,13 @@ import { RiShareForwardLine } from 'react-icons/ri';
 import Comments from '../Comments';
 import BackToPreviousScreen from '../BackToPreviousScreen';
 import { streamData } from '../Utils/methods';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { getLatestLivestream, viewStream } from '../Utils/api';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  getLatestLivestream,
+  getStreamComments,
+  postStreamComment,
+  viewStream,
+} from '../Utils/api';
 import Loader from '../Loader/Loader';
 import dynamic from 'next/dynamic';
 
@@ -24,11 +29,33 @@ const Stream = () => {
   const [watchStream, setWatchStream] = useState(false);
   const [availableStream, setAvailableStream] = useState(false);
   const [liveStreamData, setStreamLiveStreamData] = useState(null);
+  const [streamId, setStreamId] = useState(null);
+  const [viewerComment, setViewerComment] = useState('');
+
+  const queryClient = useQueryClient();
 
   const { data, isLoading: isLoadingLatestLivestream } = useQuery({
     queryKey: ['latestLivestream'],
     queryFn: getLatestLivestream,
   });
+
+  const { data: comments, isLoading } = useQuery({
+    queryKey: ['streamComments'],
+    queryFn: () => getStreamComments(streamId),
+    enabled: !!streamId,
+  });
+
+  const { mutate: viewerCommentMutation, isPending: isCommenting } =
+    useMutation({
+      mutationFn: ({ data, id }) => postStreamComment(data, id),
+      onSuccess: () => {
+        setViewerComment('');
+        queryClient.invalidateQueries({ queryKey: ['streamComments'] });
+      },
+      onError: (err) => {
+        console.error('Commenting failed:', err.message);
+      },
+    });
 
   const {
     mutate,
@@ -45,8 +72,26 @@ const Stream = () => {
     },
   });
 
+  const {
+    mutate: leaveStreamMutation,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: ({ id }) => viewStream(id),
+    onSuccess: () => {
+      handleBackToHomePage();
+    },
+    onError: (err) => {
+      console.error('Stream failed:', err.message);
+    },
+  });
+
   const handleWatchStream = () => {
     setWatchStream((prev) => !prev);
+  };
+
+  const handleViewerComment = (e) => {
+    setViewerComment(e.target.value);
   };
   const handleViewMore = (id) => {
     if (id === 1) {
@@ -56,6 +101,7 @@ const Stream = () => {
     }
   };
   const handleJoinStream = (id) => {
+    setStreamId(id);
     mutate({ id });
   };
 
@@ -64,7 +110,25 @@ const Stream = () => {
     setAvailableStream(false);
   };
 
-  if (isLoadingLatestLivestream || isLoadingLiveStreamData) return <Loader />;
+  const hanldeLeaveStream = () => {
+    leaveStreamMutation({ id: streamId });
+  };
+
+  const sendViewerComment = () => {
+    if (viewerComment === '') return;
+    const payload = {
+      message: viewerComment,
+    };
+    viewerCommentMutation({ data: payload, id: streamId });
+  };
+
+  if (
+    isLoadingLatestLivestream ||
+    isLoadingLiveStreamData ||
+    isPending ||
+    isLoading
+  )
+    return <Loader />;
   return (
     <>
       {!watchStream && !availableStream && (
@@ -97,7 +161,7 @@ const Stream = () => {
         </div>
       )}
       {availableStream && (
-        <div className="flex flex-col mx-auto w-full lg:w-[966px] justify-center -mt-20">
+        <div className="flex flex-col mx-auto px-10 lg:px-5 w-full lg:w-[966px] justify-center -mt-20">
           <h2 className="text-[#0B0D0E] text-center font-bold text-[48px] leading-16">
             Available Live Stream
           </h2>
@@ -109,7 +173,7 @@ const Stream = () => {
             <h3 className="text-[#0F0F0F] font-semibold text-[18px] leading-7 mt-24">
               {liveStreamData?.data?.stream?.title}
             </h3>
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-y-4 lg:flex-row justify-between lg:items-center">
               <div className="mt-3 flex gap-3">
                 <img
                   src={liveStreamData?.data?.stream?.streamer?.profile_picture}
@@ -126,7 +190,11 @@ const Stream = () => {
                     variant="outlined"
                     btnstyle={'rounded'}
                   />
-                  <Button label="Leave" btnstyle={'rounded'} />
+                  <Button
+                    label="Leave"
+                    btnstyle={'rounded'}
+                    onClick={hanldeLeaveStream}
+                  />
                 </div>
               </div>
               <div className="flex items-center">
@@ -152,7 +220,12 @@ const Stream = () => {
             </div>
           </div>
           <div className="mt-14">
-            <Comments />
+            <Comments
+              comments={comments}
+              viewerComment={viewerComment}
+              handleViewerComment={handleViewerComment}
+              sendViewerComment={sendViewerComment}
+            />
           </div>
         </div>
       )}

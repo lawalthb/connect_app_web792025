@@ -2,7 +2,7 @@
 export const mapStories = (storiesFromApi) => {
   const groupedStories = {};
 
-  storiesFromApi.forEach((s) => {
+  storiesFromApi?.forEach((s) => {
     const userId = s.user.id;
 
     if (!groupedStories[userId]) {
