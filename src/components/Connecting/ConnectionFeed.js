@@ -247,6 +247,16 @@ const ConnectionFeed = ({
                 index={index}
               />
             ))}
+            {storiesData.length < 1 && (
+              <ConnectStory
+                // key={story.id}
+                // story={story}
+                handlePostStories={handlePostStories}
+                // handleViewStories={() => openStory(index)}
+                connectFeedPage={true}
+                // index={index}
+              />
+            )}
           </div>
           <div>
             {data?.data.map((feed) => {

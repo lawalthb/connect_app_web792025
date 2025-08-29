@@ -10,7 +10,7 @@ const ConnectStory = ({
   story,
   index,
 }) => {
-  const ringColor = story.user.isOwn
+  const ringColor = story?.user?.isOwn
     ? 'from-border-[#A20030] to-border-[#A20030]'
     : hasUnseenStories
       ? 'from-border-[#A20030] to-border-[#A20030]'
@@ -25,12 +25,17 @@ const ConnectStory = ({
       <div className="relative w-[75px]">
         <img
           onClick={handleViewStories}
-          src={story.user.avatar}
-          alt={story.user.name}
-          alt="Image"
+          src={story?.user?.avatar || Daniella.src}
+          alt={story?.user?.name || 'Story'}
           className={`object-fill w-[75px] h-[108px] cursor-pointer text-black border ${ringColor} p-1 rounded-[20px] my-5`}
         />
         {index === 0 && (
+          <FaCirclePlus
+            onClick={handlePostStories}
+            className="fill-[#A20030] absolute bottom-2.5 right-2.5 cursor-pointer"
+          />
+        )}
+        {!index && (
           <FaCirclePlus
             onClick={handlePostStories}
             className="fill-[#A20030] absolute bottom-2.5 right-2.5 cursor-pointer"

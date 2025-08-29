@@ -159,7 +159,7 @@ export default function LiveStreamViewer({ streamData }) {
           return;
         }
 
-        await client.current.join(app_id, channel_name, token, agora_uid);
+        await client.current?.join(app_id, channel_name, token, agora_uid);
 
         if (isMounted) {
           setJoined(true);
