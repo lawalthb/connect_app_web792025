@@ -7,6 +7,8 @@ import { formatRelativeTime } from '../Utils/methods';
 import LikeShareComment from './LikeShareComment';
 import Image from 'next/image';
 
+let videoRegistry = [];
+
 const Feeds = ({
   feed,
   handleExpandImage,
@@ -28,36 +30,41 @@ const Feeds = ({
   const formattedDate =
     feed?.created_at && formatRelativeTime(feed?.created_at);
 
-  // ✅ Grab first media item
   const media = feed?.media?.[0];
   const mediaUrl = media?.file_url || media?.url;
 
-  // ✅ Detect media type
   const isVideo =
     media?.mime_type?.startsWith('video') ||
     (mediaUrl && /\.(mp4|webm|ogg)$/i.test(mediaUrl));
 
-  // ✅ Auto play/pause logic
   useEffect(() => {
     if (!isVideo || !videoRef.current) return;
+
+    const videoEl = videoRef.current;
+    videoRegistry.push(videoEl);
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            videoRef?.current?.play().catch(() => {});
+            videoRegistry.forEach((vid) => {
+              if (vid !== videoEl) vid.pause();
+            });
+
+            videoEl.play().catch(() => {});
           } else {
-            videoRef?.current?.pause();
+            videoEl.pause();
           }
         });
       },
-      { threshold: 0.5 }, // 50% of video must be visible to auto-play
+      { threshold: 0.6 },
     );
 
-    observer.observe(videoRef.current);
+    observer.observe(videoEl);
 
     return () => {
-      if (videoRef.current) observer.unobserve(videoRef.current);
+      observer.unobserve(videoEl);
+      videoRegistry = videoRegistry.filter((vid) => vid !== videoEl);
     };
   }, [isVideo]);
 
@@ -134,8 +141,6 @@ const Feeds = ({
               <ExpandImageIcon onClick={() => handleExpandImage(feed)} />
             </div>
           )}
-
-          {/* ✅ Conditional media rendering */}
           {isVideo ? (
             <video
               ref={videoRef}
