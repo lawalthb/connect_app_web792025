@@ -8,11 +8,9 @@ import AuthHeader from '../LoginUser/AuthHeader';
 import SelectField from '../Input/SelectField';
 import ImageUpload from '../ImageUpload';
 import AuthFooter from './AuthFooter';
-import { getCountry, signUp } from '../Utils/api';
+import { API_URL, getCountry, signUp } from '../Utils/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import ErrorMsg from '../ErrorMsg';
-import { dataURLtoFile } from '../Utils/methods';
-import CountrySelect from '../Input/CountrySelect';
 import { useHandleOtpRoute } from '../Hooks/customHooks';
 import useUserStore from '@/zustandStore/useUserStore';
 import useFormStore from '@/zustandStore/useFormStore';
@@ -43,8 +41,38 @@ const SignUpUser = () => {
     queryFn: getCountry,
   });
 
+  const registerUser = async (data) => {
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('email', data.email);
+    formData.append('password', data.password);
+    formData.append('username', data.username);
+    formData.append('country_id', data.country_id);
+
+    if (data.profile_image && data.profile_image instanceof File) {
+      formData.append('profile_image', data.profile_image);
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/register`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload story');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw error;
+    }
+  };
+
   const { mutate, isPending, isSuccess, isError, error, reset } = useMutation({
-    mutationFn: signUp,
+    mutationFn: registerUser,
     onSuccess: (data) => {
       setUser(data.user);
       setTimeout(() => {
@@ -71,13 +99,23 @@ const SignUpUser = () => {
     mutate(payload);
   };
 
-  const handleSignUpSTeps = useCallback((identifier) => {
+  const handleSignUpSTeps = useCallback(async (identifier) => {
     switch (identifier) {
       case 'next':
-        setIsAuthType({
-          firstStep: false,
-          secondStep: true,
-        });
+        // ✅ Validate specific fields before moving to step 2
+        const isValid = await methods.trigger([
+          'first_name',
+          'last_name',
+          'email',
+          'password',
+        ]);
+
+        if (isValid) {
+          setIsAuthType({
+            firstStep: false,
+            secondStep: true,
+          });
+        }
         break;
       default:
         console.warn('Unknown identifier:', identifier);

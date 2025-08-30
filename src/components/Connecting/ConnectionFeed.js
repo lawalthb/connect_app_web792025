@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ConnectStory from './ConnectStory';
 import FilterButton from '../FilterButton';
 import Daniella from '@/Images/Daniella.png';
@@ -14,106 +14,6 @@ import useUserStore from '@/zustandStore/useUserStore';
 import LikeShareComment from './LikeShareComment';
 import StoryViewer from './StoryViewer';
 import { mapStories } from '../Utils/mapStories';
-
-// Mock data for stories
-const storiesData = [
-  {
-    id: 1,
-    user: {
-      id: 1,
-      name: 'Your Story',
-      avatar:
-        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop&crop=face',
-      isOwn: true,
-    },
-    stories: [
-      {
-        id: 1,
-        type: 'image',
-        url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=1200&fit=crop',
-        duration: 5000,
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-        views: 24,
-      },
-      {
-        id: 2,
-        type: 'video',
-        url: 'https://player.vimeo.com/external/194837908.sd.mp4?s=c350076905b78c67f74d7ee39fdb4fef01d12420',
-        duration: 15000,
-        timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000),
-        views: 18,
-      },
-    ],
-  },
-  {
-    id: 2,
-    user: {
-      id: 2,
-      name: 'Alice Johnson',
-      avatar:
-        'https://images.unsplash.com/photo-1494790108755-2616b5b35c5a?w=150&h=150&fit=crop&crop=face',
-      isOwn: false,
-    },
-    stories: [
-      {
-        id: 3,
-        type: 'image',
-        url: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&h=1200&fit=crop',
-        duration: 5000,
-        timestamp: new Date(Date.now() - 30 * 60 * 1000),
-        views: 45,
-      },
-    ],
-  },
-  {
-    id: 3,
-    user: {
-      id: 3,
-      name: 'Bob Wilson',
-      avatar:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-      isOwn: false,
-    },
-    stories: [
-      {
-        id: 4,
-        type: 'image',
-        url: 'https://images.unsplash.com/photo-1528543606781-2f6e6857f318?w=800&h=1200&fit=crop',
-        duration: 5000,
-        timestamp: new Date(Date.now() - 45 * 60 * 1000),
-        views: 32,
-      },
-      {
-        id: 5,
-        type: 'image',
-        url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=1200&fit=crop',
-        duration: 5000,
-        timestamp: new Date(Date.now() - 20 * 60 * 1000),
-        views: 28,
-      },
-    ],
-  },
-  {
-    id: 4,
-    user: {
-      id: 4,
-      name: 'Emma Davis',
-      avatar:
-        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-      isOwn: false,
-    },
-    stories: [
-      {
-        id: 6,
-        type: 'image',
-        url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&h=1200&fit=crop',
-        duration: 5000,
-        timestamp: new Date(Date.now() - 10 * 60 * 1000),
-        views: 67,
-      },
-    ],
-  },
-];
 
 const ConnectionFeed = ({
   data,
@@ -133,6 +33,11 @@ const ConnectionFeed = ({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedStory, setSelectedStory] = useState(null);
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+  const [filteredFeed, setFilteredFeed] = useState([]);
+
+  useEffect(() => {
+    setFilteredFeed(data?.data);
+  }, []);
 
   const { user, loading } = useUserStore();
 
@@ -153,7 +58,6 @@ const ConnectionFeed = ({
   });
 
   const openStory = (storyIndex) => {
-    console.log('Opening story at index:', storyIndex);
     setSelectedStory(storiesData[storyIndex]);
     setCurrentStoryIndex(storyIndex);
   };
@@ -221,12 +125,25 @@ const ConnectionFeed = ({
     mutate({ id: feedId });
   };
 
+  const handleSearch = (e) => {
+    const userName = e.target.value;
+    if (!userName) {
+      setFilteredFeed(data?.data);
+      return;
+    }
+
+    const result = data?.data?.filter((feed) =>
+      feed?.user?.name?.toLowerCase().includes(userName.toLowerCase()),
+    );
+
+    setFilteredFeed(result);
+  };
   return (
     <div className="md:px-20 w-full mb-20">
       <>
         <div className="flex items-center justify-center gap-3">
           <div className="w-[384px]">
-            <SearchField />
+            <SearchField onChange={handleSearch} />
           </div>
           {/* <div className="w-[91px]">
             <FilterButton handleFilter={handleFilter} />
@@ -258,25 +175,31 @@ const ConnectionFeed = ({
               />
             )}
           </div>
-          <div>
-            {data?.data.map((feed) => {
-              return (
-                <div key={feed.id} className="mb-5">
-                  <Feeds
-                    feed={feed}
-                    handleExpandImage={handleExpandImage}
-                    handleShowMore={handleShowMore}
-                    showMore={showMore}
-                    handleComment={handleComment}
-                    showComment={showComment}
-                    feedId={feedId}
-                    socialCircles={socialCircles}
-                    signedInUser={user}
-                  />
-                </div>
-              );
-            })}
-          </div>
+          {filteredFeed.length > 0 ? (
+            <div>
+              {filteredFeed?.map((feed) => {
+                return (
+                  <div key={feed.id} className="mb-5">
+                    <Feeds
+                      feed={feed}
+                      handleExpandImage={handleExpandImage}
+                      handleShowMore={handleShowMore}
+                      showMore={showMore}
+                      handleComment={handleComment}
+                      showComment={showComment}
+                      feedId={feedId}
+                      socialCircles={socialCircles}
+                      signedInUser={user}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="font-semibold text-base text-gray-600 text-center">
+              <h3>No Feed Available</h3>
+            </div>
+          )}
         </div>
       </>
       {postStories && (
