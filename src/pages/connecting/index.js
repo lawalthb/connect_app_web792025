@@ -9,6 +9,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   explore,
   getMyStory,
+  getOtherStory,
   getPost,
   getProfileImages,
   getSocialCircles,
@@ -41,6 +42,11 @@ const Connecting = ({ token }) => {
   const { data: myStoryData, isLoading: isLoadingMyStory } = useQuery({
     queryKey: ['myStory'],
     queryFn: getMyStory,
+  });
+
+  const { data: otherStoryData, isLoading: isLoadingOtherStory } = useQuery({
+    queryKey: ['otherStory'],
+    queryFn: getOtherStory,
   });
 
   const { data: profileImages, isLoading: isLoadingProfileImages } = useQuery({
@@ -127,7 +133,8 @@ const Connecting = ({ token }) => {
       {(isLoading ||
         isLoadingSocialCircles ||
         isLoadingProfileImages ||
-        isLoadingMyStory) && <Loader />}
+        isLoadingMyStory ||
+        isLoadingOtherStory) && <Loader />}
       {!isLoading && !isLoadingSocialCircles && !isLoadingProfileImages && (
         <div className="px-1 md:px-20">
           {activeTab === 'Category' && (
@@ -135,6 +142,7 @@ const Connecting = ({ token }) => {
               socialCircles={socialCircles?.data?.social_circles}
               socialId={socialId}
               myStoryData={myStoryData}
+              otherStoryData={otherStoryData}
               token={token}
             />
           )}
@@ -145,6 +153,7 @@ const Connecting = ({ token }) => {
               socialCircles={socialCircles?.data?.social_circles}
               token={token}
               myStoryData={myStoryData}
+              otherStoryData={otherStoryData}
             />
           )}
           {activeTab === 'Discovery' && (
@@ -188,6 +197,7 @@ const Connecting = ({ token }) => {
             userData={userData}
             socialCircles={socialCircles?.data?.social_circles}
             myStoryData={myStoryData}
+            otherStoryData={otherStoryData}
           />
         </Modal>
       )}

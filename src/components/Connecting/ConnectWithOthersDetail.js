@@ -20,6 +20,7 @@ const ConnectWithOthersDetail = ({
   handleBack,
   socialCircles,
   myStoryData,
+  otherStoryData,
   token,
 }) => {
   const [showFilter, setShowFilter] = useState(false);
@@ -156,6 +157,7 @@ const ConnectWithOthersDetail = ({
           userData={userData}
           socialCircles={socialCircles}
           myStoryData={myStoryData}
+          otherStoryData={otherStoryData}
           token={token}
         />
       )}

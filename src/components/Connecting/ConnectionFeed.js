@@ -21,6 +21,7 @@ const ConnectionFeed = ({
   socialCircles,
   token,
   myStoryData,
+  otherStoryData,
 }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -43,7 +44,12 @@ const ConnectionFeed = ({
 
   const queryClient = useQueryClient();
 
-  const storiesData = mapStories(myStoryData?.data);
+  const myStoriesData = myStoryData ? mapStories(myStoryData?.data) : [];
+  const storiesOtherData = otherStoryData
+    ? mapStories(otherStoryData?.data)
+    : [];
+
+  const storiesData = [...myStoriesData, ...storiesOtherData];
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: ({ id }) => deletePost(id),

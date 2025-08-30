@@ -169,6 +169,19 @@ export const getMyStory = async () => {
   return response.json();
 };
 
+export const getOtherStory = async () => {
+  const response = await fetch('/api/getOtherStory', {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch Feeds');
+  }
+
+  return response.json();
+};
+
 export const getConversation = async () => {
   const response = await fetch('/api/getConversation', {
     credentials: 'include',

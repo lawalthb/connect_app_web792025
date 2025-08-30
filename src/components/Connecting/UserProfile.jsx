@@ -125,7 +125,13 @@ const storiesData = [
   },
 ];
 
-const UserProfile = ({ userData, socialCircles, myStoryData, token }) => {
+const UserProfile = ({
+  userData,
+  socialCircles,
+  myStoryData,
+  otherStoryData,
+  token,
+}) => {
   const [expandImage, setExpandImage] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -139,7 +145,12 @@ const UserProfile = ({ userData, socialCircles, myStoryData, token }) => {
 
   const { user, loading } = useUserStore();
 
-  const storiesData = myStoryData ? mapStories(myStoryData?.data) : [];
+  const myStoriesData = myStoryData ? mapStories(myStoryData?.data) : [];
+  const storiesOtherData = otherStoryData
+    ? mapStories(otherStoryData?.data)
+    : [];
+
+  const storiesData = [...myStoriesData, ...storiesOtherData];
 
   const queryClient = useQueryClient();
 

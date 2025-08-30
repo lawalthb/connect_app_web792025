@@ -1,7 +1,11 @@
 import UserProfile from '@/components/Connecting/UserProfile';
 import AuthenticatedNavBar from '@/components/Layout/AuthenticatedNavBar';
 import Loader from '@/components/Loader/Loader';
-import { getMyStory, getSocialCircles } from '@/components/Utils/api';
+import {
+  getMyStory,
+  getOtherStory,
+  getSocialCircles,
+} from '@/components/Utils/api';
 import useUserStore from '@/zustandStore/useUserStore';
 import { useQuery } from '@tanstack/react-query';
 import { parse } from 'cookie';
@@ -24,7 +28,18 @@ const Profile = ({ token }) => {
     queryFn: getMyStory,
   });
 
-  if (loading || isLoadingSocialCircles || isLoadingMyStory) return <Loader />;
+  const { data: otherStoryData, isLoading: isLoadingOtherStory } = useQuery({
+    queryKey: ['otherStory'],
+    queryFn: getOtherStory,
+  });
+
+  if (
+    loading ||
+    isLoadingSocialCircles ||
+    isLoadingMyStory ||
+    isLoadingOtherStory
+  )
+    return <Loader />;
 
   return (
     <div>
@@ -35,6 +50,7 @@ const Profile = ({ token }) => {
             userData={user}
             socialCircles={socialCircles?.data?.social_circles}
             myStoryData={myStoryData}
+            otherStoryData={otherStoryData}
             token={token}
           />
         </div>

@@ -6,7 +6,13 @@ import { explore, getCountry } from '../Utils/api';
 import Loader from '../Loader/Loader';
 import Modal from '../Modal';
 
-const ConnectWithOthers = ({ socialCircles, socialId, myStoryData, token }) => {
+const ConnectWithOthers = ({
+  socialCircles,
+  socialId,
+  myStoryData,
+  otherStoryData,
+  token,
+}) => {
   const [optionDetail, setOptionDetail] = useState(false);
   const [optionDetailData, setOptionDetailData] = useState(false);
   const [connectShop, setConnectShop] = useState(false);
@@ -73,6 +79,7 @@ const ConnectWithOthers = ({ socialCircles, socialId, myStoryData, token }) => {
           handleBack={handleOptionDetail}
           socialCircles={socialCircles}
           myStoryData={myStoryData}
+          otherStoryData={otherStoryData}
           token={token}
         />
       )}
