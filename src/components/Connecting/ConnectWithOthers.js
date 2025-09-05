@@ -97,34 +97,23 @@ const ConnectWithOthers = ({
 
             {/* Subtext */}
             <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-6">
-              Thank you for installing{' '}
-              <span className="font-semibold">ConnectApp</span>. We are building
-              the perfect marketplace where you can buy and sell products
-              directly within your community.
-              <br />
-              Be the first to know when we launch!
+              Please can you send details of what you will like to sell on the
+              Connect app via this link or email
             </p>
 
             {/* Email Input & Button */}
             <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mt-6">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full sm:w-2/3 px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A20030] focus:outline-none text-gray-700"
-              />
-              <button
-                onClick={() => setConnectShop(false)}
-                type="button"
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#A20030] text-white font-semibold hover:bg-[#870026] transition-all"
+              <a
+                href={`mailto:support@connectapp.com?subject=${encodeURIComponent(
+                  'Interested in Selling on Connect Shop',
+                )}&body=${encodeURIComponent(
+                  'Hi, I’d like to sell the following items on Connect Shop:',
+                )}`}
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#A20030] text-white font-semibold hover:bg-[#870026] transition-all text-center"
               >
-                Notify Me
-              </button>
+                Send
+              </a>
             </div>
-
-            {/* Small note */}
-            <p className="text-xs text-gray-500 mt-3">
-              We’ll only send updates about the launch. No spam, ever.
-            </p>
           </div>
         </Modal>
       )}

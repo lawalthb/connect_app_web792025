@@ -1,5 +1,6 @@
 import Daniella from '@/Images/Daniella.png';
 import { FaCirclePlus } from 'react-icons/fa6';
+import ConnectAppIcon from '@/Images/Icons/ConnectAppIcon.svg?url';
 
 const ConnectStory = ({
   extraStyle = 'text-[16px]',
@@ -25,7 +26,7 @@ const ConnectStory = ({
       <div className="relative w-[75px]">
         <img
           onClick={handleViewStories}
-          src={story?.user?.avatar || Daniella.src}
+          src={story?.user?.avatar || ConnectAppIcon}
           alt={story?.user?.name || 'Story'}
           className={`object-fill w-[75px] h-[108px] cursor-pointer text-black border ${ringColor} p-1 rounded-[20px] my-5`}
         />
