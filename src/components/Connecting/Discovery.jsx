@@ -37,7 +37,6 @@ const Discovery = ({ handleShowSwipePage }) => {
   return (
     <div className="w-full lg:w-[70%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 space-y-3 justify-items-center">
       {users?.map((user) => {
-        console.log(user, 'user');
         return (
           <div
             key={user.id}

@@ -12,6 +12,10 @@ import { RxHamburgerMenu } from 'react-icons/rx';
 import { IoClose } from 'react-icons/io5';
 import ProfileHeader from '../ProfileHeader';
 import Notification from '../Notification';
+import { useQuery } from '@tanstack/react-query';
+import { getNotifications, getNotificationsCount } from '../Utils/api';
+import Loader from '../Loader/Loader';
+import SpinnerLoader from '../SpinnerLoader';
 
 const AuthenticatedNavBar = () => {
   const pathname = usePathname();
@@ -19,6 +23,17 @@ const AuthenticatedNavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [userNotificationOpen, setUserNotificationOpen] = useState(false);
+
+  const { data: notifications, isLoading } = useQuery({
+    queryKey: ['userNotifications'],
+    queryFn: () => getNotifications(),
+  });
+
+  const { data: notificationsCount, isLoading: isLoadingNotificationCounts } =
+    useQuery({
+      queryKey: ['userNotificationsCount'],
+      queryFn: () => getNotificationsCount(),
+    });
 
   const subNav = [
     { name: 'Connecting', path: '/connecting', icon: ConnectingIcon },
@@ -84,10 +99,16 @@ const AuthenticatedNavBar = () => {
             );
           })}
           <div className="hidden lg:flex items-center gap-4 mr-3 ml-32">
-            <Notification
-              userNotificationOpen={userNotificationOpen}
-              handleNotificationClick={handleNotificationClick}
-            />
+            {isLoading || isLoadingNotificationCounts ? (
+              <SpinnerLoader />
+            ) : (
+              <Notification
+                userNotificationOpen={userNotificationOpen}
+                handleNotificationClick={handleNotificationClick}
+                data={notifications.data}
+                unreadCount={notificationsCount?.data?.unread_count}
+              />
+            )}
             <ProfileHeader
               userMenuOpen={userMenuOpen}
               handleProfileClick={handleProfileClick}
@@ -98,10 +119,16 @@ const AuthenticatedNavBar = () => {
 
         {/* Mobile Hamburger Icon */}
         <div className="absolute top-6 right-0 lg:hidden flex items-center gap-4 mr-3">
-          <Notification
-            userNotificationOpen={userNotificationOpen}
-            handleNotificationClick={handleNotificationClick}
-          />
+          {isLoading || isLoadingNotificationCounts ? (
+            <SpinnerLoader />
+          ) : (
+            <Notification
+              userNotificationOpen={userNotificationOpen}
+              handleNotificationClick={handleNotificationClick}
+              data={notifications.data}
+              unreadCount={notificationsCount?.data?.unread_count}
+            />
+          )}
           <ProfileHeader
             userMenuOpen={userMenuOpen}
             handleProfileClick={handleProfileClick}

@@ -208,6 +208,32 @@ export const getSubscription = async () => {
   return response.json();
 };
 
+export const getNotifications = async () => {
+  const response = await fetch('/api/getNotifications', {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch notifications');
+  }
+
+  return response.json();
+};
+
+export const getNotificationsCount = async () => {
+  const response = await fetch('/api/getNotificationsCount', {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch notifications');
+  }
+
+  return response.json();
+};
+
 export const getLatestLivestream = async () => {
   const response = await fetch('/api/getLatestLivestream', {
     credentials: 'include',
@@ -229,6 +255,19 @@ export const getStreamComments = async (id) => {
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Failed to fetch comments');
+  }
+
+  return response.json();
+};
+
+export const getLikeStats = async (id) => {
+  const response = await fetch(`/api/getLikeStats?id=${id}`, {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch Stats');
   }
 
   return response.json();
@@ -739,6 +778,25 @@ export const postStreamComment = async (data, id) => {
   return response.json();
 };
 
+export const likeStream = async (id, type) => {
+  if (!id) return;
+  const response = await fetch(`/api/likeStream?id=${id}&type=${type}`, {
+    method: 'POST',
+
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Like failed');
+  }
+
+  return response.json();
+};
+
 export const viewStream = async (id) => {
   if (!id) return;
   const response = await fetch(`/api/viewStream?id=${id}`, {
@@ -761,6 +819,25 @@ export const viewStream = async (id) => {
 export const leaveStream = async (id) => {
   if (!id) return;
   const response = await fetch(`/api/leaveStream?id=${id}`, {
+    method: 'POST',
+
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Stream failed');
+  }
+
+  return response.json();
+};
+
+export const checkWatchStream = async (id) => {
+  if (!id) return;
+  const response = await fetch(`/api/checkWatchStream?id=${id}`, {
     method: 'POST',
 
     headers: {

@@ -181,7 +181,7 @@ const ConnectionFeed = ({
               />
             )}
           </div>
-          {filteredFeed.length > 0 ? (
+          {filteredFeed?.length > 0 ? (
             <div>
               {filteredFeed?.map((feed) => {
                 return (

@@ -12,6 +12,7 @@ const Comments = ({
   viewerComment,
   handleViewerComment,
   sendViewerComment,
+  handleShowSwipePage,
 }) => {
   const messages = comments.data.messages;
   const [visibleCount, setVisibleCount] = useState(3);
@@ -53,10 +54,14 @@ const Comments = ({
               <img
                 src={msg.user_profile_url}
                 alt={msg.username}
-                className="size-10 object-cover rounded-full"
+                className="size-10 object-cover rounded-full cursor-pointer"
+                onClick={() => handleShowSwipePage(msg?.user_id)}
               />
             ) : (
-              <div className="flex size-10 items-center justify-center rounded-full bg-gray-300 text-xs font-bold text-white">
+              <div
+                onClick={() => handleShowSwipePage(msg?.user_id)}
+                className="flex size-10 items-center justify-center rounded-full bg-gray-300 text-xs font-bold text-white cursor-pointer"
+              >
                 {msg.username[0]}
               </div>
             )}
@@ -74,7 +79,7 @@ const Comments = ({
               </p>
 
               {/* Actions */}
-              <div className="flex items-center gap-3 mt-2">
+              {/* <div className="flex items-center gap-3 mt-2">
                 <AiOutlineLike className="text-[#0F0F0F] w-[18px] h-[17px] cursor-pointer" />
                 <p className="text-[#606060] font-normal text-xs">0</p>
                 <BiDislike className="text-[#0F0F0F] w-[18px] h-[17px] cursor-pointer" />
@@ -84,13 +89,13 @@ const Comments = ({
                 <p className="font-medium text-xs text-[#0F0F0F] cursor-pointer ml-2">
                   Reply
                 </p>
-              </div>
+              </div> */}
 
               {/* Placeholder replies section */}
-              <div className="flex items-center mt-2 gap-2 text-[#065FD4] cursor-pointer">
+              {/* <div className="flex items-center mt-2 gap-2 text-[#065FD4] cursor-pointer">
                 <FaSortDown className="-mt-2" />
                 <p className="font-medium text-sm">0 replies</p>
-              </div>
+              </div> */}
             </div>
           </div>
         ))}

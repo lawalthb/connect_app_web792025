@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import StreamCard from './StreamCard';
 import UpcomingLiveStreamCard from './UpcomingLiveStreamCard';
 import VideoPlayer from '../VideoPlayer';
@@ -13,13 +13,24 @@ import BackToPreviousScreen from '../BackToPreviousScreen';
 import { streamData } from '../Utils/methods';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  checkWatchStream,
+  explore,
   getLatestLivestream,
+  getLikeStats,
+  getMyStory,
+  getOtherStory,
+  getSocialCircles,
   getStreamComments,
+  leaveStream,
+  likeStream,
   postStreamComment,
   viewStream,
 } from '../Utils/api';
 import Loader from '../Loader/Loader';
 import dynamic from 'next/dynamic';
+import ProfileCourasel from '../ProfileCourasel';
+import Modal from '../Modal';
+import UserProfile from '../Connecting/UserProfile';
 
 const LiveStreamViewer = dynamic(() => import('./LiveStreamViewer'), {
   ssr: false,
@@ -31,8 +42,33 @@ const Stream = () => {
   const [liveStreamData, setStreamLiveStreamData] = useState(null);
   const [streamId, setStreamId] = useState(null);
   const [viewerComment, setViewerComment] = useState('');
+  const [userId, seUserId] = useState(null);
+  const [showSwipe, setShowSwipe] = useState(false);
+  const [optionDetailData, setOptionDetailData] = useState(false);
+  const [profile, setProfile] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   const queryClient = useQueryClient();
+
+  const {
+    data: socialCircles,
+    isLoading: isLoadingSocialCircles,
+    isError: isSocialCirclesError,
+    error: socialCirclesError,
+  } = useQuery({
+    queryKey: ['socialCircle'],
+    queryFn: getSocialCircles,
+  });
+
+  const { data: myStoryData, isLoading: isLoadingMyStory } = useQuery({
+    queryKey: ['myStory'],
+    queryFn: getMyStory,
+  });
+
+  const { data: otherStoryData, isLoading: isLoadingOtherStory } = useQuery({
+    queryKey: ['otherStory'],
+    queryFn: getOtherStory,
+  });
 
   const { data, isLoading: isLoadingLatestLivestream } = useQuery({
     queryKey: ['latestLivestream'],
@@ -43,6 +79,14 @@ const Stream = () => {
     queryKey: ['streamComments'],
     queryFn: () => getStreamComments(streamId),
     enabled: !!streamId,
+  });
+
+  const { data: likeStats, isLoading: isLoadingLikeStats } = useQuery({
+    queryKey: ['likeStat', streamId],
+    queryFn: () => getLikeStats(streamId),
+    enabled: !!streamId,
+    refetchInterval: 60000,
+    refetchIntervalInBackground: true,
   });
 
   const { mutate: viewerCommentMutation, isPending: isCommenting } =
@@ -72,12 +116,22 @@ const Stream = () => {
     },
   });
 
+  const { mutate: likeStreamMutation, isPending: isLiking } = useMutation({
+    mutationFn: ({ id, type }) => likeStream(id, type),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['likeStat'] });
+    },
+    onError: (err) => {
+      console.error('Like failed:', err.message);
+    },
+  });
+
   const {
     mutate: leaveStreamMutation,
     isPending,
     error,
   } = useMutation({
-    mutationFn: ({ id }) => viewStream(id),
+    mutationFn: ({ id }) => leaveStream(id),
     onSuccess: () => {
       handleBackToHomePage();
     },
@@ -85,6 +139,45 @@ const Stream = () => {
       console.error('Stream failed:', err.message);
     },
   });
+
+  const { mutate: checkWatchStreamMutation } = useMutation({
+    mutationFn: ({ id }) => checkWatchStream(id),
+    onSuccess: () => {
+      // handleBackToHomePage();
+    },
+    onError: (err) => {
+      console.error('Stream failed:', err.message);
+    },
+  });
+
+  const {
+    mutate: exploreMutation,
+    isPending: isExploring,
+    reset,
+  } = useMutation({
+    mutationFn: explore,
+    onSuccess: (data) => {
+      reset();
+      setOptionDetailData(data);
+    },
+    onError: (err) => {
+      console.error('Explore users failed:', err.message);
+    },
+  });
+
+  useEffect(() => {
+    if (!streamId) return;
+
+    // Call immediately once when component mounts
+    checkWatchStreamMutation({ id: streamId });
+
+    // Call every 60 seconds
+    const interval = setInterval(() => {
+      checkWatchStreamMutation({ id: streamId });
+    }, 60000);
+
+    return () => clearInterval(interval); // cleanup on unmount
+  }, [streamId]);
 
   const handleWatchStream = () => {
     setWatchStream((prev) => !prev);
@@ -104,6 +197,9 @@ const Stream = () => {
     setStreamId(id);
     mutate({ id });
   };
+  const handleLikeStream = (type) => {
+    likeStreamMutation({ id: streamId, type });
+  };
 
   const handleBackToHomePage = () => {
     setWatchStream(false);
@@ -120,6 +216,28 @@ const Stream = () => {
       message: viewerComment,
     };
     viewerCommentMutation({ data: payload, id: streamId });
+  };
+
+  const handleSwipePage = () => {
+    setShowSwipe((prev) => !prev);
+  };
+
+  const handleShowSwipePage = (id) => {
+    seUserId(id);
+    handleSwipePage();
+    exploreMutation({ social_id: [26] });
+  };
+
+  const handleViewProfile = () => {
+    setProfile((prev) => !prev);
+  };
+
+  const handleUserData = (data) => {
+    setUserData(data);
+  };
+
+  const handleButtonClick = (id) => {
+    exploreMutation({ social_id: [id] });
   };
 
   if (
@@ -198,16 +316,37 @@ const Stream = () => {
                 </div>
               </div>
               <div className="flex items-center">
-                <div className="bg-[#0000000D] rounded-tl-[18px] rounded-bl-[18px] p-2 w-[88.7px] flex items-center gap-3">
-                  <AiOutlineLike className="text-[#0F0F0F] w-[18px] h-[17px] cursor-pointer" />
-                  <p className="text-[#0F0F0F] text-[14px] font-medium">205k</p>
-                </div>
-                <div className="bg-[#0000000D] border-l-2 border-[#0000001A] rounded-tr-[18px] rounded-br-[18px] p-2.5 w-[52px]">
-                  <BiDislike className="text-[#0F0F0F] w-[18px] h-[17px] cursor-pointer" />
-                </div>
-                <div className="cursor-pointer bg-[#0000000D] border-l-2 border-[#0000001A] rounded-[18px] p-2 flex items-center gap-3 ml-2">
-                  <RiShareForwardLine className="text-[#0F0F0F] w-[18px] h-[17px]" />
+                <div
+                  onClick={() => handleLikeStream('like')}
+                  className="bg-[#0000000D] rounded-tl-[18px] rounded-bl-[18px] p-2 w-[88.7px] flex items-center gap-3"
+                >
+                  <AiOutlineLike
+                    className={`text-[#0F0F0F] w-[18px] h-[17px] cursor-pointer`}
+                  />
                   <p className="text-[#0F0F0F] text-[14px] font-medium">
+                    {likeStats?.data?.interaction_stats?.likes_count}
+                  </p>
+                </div>
+                <div
+                  onClick={() => handleLikeStream('dislike')}
+                  className="bg-[#0000000D] flex gap-x-1 border-l-2 border-[#0000001A] rounded-tr-[18px] rounded-br-[18px] p-2.5 w-[52px]"
+                >
+                  <p className="text-[#0F0F0F] text-[14px] font-medium">
+                    {likeStats?.data?.interaction_stats?.dislikes_count}
+                  </p>
+                  <BiDislike
+                    className={` text-[#0F0F0F] w-[18px] h-[17px] cursor-pointer`}
+                  />
+                </div>
+                <div
+                  onClick={() => handleLikeStream('share')}
+                  className="cursor-pointer bg-[#0000000D] border-l-2 border-[#0000001A] rounded-[18px] p-2 flex items-center gap-3 ml-2"
+                >
+                  <RiShareForwardLine className="text-[#0F0F0F] w-[18px] h-[17px]" />
+                  <p className={`text-[#0F0F0F] text-[14px] font-medium`}>
+                    <span className="text-[#0F0F0F] text-[14px] font-medium">
+                      {likeStats?.data?.interaction_stats?.shares_count}
+                    </span>{' '}
                     Share
                   </p>
                 </div>
@@ -225,9 +364,45 @@ const Stream = () => {
               viewerComment={viewerComment}
               handleViewerComment={handleViewerComment}
               sendViewerComment={sendViewerComment}
+              handleShowSwipePage={handleShowSwipePage}
             />
           </div>
         </div>
+      )}
+      {showSwipe && (
+        <Modal
+          isOpen={showSwipe}
+          onClose={handleSwipePage}
+          title="ConnectApp"
+          size="max-w-[905px] max-h-[calc(100vh-50px)] overflow-y-scroll"
+        >
+          {isExploring ? (
+            <Loader />
+          ) : (
+            <ProfileCourasel
+              profiles={optionDetailData?.data || []}
+              handleViewProfile={handleViewProfile}
+              socialId={[26]}
+              handleUserData={handleUserData}
+              handleButtonClick={handleButtonClick}
+              userId={userId}
+            />
+          )}
+        </Modal>
+      )}
+      {profile && (
+        <Modal
+          isOpen={showSwipe}
+          onClose={handleViewProfile}
+          size="max-w-[805px] max-h-[calc(100vh-150px)] overflow-y-scroll"
+        >
+          <UserProfile
+            userData={userData}
+            socialCircles={socialCircles?.data?.social_circles}
+            myStoryData={myStoryData}
+            otherStoryData={otherStoryData}
+          />
+        </Modal>
       )}
     </>
   );
