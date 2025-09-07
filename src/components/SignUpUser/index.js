@@ -11,7 +11,7 @@ import AuthFooter from './AuthFooter';
 import { API_URL, getCountry, signUp } from '../Utils/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import ErrorMsg from '../ErrorMsg';
-import { useHandleOtpRoute } from '../Hooks/customHooks';
+import { useHandleOtpRoute } from '../Hooks/CustomHooks';
 import useUserStore from '@/zustandStore/useUserStore';
 import useFormStore from '@/zustandStore/useFormStore';
 import SuccessMsg from '../SuccessMsg';
