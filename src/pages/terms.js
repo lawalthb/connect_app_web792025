@@ -190,7 +190,7 @@ const TermsOfService = () => {
               </p>
               
               <p className="leading-relaxed">
-                You agree to indemnify and hold the Connect Corporations and each of their directors, officers, agents, contractors, partners and employees, harmless from and against any loss, liability, claim, demand, damages, costs and expenses, including reasonable attorney's fees, arising out of or in connection with your use of the Service.
+                You agree to indemnify and hold the Connect Corporations and each of their directors, officers, agents, contractors, partners and employees, harmless from and against any loss, liability, claim, demand, damages, costs and expenses, including reasonable attorney&apos;s fees, arising out of or in connection with your use of the Service.
               </p>
             </div>
           </section>
@@ -250,7 +250,7 @@ const TermsOfService = () => {
           <section>
             <h2 className="text-xl font-semibold mb-4 text-[#A20030]">Language</h2>
             <p className="leading-relaxed">
-              The parties have requested and agree that this Agreement and all documents relating thereto be drawn up in English. Les parties ont demandé que cette convention ainsi que tous les documents qui s'y rattachent soient rédigés en anglais.
+              The parties have requested and agree that this Agreement and all documents relating thereto be drawn up in English. Les parties ont demandé que cette convention ainsi que tous les documents qui s&apos;y rattachent soient rédigés en anglais.
             </p>
           </section>
         </div>

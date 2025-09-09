@@ -460,7 +460,7 @@ const PrivacyPolicy = () => {
                 </h3>
                 <p className="leading-relaxed">Connect Incorporated</p>
                 <p className="leading-relaxed">
-                  Legal enquiries should be sent to:{' '}
+                  Legal enquiries should be sent to: 
                   <a
                     href="mailto:legal@connectinc.app"
                     className="text-[#A20030] hover:underline"
