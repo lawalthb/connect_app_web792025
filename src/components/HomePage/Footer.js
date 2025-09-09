@@ -19,8 +19,8 @@ const Footer = () => {
     { link: '#', text: 'Whitepaper' },
     { link: '#', text: 'Brand kits' },
     { link: '#', text: 'Compliance' },
-    { link: 'https://connectinc.app/privacy-policy', text: 'Privacy Policy' },
-    { link: '#', text: 'Terms of service' },
+    { link: '/privacy-policy', text: 'Privacy Policy' },
+    { link: '/terms', text: 'Terms of service' },
   ];
   const communityData = [
     { link: '#', text: 'Guide' },
