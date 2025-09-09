@@ -344,7 +344,7 @@ const PrivacyPolicy = () => {
               </li>
               <li>
                 Accessed by authorized staff and service providers worldwide
-                under PIPEDA's comparable protection requirement
+                under PIPEDA&apos;s comparable protection requirement
               </li>
               <li>
                 Protected with contractual clauses, encryption, and strict
@@ -426,7 +426,7 @@ const PrivacyPolicy = () => {
 
           <section>
             <h2 className="text-xl font-semibold mb-4 text-[#A20030]">
-              9. Children's Privacy
+              9. Children&apos;s Privacy
             </h2>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li>Our platform is for users aged 13 and over</li>

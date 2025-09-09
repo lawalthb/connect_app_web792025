@@ -160,7 +160,7 @@ const TermsOfService = () => {
               </p>
               
               <p className="leading-relaxed">
-                You represent and warrant to us that you have all right, title and interest to grant the User License, and that the User Content does not infringe on any other person's copyright, trademark, proprietary interests, trade secrets, privacy or other intellectual property rights.
+                You represent and warrant to us that you have all right, title and interest to grant the User License, and that the User Content does not infringe on any other person&apos;s copyright, trademark, proprietary interests, trade secrets, privacy or other intellectual property rights.
               </p>
             </div>
           </section>
