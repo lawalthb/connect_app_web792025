@@ -104,14 +104,11 @@ const ConnectWithOthers = ({
             {/* Email Input & Button */}
             <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mt-6">
               <a
-                href={`mailto:support@connectapp.com?subject=${encodeURIComponent(
-                  'Interested in Selling on Connect Shop',
-                )}&body=${encodeURIComponent(
-                  'Hi, I’d like to sell the following items on Connect Shop:',
-                )}`}
+                href="mailto:someone@example.com?cc=someoneelse@example.com&bcc=andsomeoneelse@example.com&subject=Summer%20Party&body=You%20are%20invited%20to%20a%20big%20summer%20party!"
+                target="_top"
                 className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#A20030] text-white font-semibold hover:bg-[#870026] transition-all text-center"
               >
-                Send
+                Send mail!
               </a>
             </div>
           </div>

@@ -156,7 +156,7 @@ const Feeds = ({
             <img
               src={mediaUrl}
               alt="Media"
-              className="object-fill w-full h-[250px] text-black rounded-lg"
+              className="object-cover w-full h-[250px] text-black rounded-lg"
             />
           )}
         </div>

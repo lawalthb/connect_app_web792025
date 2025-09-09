@@ -10,10 +10,10 @@ import { forgotPassword, signIn } from '../Utils/api';
 import ErrorMsg from '../ErrorMsg';
 import useFormStore from '@/zustandStore/useFormStore';
 import useUserStore from '@/zustandStore/useUserStore';
-import { useHandleOtpRoute } from '../Hooks/CustomHooks';
 import { getToken } from 'firebase/messaging';
 import { getAppVersion, getDeviceId, getPlatform } from '../Utils/deviceInfo';
 import { messagingPromise } from '../Utils/firebase';
+import { useHandleOtpRoute } from '../Hooks/CustomHooks';
 
 const LoginUser = () => {
   const router = useRouter();
