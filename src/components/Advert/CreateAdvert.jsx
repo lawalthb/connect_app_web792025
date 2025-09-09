@@ -5,7 +5,7 @@ import ImageUpload from '../ImageUpload';
 import Checkbox from '../Checkbox';
 import Button from '../Button';
 import { useState } from 'react';
-import MultiSelectDropdown from '../Input/MultiSelectDropdown';
+import MultiSelectDropdown from '@/Input/MultiSelectDropdown';
 import CustomSelect from '../Input/CustomSelect';
 import DateRangeFields from '../Input/DateRangeFields';
 import { useMutation } from '@tanstack/react-query';
