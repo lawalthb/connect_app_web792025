@@ -43,11 +43,11 @@ const TermsOfService = () => {
             
             <div className="space-y-6 leading-relaxed">
               <p>
-                These terms of service set forth the general terms of service of your use of the Website, the App and our Services and are in addition to (not in lieu of) any other terms of use posted on https://www.connectinc.app, in connection with the App, and linked from our Terms of service page at https://connectinc.app/terms, which together constitute the entire Agreement (the "Agreement") between us and you ("you"). By accessing or using the Service, you (together with all persons accessing or using the Service, collectively, the "Users") signify that you have read, understand and agree to be bound by this Agreement in all respects with respect to the Website, the App, our provision of the Service, and your use of them.
+                These terms of service set forth the general terms of service of your use of the Website, the App and our Services and are in addition to (not in lieu of) any other terms of use posted on https://www.connectinc.app, in connection with the App, and linked from our Terms of service page at https://connectinc.app/terms, which together constitute the entire Agreement (the &quot;Agreement&quot;) between us and you (&quot;you&quot;). By accessing or using the Service, you (together with all persons accessing or using the Service, collectively, the &quot;Users&quot;) signify that you have read, understand and agree to be bound by this Agreement in all respects with respect to the Website, the App, our provision of the Service, and your use of them.
               </p>
               
               <p>
-                Our website (www.connectinc.app) and related websites owned by us (collectively, the "Website") and our mobile Application (the "App") (collectively the "Platform") and the services offered therefrom (collectively, the "Service") are operated by Connect Incorporated and its corporate affiliates (collectively, "us", "we" or the "Connect Corporations").
+                Our website (www.connectinc.app) and related websites owned by us (collectively, the &quot;Website&quot;) and our mobile Application (the &quot;App&quot;) (collectively the &quot;Platform&quot;) and the services offered therefrom (collectively, the &quot;Service&quot;) are operated by Connect Incorporated and its corporate affiliates (collectively, &quot;us&quot;, &quot;we&quot; or the &quot;Connect Corporations&quot;).
               </p>
               
               <p className="font-semibold text-[#A20030]">
@@ -60,7 +60,7 @@ const TermsOfService = () => {
             <h2 className="text-xl font-semibold mb-4 text-[#A20030]">Registration</h2>
             <div className="space-y-4">
               <p className="leading-relaxed">
-                In consideration of your use of the Service, you agree to: (a) provide us with accurate, current and complete information about you as may be prompted by any registration forms on the Service ("Registration Data"); and (b) maintain and promptly update the Registration Data, and any other information you provide to us, to keep it accurate, current and complete.
+                In consideration of your use of the Service, you agree to: (a) provide us with accurate, current and complete information about you as may be prompted by any registration forms on the Service (&quot;Registration Data&quot;); and (b) maintain and promptly update the Registration Data, and any other information you provide to us, to keep it accurate, current and complete.
               </p>
               
               <ul className="list-disc list-inside space-y-2 ml-4">
@@ -80,7 +80,7 @@ const TermsOfService = () => {
             <h2 className="text-xl font-semibold mb-4 text-[#A20030]">Services</h2>
             <div className="space-y-4">
               <p className="leading-relaxed">
-                Connect is a social media app that connects people ("Users") to other Users, businesses ("Businesses"), activities, jobs, etc. based on similar interests.
+                Connect is a social media app that connects people (&quot;Users&quot;) to other Users, businesses (&quot;Businesses&quot;), activities, jobs, etc. based on similar interests.
               </p>
               
               <p className="leading-relaxed">
@@ -129,7 +129,7 @@ const TermsOfService = () => {
               <p className="font-semibold">Payments are non-refundable, unless otherwise determined in our sole discretion.</p>
               
               <p className="leading-relaxed">
-                Users are required to provide their credit card or bank account details to us when making a purchase. By doing so, you authorize us to provide this information to the third party payment processor (the "Payment Processor") we retain.
+                Users are required to provide their credit card or bank account details to us when making a purchase. By doing so, you authorize us to provide this information to the third party payment processor (the &quot;Payment Processor&quot;) we retain.
               </p>
             </div>
           </section>
@@ -139,7 +139,7 @@ const TermsOfService = () => {
             <p className="mb-4 leading-relaxed">While using the Service, you agree not to:</p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li>Recruit or otherwise solicit any User or Business to join third-party services or websites that are competitive to Connect</li>
-              <li>Use the Service to "stalk", harass, threaten, intimidate, harm, cause a nuisance to, annoy, or inconvenience any other User</li>
+              <li>Use the Service to &quot;stalk&quot;, harass, threaten, intimidate, harm, cause a nuisance to, annoy, or inconvenience any other User</li>
               <li>Submit a Request that you do not intend to have completed or that you do not intend to pay for</li>
               <li>Request, offer, negotiate, or complete any portion of a Service that would violate any applicable law</li>
               <li>Engage in pornographic or obscene services including sexual and escort services</li>
@@ -151,12 +151,12 @@ const TermsOfService = () => {
             <h2 className="text-xl font-semibold mb-4 text-[#A20030]">Content and Intellectual Property</h2>
             <div className="space-y-4">
               <p className="leading-relaxed">
-                "Content" means all materials and content of any type, including, but not limited to, ratings, photos, graphics, images, designs, profiles, messages, information, notes, text, music, sound, video, articles, and software.
+                &quot;Content&quot; means all materials and content of any type, including, but not limited to, ratings, photos, graphics, images, designs, profiles, messages, information, notes, text, music, sound, video, articles, and software.
               </p>
               
               <h3 className="text-lg font-medium text-[#E2E4E9]">User Content and Your License to Us</h3>
               <p className="leading-relaxed">
-                The Service permits you to submit, transmit, copy, make available and distribute Content (collectively, your "User Content"), and we do not claim ownership over any User Content. By providing any Content, you grant the Connect Corporations the worldwide, royalty-free, non-exclusive right and license to use, distribute, reproduce, modify, adapt, perform and display such User Content as permitted by the functionality of the Service.
+                The Service permits you to submit, transmit, copy, make available and distribute Content (collectively, your &quot;User Content&quot;), and we do not claim ownership over any User Content. By providing any Content, you grant the Connect Corporations the worldwide, royalty-free, non-exclusive right and license to use, distribute, reproduce, modify, adapt, perform and display such User Content as permitted by the functionality of the Service.
               </p>
               
               <p className="leading-relaxed">

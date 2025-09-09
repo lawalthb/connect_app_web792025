@@ -45,8 +45,8 @@ const PrivacyPolicy = () => {
               Introduction
             </h2>
             <p className="mb-4 leading-relaxed">
-              Welcome to Connect App by Connect Incorporated. ("Connect", "we",
-              "our", "us"). We are a global social networking platform
+              Welcome to Connect App by Connect Incorporated. (&quot;Connect&quot;, &quot;we&quot;,
+              &quot;our&quot;, &quot;us&quot;). We are a global social networking platform
               headquartered in Canada. Your privacy is central to our mission of
               helping people connect and share. This Privacy Policy explains how
               we collect, use, share, and protect your personal information when
@@ -445,7 +445,7 @@ const PrivacyPolicy = () => {
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li>Notify you via email or in-app notification</li>
-              <li>Update the "Last Updated" date at the top of this page</li>
+              <li>Update the &quot;Last Updated&quot; date at the top of this page</li>
             </ul>
           </section>
 
